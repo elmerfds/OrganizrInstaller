@@ -1,4 +1,5 @@
 #!/bin/bash -e
+#Setup an Organizr web directory in seconds
 echo ---------------------------
 echo - "Organizr Installer v1.0"   -
 echo ---------------------------
