@@ -1,0 +1,280 @@
+#!/bin/bash -e
+
+x=Master
+y=Dev
+z=Pre-Dev
+
+echo
+#Creating Nginx config
+NGINX_CONFIG='/etc/nginx/sites-available'
+NGINX_SITES_ENABLED='/etc/nginx/sites-enabled'
+WEB_DIR='/var/www'
+SED=`which sed`
+CURRENT_DIR=`dirname $0`
+
+show_menus() {
+echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+echo " 	ORGANIZR - INSTALLER v1.5 "
+echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+echo " 1. Organizr + Nginx site isntall" 
+echo " 2. Organizr Web Folder Only Install"
+echo " 3. TBA"
+echo " 4. Quit"
+echo
+printf "Enter your choice: "
+}
+read_options(){
+read -r options
+
+	case $options in
+	 "1")
+		echo "your choice 1"
+		echo
+		printf "Enter your domanin name: " 
+		read -r dname
+		DOMAIN=$dname
+
+		# check the domain is roughly valid!
+		PATTERN="^([[:alnum:]]([[:alnum:]\-]{0,61}[[:alnum:]])?\.)+[[:alpha:]]{2,6}$"
+		if [[ "$DOMAIN" =~ $PATTERN ]]; then
+		DOMAIN=`echo $DOMAIN | tr '[A-Z]' '[a-z]'`
+		echo "Creating hosting for:" $DOMAIN
+		else
+		echo "invalid domain name"
+		exit 1 
+		fi
+
+		# Copy the virtual host template
+		CONFIG=$NGINX_CONFIG/$DOMAIN.conf
+		sudo cp $CURRENT_DIR/virtual_host.template $CONFIG
+
+
+		# set up web root
+		sudo chmod 600 $CONFIG
+
+		# create symlink to enable site
+		sudo ln -s $CONFIG $NGINX_SITES_ENABLED/$DOMAIN.conf
+
+# reload Nginx to pull in new config
+sudo /etc/init.d/nginx reload
+
+echo "Site Created for $DOMAIN"
+
+		echo "which version of Organizr do you want me to download?"
+		echo "- Master = [1] Dev = [2] Pre-Dev = [3]"
+		printf 'Enter a number: '
+		read -r dlvar
+		echo
+		echo "Where do you want to install Organizr?"
+		printf 'Please enter the full path: '
+		read instvar
+		echo
+
+			#Org Master Download and Install
+			if [ $dlvar = "1" ]
+			then 
+			echo Downloading the latest Organizr "$x" ...
+			rm -r -f /tmp/Organizr/master.zip
+			rm -r -f /tmp/Organizr/Organizr-master
+			wget --quiet -P /tmp/Organizr/ https://github.com/causefx/Organizr/archive/master.zip
+			unzip -q /tmp/Organizr/master.zip -d /tmp/Organizr
+			q=$x
+			echo Organizr $q downloaded and unzipped
+			echo
+			echo Instaling Organizr...
+			if [ ! -d "$instvar" ]; then
+			mkdir -p $instvar
+			fi
+			cp -a /tmp/Organizr/Organizr-master/. $instvar/html
+
+			#Org Dev Download and Install
+			elif [ $dlvar = "2" ]
+			then 
+			echo Downloading the latest Organizr "$y" ...
+			rm -r -f /tmp/Organizr/develop.zip
+			rm -r -f /tmp/Organizr/Organizr-develop
+			wget --quiet -P /tmp/Organizr/ https://github.com/causefx/Organizr/archive/develop.zip
+			unzip -q /tmp/Organizr/develop.zip -d /tmp/Organizr
+			q=$y
+			echo Organizr $q downloaded and unzipped
+			echo
+			echo Instaling Organizr...
+			if [ ! -d "$instvar" ]; then
+			mkdir -p $instvar
+			fi
+			cp -a /tmp/Organizr/Organizr-develop/. $instvar/html
+
+			#Org Pre-Dev Download and Install
+			elif [ $dlvar = "3" ]
+			then 
+			echo Downloading the latest Organizr "$z" ...
+			rm -r -f /tmp/Organizr/cero-dev.zip
+			rm -r -f /tmp/Organizr/Organizr-cero-dev
+			wget --quiet -P /tmp/Organizr/ https://github.com/causefx/Organizr/archive/cero-dev.zip
+			unzip -q /tmp/Organizr/cero-dev.zip -d /tmp/Organizr
+			q=$z
+			echo Organizr $q downloaded and unzipped
+			echo
+			echo Instaling Organizr...
+			if [ ! -d "$instvar" ]; then
+			mkdir -p $instvar
+			fi
+			cp -a /tmp/Organizr/Organizr-cero-dev/. $instvar/html
+			fi
+
+			#Moving Org files to destination and configuring permissions
+			if [ ! -d "$instvar/db" ]; then
+			mkdir $instvar/db
+			fi
+			chmod -R 775 $instvar
+			chown -R www-data $instvar
+			
+			#Add in your domain name to your site nginx conf file
+			SITE_DIR=`echo $instvar`
+			sudo $SED -i "s/DOMAIN/$DOMAIN/g" $CONFIG
+			sudo $SED -i "s!ROOT!$SITE_DIR!g" $CONFIG
+
+			#Displaying installation ifo
+			echo
+			printf '######################################'
+			echo
+			echo "  Organizr $q Installion Complete  "
+			printf '######################################'
+			echo
+			echo
+			echo ---------------------------------------------
+			echo "    	About your org install    		"
+			echo ---------------------------------------------
+			echo "Installtion directory = $instvar"
+			echo "Organzir files stored = $instvar/html"
+			echo "Organzir db directory = $instvar/db "
+			echo ---------------------------------------------
+			echo
+#echo "Next if you haven't done already, configure your Nginx conf to point to the Org installation directoy"
+			echo "Use the above db path when you're setting up the admin user"
+			echo "Then visit localhost/index.php or domain.com/index.php to create the admin user and setup your db directory"
+			echo
+			read -p
+			;;
+
+	 "2")
+		echo "your choice 2"
+		echo
+		echo "which version of Organizr do you want me to download?"
+		echo
+		echo "- Master = [1] Dev = [2] Pre-Dev = [3]"
+		printf 'Enter a number: '
+		read -r dlvar
+		echo
+		echo "Where do you want to install Organizr?"
+		printf 'Please enter the full path: '
+		read instvar
+		echo
+
+		#Org Master Download and Install
+		if [ $dlvar = "1" ]
+		then 
+		echo Downloading the latest Organizr "$x" ...
+		rm -r -f /tmp/Organizr/master.zip
+		rm -r -f /tmp/Organizr/Organizr-master
+		wget --quiet -P /tmp/Organizr/ https://github.com/causefx/Organizr/archive/master.zip
+		unzip -q /tmp/Organizr/master.zip -d /tmp/Organizr
+		q=$x
+		echo Organizr $q downloaded and unzipped
+		echo
+		echo Instaling Organizr...
+		if [ ! -d "$instvar" ]; then
+		mkdir -p $instvar
+		fi
+		cp -a /tmp/Organizr/Organizr-master/. $instvar/html
+
+		#Org Dev Download and Install
+		elif [ $dlvar = "2" ]
+		then 
+		echo Downloading the latest Organizr "$y" ...
+		rm -r -f /tmp/Organizr/develop.zip
+		rm -r -f /tmp/Organizr/Organizr-develop
+		wget --quiet -P /tmp/Organizr/ https://github.com/causefx/Organizr/archive/develop.zip
+		unzip -q /tmp/Organizr/develop.zip -d /tmp/Organizr
+		q=$y
+		echo Organizr $q downloaded and unzipped
+		echo
+		echo Instaling Organizr...
+		if [ ! -d "$instvar" ]; then
+		mkdir -p $instvar
+		fi
+		cp -a /tmp/Organizr/Organizr-develop/. $instvar/html
+
+		#Org Pre-Dev Download and Install
+		elif [ $dlvar = "3" ]
+		then 
+		echo Downloading the latest Organizr "$z" ...
+		rm -r -f /tmp/Organizr/cero-dev.zip
+		rm -r -f /tmp/Organizr/Organizr-cero-dev
+		wget --quiet -P /tmp/Organizr/ https://github.com/causefx/Organizr/archive/cero-dev.zip
+		unzip -q /tmp/Organizr/cero-dev.zip -d /tmp/Organizr
+		q=$z
+		echo Organizr $q downloaded and unzipped
+		echo
+		echo Instaling Organizr...
+		if [ ! -d "$instvar" ]; then
+		mkdir -p $instvar
+		fi
+		cp -a /tmp/Organizr/Organizr-cero-dev/. $instvar/html
+		fi
+
+		#Moving Org files to destination and configuring permissions
+		if [ ! -d "$instvar/db" ]; then
+		mkdir $instvar/db
+		fi
+		chmod -R 775 $instvar
+		chown -R www-data $instvar
+
+		#Displaying installation ifo
+		echo
+		printf '######################################'
+		echo
+		echo "  Organizr $q Installion Complete  "
+		printf '######################################'
+		echo
+		echo
+		echo ---------------------------------------------
+		echo "    	About your org install    		"
+		echo ---------------------------------------------
+		echo "Installtion directory = $instvar"
+		echo "Organzir files stored = $instvar/html"
+		echo "Organzir db directory = $instvar/db "
+		echo ---------------------------------------------
+		echo
+		echo "Next if you haven't done already, configure your Nginx conf to point to the Org installation directoy"
+		echo "Use the above db path when you're setting up the admin user"
+		echo "Then visit localhost/index.php or domain.com/index.php to create the admin user and setup your db directory"
+		echo
+		echo Press enter to continue
+		read
+		;; 
+
+	 "3")
+		echo "your choice 3"
+		;;
+
+	 "4")
+		exit 0;;
+
+      esac
+}
+
+while true 
+do
+	clear
+	show_menus
+	read_options
+done
+
+
+
+
+
+
+
+
