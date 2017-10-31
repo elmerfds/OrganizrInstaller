@@ -1,0 +1,59 @@
+#SSL SERVER KEYS AND SHIT
+#ssl_certificate       /etc/nginx/config/ssl/DOMAIN/DOMAIN.pem;
+#ssl_certificate_key   /etc/nginx/config/ssl/DOMAIN/DOMAIN.com.key;
+ 
+#MAIN SERVER
+server {
+	#include config/domain.com_ssl.conf;
+	#include config/domain.com.conf;
+
+	root ROOT/html;
+	index index.php index.html index.htm index.nginx-debian.html;
+
+	#Auth
+	location /auth-admin { rewrite ^ /auth.php?admin&ban=someone,thisperson; }
+	location /auth-user { rewrite ^ /auth.php?user&ban=someone,thisperson; }  
+  	server_name www.DOMAIN DOMAIN;
+
+	#error page
+	error_page 302 400 401 403 404 405 408 500 502 503 504  /error.php?error=$status;
+
+
+	location / {try_files $uri $uri/ =404;}
+
+
+	location ^~ /PimpMyLog/ {
+		auth_request /auth-admin;
+		include config/phpblock.conf;
+	}
+
+
+    	location /plex/ {
+        	proxy_pass http://plex-upstream/;
+        	include config/proxy.conf;
+    	}
+    	if ($http_referer ~* /plex/) {
+        	rewrite ^/web/(.*) /plex/web/$1? redirect;
+    	}
+
+}
+
+#PLEX SERVER
+server {
+	server_name  plex.DOMAIN;
+	include config/domain.com.conf;
+	include config/auth-admin.conf;
+	include config/domain.com_ssl.conf;
+	error_page 302 400 401 403 404 405 408 500 502 503 504 https://DOMAIN/error.php?error=$status;
+	location / {
+                include config/geoip_common.conf; #GeoIPBlock
+		#auth_request /auth-user;
+		proxy_pass http://plex-upstream;
+		include config/proxy.conf;
+		proxy_redirect off;
+		proxy_buffering off;
+
+
+	}
+}
+
