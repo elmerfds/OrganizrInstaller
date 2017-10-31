@@ -18,7 +18,7 @@ echo " 	ORGANIZR - INSTALLER v1.5 "
 echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 echo " 1. Organizr + Nginx site isntall" 
 echo " 2. Organizr Web Folder Only Install"
-echo " 3. TBA"
+echo " 3. Organizr Requirements Install"
 echo " 4. Quit"
 echo
 printf "Enter your choice: "
@@ -256,6 +256,16 @@ echo "Site Created for $DOMAIN"
 
 	 "3")
 		echo "your choice 3"
+		echo "Install Organzir Requirements"
+		echo "Updating apt repositories"
+		apt-get update
+		echo "Installing Nginx"
+		apt-get install nginx
+		echo "Installing PHP"
+		apt-get install php-fpm
+		echo "installing PHP-ZIP"
+		apt-get install php-zip
+
 		;;
 
 	 "4")
