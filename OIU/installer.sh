@@ -1,5 +1,5 @@
 #!/bin/bash -e
-#Note: Avoid using Option 1 for, still WORK IN PROGRESS
+#Note: Avoid using Option 1 for now,WORK IN PROGRESS
 
 x=Master
 y=Dev
