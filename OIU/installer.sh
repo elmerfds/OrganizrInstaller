@@ -1,14 +1,14 @@
 #!/bin/bash -e
-#Note: Avoid using Option 1 for now,WORK IN PROGRESS
 
 x=Master
 y=Dev
 z=Pre-Dev
 
-echo
-#Creating Nginx config
-NGINX_CONFIG='/etc/nginx/sites-available'
+#Nginx config variables
+NGINX_LOC='/etc/nginx'
+NGINX_SITES='/etc/nginx/sites-available'
 NGINX_SITES_ENABLED='/etc/nginx/sites-enabled'
+NGINX_CONFIG='/etc/nginx/config2'
 WEB_DIR='/var/www'
 SED=`which sed`
 CURRENT_DIR=`dirname $0`
@@ -16,7 +16,7 @@ CURRENT_DIR=`dirname $0`
 show_menus() {
 echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 echo " 	ORGANIZR - INSTALLER v1.5 "
-echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 echo " 1. Organizr + Nginx site isntall" 
 echo " 2. Organizr Web Folder Only Install"
 echo " 3. Organizr Requirements Install"
@@ -34,6 +34,7 @@ read -r options
 		printf "Enter your domanin name: " 
 		read -r dname
 		DOMAIN=$dname
+		echo
 
 		# check the domain is roughly valid!
 		PATTERN="^([[:alnum:]]([[:alnum:]\-]{0,61}[[:alnum:]])?\.)+[[:alpha:]]{2,6}$"
@@ -46,8 +47,14 @@ read -r options
 		fi
 
 		# Copy the virtual host template
-		CONFIG=$NGINX_CONFIG/$DOMAIN.conf
-		sudo cp $CURRENT_DIR/virtual_host.template $CONFIG
+		CONFIG=$NGINX_SITES/$DOMAIN.conf
+		cp $CURRENT_DIR/virtual_host.template $CONFIG
+		cp -a $CURRENT_DIR/config2/ $NGINX_LOC
+		mv $NGINX_LOC/config2/domain.com.conf $NGINX_LOC/config2/$DOMAIN.conf
+		mv $NGINX_LOC/config2/domain.com_ssl.conf $NGINX_LOC/config2/${DOMAIN}_ssl.conf
+		CONFIG_DOMAIN=$NGINX_CONFIG/$DOMAIN.conf
+		mkdir -p $NGINX_CONFIG/ssl/$DOMAIN
+		chmod -R 755 $NGINX_CONFIG/ssl/$DOMAIN
 
 
 		# set up web root
@@ -56,13 +63,14 @@ read -r options
 		# create symlink to enable site
 		sudo ln -s $CONFIG $NGINX_SITES_ENABLED/$DOMAIN.conf
 
-# reload Nginx to pull in new config
-sudo /etc/init.d/nginx reload
 
-echo "Site Created for $DOMAIN"
+		echo
+		echo "Site Created for $DOMAIN"
 
+		echo
 		echo "which version of Organizr do you want me to download?"
 		echo "- Master = [1] Dev = [2] Pre-Dev = [3]"
+		echo
 		printf 'Enter a number: '
 		read -r dlvar
 		echo
@@ -134,8 +142,12 @@ echo "Site Created for $DOMAIN"
 			SITE_DIR=`echo $instvar`
 			sudo $SED -i "s/DOMAIN/$DOMAIN/g" $CONFIG
 			sudo $SED -i "s!ROOT!$SITE_DIR!g" $CONFIG
+			sudo $SED -i "s/DOMAIN/$DOMAIN/g" $CONFIG_DOMAIN
+			
+			# reload Nginx to pull in new config
+			sudo /etc/init.d/nginx reload
 
-			#Displaying installation ifo
+			#Displaying installation info
 			echo
 			printf '######################################'
 			echo
@@ -144,7 +156,7 @@ echo "Site Created for $DOMAIN"
 			echo
 			echo
 			echo ---------------------------------------------
-			echo "    	About your org install    		"
+			echo "    	About your Organizr install    		"
 			echo ---------------------------------------------
 			echo "Installtion directory = $instvar"
 			echo "Organzir files stored = $instvar/html"
@@ -155,7 +167,8 @@ echo "Site Created for $DOMAIN"
 			echo "Use the above db path when you're setting up the admin user"
 			echo "Then visit localhost/index.php or domain.com/index.php to create the admin user and setup your db directory"
 			echo
-			read -p
+			echo "Press enter to return to menu"
+			read
 			;;
 
 	 "2")
@@ -240,7 +253,7 @@ echo "Site Created for $DOMAIN"
 		echo
 		echo
 		echo ---------------------------------------------
-		echo "    	About your org install    		"
+		echo "    	About your Organizr install    		"
 		echo ---------------------------------------------
 		echo "Installtion directory = $instvar"
 		echo "Organzir files stored = $instvar/html"
@@ -251,7 +264,7 @@ echo "Site Created for $DOMAIN"
 		echo "Use the above db path when you're setting up the admin user"
 		echo "Then visit localhost/index.php or domain.com/index.php to create the admin user and setup your db directory"
 		echo
-		echo Press enter to continue
+		echo "Press enter to return to menu"
 		read
 		;; 
 
