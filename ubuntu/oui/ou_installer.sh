@@ -282,6 +282,44 @@ read -r options
         echo
         echo "Install Unzip"
         apt-get -y install unzip
+        echo
+		echo "Installing Nginx"
+        echo
+		echo
+		apt-get -y install nginx
+		echo
+		echo "Installing PHP"
+		apt-get -y install php-fpm
+		echo
+		echo "Installing PHP-ZIP"
+		apt-get -y install php-zip
+		echo
+		echo "Installing PDO:SQLite"
+		apt-get -y install php-sqlite3
+		echo 
+		echo "Installing PHP cURL"
+		apt-get -y install php-curl
+		echo
+		echo "Installing PHP simpleXML"
+		apt-get -y install php-xml
+		echo
+		echo "Organizr Requirements have been installed successfully.."
+		echo
+        echo "Press any key to return to menu..."
+		read
+
+
+		;;
+        
+	 "4")
+		echo "your choice 3: Install Organzir Requirements"
+        echo
+		echo "Updating apt repositories"
+		apt-get update
+        echo
+        echo "Install Unzip"
+        apt-get -y install unzip
+        echo
 		echo "Installing Nginx"
         echo
 		echo
@@ -305,42 +343,6 @@ read -r options
 		echo "Organizr Requirements have been installed successfully.."
 		echo
 		echo "Press any key to continue with Organizr + Nginx site config"
-		read
-
-
-		;;
-        
-	 "4")
-		echo "your choice 3: Install Organzir Requirements"
-        echo
-		echo "Updating apt repositories"
-		apt-get update
-        echo
-        echo "Install Unzip"
-        apt-get -y install unzip
-		echo "Installing Nginx"
-        echo
-		echo
-		apt-get -y install nginx
-		echo
-		echo "Installing PHP"
-		apt-get -y install php-fpm
-		echo
-		echo "Installing PHP-ZIP"
-		apt-get -y install php-zip
-		echo
-		echo "Installing PDO:SQLite"
-		apt-get -y install php-sqlite3
-		echo 
-		echo "Installing PHP cURL"
-		apt-get -y install php-curl
-		echo
-		echo "Installing PHP simpleXML"
-		apt-get -y install php-xml
-		echo
-		echo "Organizr Requirements have been installed successfully.."
-		echo
-		echo "Press any key to return to menu..."
 		read
         
         		echo "your choice 1"
