@@ -1,5 +1,5 @@
 #!/bin/bash -e
-#Organizr Ubuntu Installer v1.0
+#Organizr Ubuntu Installer v1.1
 
 x=Master
 y=Dev
@@ -16,12 +16,13 @@ CURRENT_DIR=`dirname $0`
 
 show_menus() {
 echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-echo " 	ORGANIZR - INSTALLER v1.5 "
+echo " 	ORGANIZR UBUNTU - INSTALLER v1.1 "
 echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-echo " 1. Organizr + Nginx site isntall" 
+echo " 1. Organizr + Nginx site Install" 
 echo " 2. Organizr Web Folder Only Install"
 echo " 3. Organizr Requirements Install"
-echo " 4. Quit"
+echo " 4. Organizr Complete Install (Org + Requirements)"
+echo " 5. Quit"
 echo
 printf "Enter your choice: "
 }
@@ -91,7 +92,7 @@ read -r options
 			q=$x
 			echo Organizr $q downloaded and unzipped
 			echo
-			echo Instaling Organizr...
+			echo Installing Organizr...
 			if [ ! -d "$instvar" ]; then
 			mkdir -p $instvar
 			fi
@@ -163,7 +164,7 @@ read -r options
 			echo ---------------------------------------------
 			echo "    	About your Organizr install    		"
 			echo ---------------------------------------------
-			echo "Installtion directory = $instvar"
+			echo "Install directory = $instvar"
 			echo "Organzir files stored = $instvar/html"
 			echo "Organzir db directory = $instvar/db "
 			echo ---------------------------------------------
@@ -274,11 +275,51 @@ read -r options
 		;; 
 
 	 "3")
-		echo "your choice 3"
-		echo "Install Organzir Requirements"
+		echo "your choice 3: Install Organzir Requirements"
+        echo
 		echo "Updating apt repositories"
 		apt-get update
+        echo
+        echo "Install Unzip"
+        apt-get -y install unzip
 		echo "Installing Nginx"
+        echo
+		echo
+		apt-get -y install nginx
+		echo
+		echo "Installing PHP"
+		apt-get -y install php-fpm
+		echo
+		echo "Installing PHP-ZIP"
+		apt-get -y install php-zip
+		echo
+		echo "Installing PDO:SQLite"
+		apt-get -y install php-sqlite3
+		echo 
+		echo "Installing PHP cURL"
+		apt-get -y install php-curl
+		echo
+		echo "Installing PHP simpleXML"
+		apt-get -y install php-xml
+		echo
+		echo "Organizr Requirements have been installed successfully.."
+		echo
+		echo "Press any key to continue with Organizr + Nginx site config"
+		read
+
+
+		;;
+        
+	 "4")
+		echo "your choice 3: Install Organzir Requirements"
+        echo
+		echo "Updating apt repositories"
+		apt-get update
+        echo
+        echo "Install Unzip"
+        apt-get -y install unzip
+		echo "Installing Nginx"
+        echo
 		echo
 		apt-get -y install nginx
 		echo
@@ -301,11 +342,155 @@ read -r options
 		echo
 		echo "Press any key to return to menu..."
 		read
+        
+        		echo "your choice 1"
+		echo
+		printf "Enter your domanin name: " 
+		read -r dname
+		DOMAIN=$dname
+		echo
 
+		# check the domain is roughly valid!
+		PATTERN="^([[:alnum:]]([[:alnum:]\-]{0,61}[[:alnum:]])?\.)+[[:alpha:]]{2,6}$"
+		if [[ "$DOMAIN" =~ $PATTERN ]]; then
+		DOMAIN=`echo $DOMAIN | tr '[A-Z]' '[a-z]'`
+		echo "Creating hosting for:" $DOMAIN
+		else
+		echo "invalid domain name"
+		exit 1 
+		fi
+
+		# Copy the virtual host template
+		CONFIG=$NGINX_SITES/$DOMAIN.conf
+		cp $CURRENT_DIR/virtual_host.template $CONFIG
+		cp -a $CURRENT_DIR/config/ $NGINX_LOC
+		mv $NGINX_LOC/config/domain.com.conf $NGINX_LOC/config/$DOMAIN.conf
+		mv $NGINX_LOC/config/domain.com_ssl.conf $NGINX_LOC/config/${DOMAIN}_ssl.conf
+		CONFIG_DOMAIN=$NGINX_CONFIG/$DOMAIN.conf
+		mkdir -p $NGINX_CONFIG/ssl/$DOMAIN
+		chmod -R 755 $NGINX_CONFIG/ssl/$DOMAIN
+
+
+		# set up web root
+		sudo chmod 600 $CONFIG
+
+		# create symlink to enable site
+		sudo ln -s $CONFIG $NGINX_SITES_ENABLED/$DOMAIN.conf
+
+
+		echo
+		echo "Site Created for $DOMAIN"
+
+		echo
+		echo "which version of Organizr do you want me to download?"
+		echo "- Master = [1] Dev = [2] Pre-Dev = [3]"
+		echo
+		printf 'Enter a number: '
+		read -r dlvar
+		echo
+		echo "Where do you want to install Organizr?"
+		printf 'Please enter the full path: '
+		read instvar
+		echo
+
+			#Org Master Download and Install
+			if [ $dlvar = "1" ]
+			then 
+			echo Downloading the latest Organizr "$x" ...
+			rm -r -f /tmp/Organizr/master.zip
+			rm -r -f /tmp/Organizr/Organizr-master
+			wget --quiet -P /tmp/Organizr/ https://github.com/causefx/Organizr/archive/master.zip
+			unzip -q /tmp/Organizr/master.zip -d /tmp/Organizr
+			q=$x
+			echo Organizr $q downloaded and unzipped
+			echo
+			echo Installing Organizr...
+			if [ ! -d "$instvar" ]; then
+			mkdir -p $instvar
+			fi
+			cp -a /tmp/Organizr/Organizr-master/. $instvar/html
+
+			#Org Dev Download and Install
+			elif [ $dlvar = "2" ]
+			then 
+			echo Downloading the latest Organizr "$y" ...
+			rm -r -f /tmp/Organizr/develop.zip
+			rm -r -f /tmp/Organizr/Organizr-develop
+			wget --quiet -P /tmp/Organizr/ https://github.com/causefx/Organizr/archive/develop.zip
+			unzip -q /tmp/Organizr/develop.zip -d /tmp/Organizr
+			q=$y
+			echo Organizr $q downloaded and unzipped
+			echo
+			echo Instaling Organizr...
+			if [ ! -d "$instvar" ]; then
+			mkdir -p $instvar
+			fi
+			cp -a /tmp/Organizr/Organizr-develop/. $instvar/html
+
+			#Org Pre-Dev Download and Install
+			elif [ $dlvar = "3" ]
+			then 
+			echo Downloading the latest Organizr "$z" ...
+			rm -r -f /tmp/Organizr/cero-dev.zip
+			rm -r -f /tmp/Organizr/Organizr-cero-dev
+			wget --quiet -P /tmp/Organizr/ https://github.com/causefx/Organizr/archive/cero-dev.zip
+			unzip -q /tmp/Organizr/cero-dev.zip -d /tmp/Organizr
+			q=$z
+			echo Organizr $q downloaded and unzipped
+			echo
+			echo Instaling Organizr...
+			if [ ! -d "$instvar" ]; then
+			mkdir -p $instvar
+			fi
+			cp -a /tmp/Organizr/Organizr-cero-dev/. $instvar/html
+			fi
+
+			#Moving Org files to destination and configuring permissions
+			if [ ! -d "$instvar/db" ]; then
+			mkdir $instvar/db
+			fi
+			chmod -R 775 $instvar
+			chown -R www-data $instvar
+			
+			#Add in your domain name to your site nginx conf file
+			SITE_DIR=`echo $instvar`
+			sudo $SED -i "s/DOMAIN/$DOMAIN/g" $CONFIG
+			sudo $SED -i "s!ROOT!$SITE_DIR!g" $CONFIG
+			sudo $SED -i "s/DOMAIN/$DOMAIN/g" $CONFIG_DOMAIN
+
+			#Delete default.conf nginx site
+			rm -r -f $NGINX_SITES/default
+			rm -r -f $NGINX_SITES_ENABLED/default
+			
+			# reload Nginx to pull in new config
+			sudo /etc/init.d/nginx reload
+
+			#Displaying installation info
+			echo
+			printf '######################################'
+			echo
+			echo "  Organizr $q Installion Complete  "
+			printf '######################################'
+			echo
+			echo
+			echo ---------------------------------------------
+			echo "    	About your Organizr install    		"
+			echo ---------------------------------------------
+			echo "Install directory = $instvar"
+			echo "Organzir files stored = $instvar/html"
+			echo "Organzir db directory = $instvar/db "
+			echo ---------------------------------------------
+			echo
+#echo "Next if you haven't done already, configure your Nginx conf to point to the Org installation directoy"
+			echo "Use the above db path when you're setting up the admin user"
+			echo "Then visit localhost/index.php or domain.com/index.php to create the admin user and setup your db directory"
+			echo
+			echo "Press enter to return to menu"
+			read
 
 		;;
 
-	 "4")
+	 "5")
 		exit 0;;
 
       esac
