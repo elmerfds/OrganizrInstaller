@@ -31,7 +31,7 @@ read -r options
 
 	case $options in
 	 "1")
-		echo "your choice 1"
+		echo "your choice: 1. Organizr + Nginx site Install"
 		echo
 		printf "Enter your domanin name: " 
 		read -r dname
@@ -42,7 +42,7 @@ read -r options
 		PATTERN="^([[:alnum:]]([[:alnum:]\-]{0,61}[[:alnum:]])?\.)+[[:alpha:]]{2,6}$"
 		if [[ "$DOMAIN" =~ $PATTERN ]]; then
 		DOMAIN=`echo $DOMAIN | tr '[A-Z]' '[a-z]'`
-		echo "Creating hosting for:" $DOMAIN
+		echo "- Creating vhost file for:" $DOMAIN
 		else
 		echo "invalid domain name"
 		exit 1 
@@ -67,7 +67,7 @@ read -r options
 
 
 		echo
-		echo "Site Created for $DOMAIN"
+		echo "- Site Created for $DOMAIN"
 
 		echo
 		echo "which version of Organizr do you want me to download?"
@@ -177,7 +177,7 @@ read -r options
 			;;
 
 	 "2")
-		echo "your choice 2"
+		echo "your choice 2: Organizr Web Folder Only Install"
 		echo
 		echo "which version of Organizr do you want me to download?"
 		echo
@@ -364,7 +364,7 @@ read -r options
 		PATTERN="^([[:alnum:]]([[:alnum:]\-]{0,61}[[:alnum:]])?\.)+[[:alpha:]]{2,6}$"
 		if [[ "$DOMAIN" =~ $PATTERN ]]; then
 		DOMAIN=`echo $DOMAIN | tr '[A-Z]' '[a-z]'`
-		echo "Creating hosting for:" $DOMAIN
+		echo "- Creating vhost file for:" $DOMAIN
 		else
 		echo "invalid domain name"
 		exit 1 
@@ -387,9 +387,8 @@ read -r options
 		# create symlink to enable site
 		sudo ln -s $CONFIG $NGINX_SITES_ENABLED/$DOMAIN.conf
 
-
 		echo
-		echo "Site Created for $DOMAIN"
+		echo "- Site Created for $DOMAIN"
 
 		echo
 		echo "which version of Organizr do you want me to download?"
