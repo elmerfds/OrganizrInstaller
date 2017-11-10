@@ -208,9 +208,9 @@ orginstinfo_mod()
 
 
 show_menus() {
-echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-echo " 	ORGANIZR UBUNTU - INSTALLER v1.1 "
-echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+echo " 		ORGANIZR UBUNTU - INSTALLER v1.5.1  "
+echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 echo " 1. Organizr + Nginx site Install" 
 echo " 2. Organizr Web Folder Only Install"
 echo " 3. Organizr Requirements Install"
