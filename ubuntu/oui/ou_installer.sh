@@ -18,39 +18,39 @@ CURRENT_DIR=`dirname $0`
 #Organizr Requirement Module
 orgreq_mod() {     
                 echo
-                echo -e "\e[1;36mUpdating apt repositories.\e[0m"
+                echo -e "\e[1;36mUpdating apt repositories...\e[0m"
 		echo
 	        apt-get update
                 echo
-                echo -e "\e[1;36mInstalling Unzip.\e[0m"
+                echo -e "\e[1;36mInstalling Unzip...\e[0m"
 		echo
                 apt-get -y install unzip
                 echo
-		echo -e "\e[1;36mInstalling Nginx.\e[0m"
+		echo -e "\e[1;36mInstalling Nginx...\e[0m"
                 echo
 		apt-get -y install nginx
 		echo
-		echo -e "\e[1;36mInstalling PHP.\e[0m"
+		echo -e "\e[1;36mInstalling PHP...\e[0m"
 		echo
 		apt-get -y install php-fpm
 		echo
-		echo -e "\e[1;36mInstalling PHP-ZIP.\e[0m"
+		echo -e "\e[1;36mInstalling PHP-ZIP...\e[0m"
 		echo
 		apt-get -y install php-zip
 		echo
-		echo -e "\e[1;36mInstalling PDO:SQLite.\e[0m"
+		echo -e "\e[1;36mInstalling PDO:SQLite...\e[0m"
 		echo
 		apt-get -y install php-sqlite3
 		echo 
-		echo -e "\e[1;36mInstalling PHP cURL.\e[0m"
+		echo -e "\e[1;36mInstalling PHP cURL...\e[0m"
 		echo
 		apt-get -y install php-curl
 		echo
-		echo -e "\e[1;36mInstalling PHP simpleXML.\e[0m"
+		echo -e "\e[1;36mInstalling PHP simpleXML...\e[0m"
 		echo
 		apt-get -y install php-xml
 		echo
-		echo -e "\e[1;36mOrganizr Requirements have been installed successfully.. .\e[0m"
+		echo -e "\e[1;36mOrganizr Requirements have been installed successfully...\e[0m"
 		echo
                 }
 #Nginx vhost creation module
