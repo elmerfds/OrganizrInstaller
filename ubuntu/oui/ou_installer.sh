@@ -14,6 +14,7 @@ WEB_DIR='/var/www'
 SED=`which sed`
 CURRENT_DIR=`dirname $0`
 
+#Organizr Requirement Function
 orgreq_func() {     
                 echo
                 echo "Updating apt repositories"
