@@ -14,7 +14,8 @@ WEB_DIR='/var/www'
 SED=`which sed`
 CURRENT_DIR=`dirname $0`
 
-#Organizr Requirement Function
+#Modules
+#Organizr Requirement Module
 orgreq_mod() {     
                 echo
                 echo "Updating apt repositories"
@@ -51,7 +52,7 @@ orgreq_mod() {
 		echo "Organizr Requirements have been installed successfully.."
 		echo
                 }
-
+#Nginx vhost creation module
 vhostcreate_mod()        
        {
         echo
@@ -91,7 +92,7 @@ vhostcreate_mod()
 		echo "- Site Created for $DOMAIN"
 		echo
        }
-
+#Organizr download module
 orgdl_mod()
         {
 		echo	      
@@ -164,8 +165,8 @@ orgdl_mod()
 			chmod -R 775 $instvar
 			chown -R www-data $instvar
         }
-
-orgdlnvhostconfig_mod()
+#Nginx vhost config
+vhostconfig_mod()
         {      
 			#Add in your domain name to your site nginx conf files
 			SITE_DIR=`echo $instvar`
@@ -181,7 +182,7 @@ orgdlnvhostconfig_mod()
 			sudo /etc/init.d/nginx reload
 
         }
-
+#Org Install info
 orginstinfo_mod()
         {
 			#Displaying installation info
@@ -226,7 +227,7 @@ read -r options
 		echo "your choice: 1. Organizr + Nginx site Install"
 		vhostcreate_mod
 		orgdl_mod
-		orgdlnvhostconfig_mod
+		vhostconfig_mod
 		orginstinfo_mod
 		echo "Press enter to return to menu"
 		read
@@ -258,7 +259,7 @@ read -r options
 		read
         vhostcreate_mod
 		orgdl_mod
-		orgdlnvhostconfig_mod
+		vhostconfig_mod
 		orginstinfo_mod
 		echo "Press enter to return to menu"
 		read
