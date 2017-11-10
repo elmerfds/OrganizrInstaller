@@ -17,38 +17,38 @@ CURRENT_DIR=`dirname $0`
 orgreq_func() {     
                 echo
                 echo "Updating apt repositories"
-	            apt-get update
+	        apt-get update
                 echo
                 echo "Installing Unzip"
-		        echo
+		echo
                 apt-get -y install unzip
                 echo
-		        echo "Installing Nginx"
+		echo "Installing Nginx"
                 echo
-		        apt-get -y install nginx
-		        echo
-		        echo "Installing PHP"
-		        echo
-		        apt-get -y install php-fpm
-		        echo
-		        echo "Installing PHP-ZIP"
-		        echo
-		        apt-get -y install php-zip
-		        echo
-		        echo "Installing PDO:SQLite"
-		        echo
-		        apt-get -y install php-sqlite3
-		        echo 
-		        echo "Installing PHP cURL"
-		        echo
-		        apt-get -y install php-curl
-		        echo
-		        echo "Installing PHP simpleXML"
-		        echo
-		        apt-get -y install php-xml
-		        echo
-		        echo "Organizr Requirements have been installed successfully.."
-		        echo
+		apt-get -y install nginx
+		echo
+		echo "Installing PHP"
+		echo
+		apt-get -y install php-fpm
+		echo
+		echo "Installing PHP-ZIP"
+		echo
+		apt-get -y install php-zip
+		echo
+		echo "Installing PDO:SQLite"
+		echo
+		apt-get -y install php-sqlite3
+		echo 
+		echo "Installing PHP cURL"
+		echo
+		apt-get -y install php-curl
+		echo
+		echo "Installing PHP simpleXML"
+		echo
+		apt-get -y install php-xml
+		echo
+		echo "Organizr Requirements have been installed successfully.."
+		echo
                 }  
 
 show_menus() {
