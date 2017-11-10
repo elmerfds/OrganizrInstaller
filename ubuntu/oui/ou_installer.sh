@@ -1,5 +1,5 @@
 #!/bin/bash -e
-#Organizr Ubuntu Installer v1.5.1
+#Organizr Ubuntu Installer v1.5.5
 
 x=Master
 y=Dev
