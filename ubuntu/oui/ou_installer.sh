@@ -77,7 +77,7 @@ read -r options
 		read -r dlvar
 		echo
 		echo "Where do you want to install Organizr?"
-		printf '- Please enter the full path: '
+		printf 'Please enter the full path: '
 		read instvar
 		echo
 
@@ -398,7 +398,7 @@ read -r options
 		read -r dlvar
 		echo
 		echo "Where do you want to install Organizr?"
-		printf '- Please enter the full path: '
+		printf 'Please enter the full path: '
 		read instvar
 		echo
 
