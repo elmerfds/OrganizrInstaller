@@ -14,6 +14,44 @@ WEB_DIR='/var/www'
 SED=`which sed`
 CURRENT_DIR=`dirname $0`
 
+#Organizr Requirement Function
+orgreq_func() {     
+                echo
+                echo "Updating apt repositories"
+	        apt-get update
+                echo
+                echo "Installing Unzip"
+		echo
+                apt-get -y install unzip
+                echo
+		echo "Installing Nginx"
+                echo
+		apt-get -y install nginx
+		echo
+		echo "Installing PHP"
+		echo
+		apt-get -y install php-fpm
+		echo
+		echo "Installing PHP-ZIP"
+		echo
+		apt-get -y install php-zip
+		echo
+		echo "Installing PDO:SQLite"
+		echo
+		apt-get -y install php-sqlite3
+		echo 
+		echo "Installing PHP cURL"
+		echo
+		apt-get -y install php-curl
+		echo
+		echo "Installing PHP simpleXML"
+		echo
+		apt-get -y install php-xml
+		echo
+		echo "Organizr Requirements have been installed successfully.."
+		echo
+                }  
+
 show_menus() {
 echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 echo " 	ORGANIZR UBUNTU - INSTALLER v1.1 "
@@ -275,40 +313,7 @@ read -r options
 
 	 "3")
 		echo "your choice 3: Install Organzir Requirements"
-        echo
-		echo "Updating apt repositories"
-		apt-get update
-        echo
-        echo "Installing Unzip"
-		echo
-        apt-get -y install unzip
-        echo
-		echo "Installing Nginx"
-        echo
-		apt-get -y install nginx
-		echo
-		echo "Installing PHP"
-		echo
-		apt-get -y install php-fpm
-		echo
-		echo "Installing PHP-ZIP"
-		echo
-		apt-get -y install php-zip
-		echo
-		echo "Installing PDO:SQLite"
-		echo
-		apt-get -y install php-sqlite3
-		echo 
-		echo "Installing PHP cURL"
-		echo
-		apt-get -y install php-curl
-		echo
-		echo "Installing PHP simpleXML"
-		echo
-		apt-get -y install php-xml
-		echo
-		echo "Organizr Requirements have been installed successfully.."
-		echo
+		orgreq_func
         echo "Press any key to return to menu..."
 		read
 
@@ -317,40 +322,7 @@ read -r options
         
 	 "4")
 		echo "your choice 4: Organizr Complete Install (Org + Requirements) "
-        echo
-		echo "Updating apt repositories"
-		apt-get update
-        echo
-        echo "Installing Unzip"
-		echo
-        apt-get -y install unzip
-        echo
-		echo "Installing Nginx"
-        echo
-		apt-get -y install nginx
-		echo
-		echo "Installing PHP"
-		echo
-		apt-get -y install php-fpm
-		echo
-		echo "Installing PHP-ZIP"
-		echo
-		apt-get -y install php-zip
-		echo
-		echo "Installing PDO:SQLite"
-		echo
-		apt-get -y install php-sqlite3
-		echo 
-		echo "Installing PHP cURL"
-		echo
-		apt-get -y install php-curl
-		echo
-		echo "Installing PHP simpleXML"
-		echo
-		apt-get -y install php-xml
-		echo
-		echo "Organizr Requirements have been installed successfully.."
-		echo
+        orgreq_func
 		echo "Press any key to continue with Organizr + Nginx site config"
 		read
         
