@@ -50,27 +50,11 @@ orgreq_func() {
 		echo
 		echo "Organizr Requirements have been installed successfully.."
 		echo
-                }  
+                }
 
-show_menus() {
-echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-echo " 	ORGANIZR UBUNTU - INSTALLER v1.1 "
-echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-echo " 1. Organizr + Nginx site Install" 
-echo " 2. Organizr Web Folder Only Install"
-echo " 3. Organizr Requirements Install"
-echo " 4. Organizr Complete Install (Org + Requirements)"
-echo " 5. Quit"
-echo
-printf "Enter your choice: "
-}
-read_options(){
-read -r options
-
-	case $options in
-	 "1")
-		echo "your choice: 1. Organizr + Nginx site Install"
-		echo
+vhostcreate_func()        
+       {
+        echo
 		printf "Enter your domanin name: " 
 		read -r dname
 		DOMAIN=$dname
@@ -103,11 +87,13 @@ read -r options
 		# create symlink to enable site
 		sudo ln -s $CONFIG $NGINX_SITES_ENABLED/$DOMAIN.conf
 
-
 		echo
 		echo "- Site Created for $DOMAIN"
-
 		echo
+       }
+
+orgdl_func()
+        {      
 		echo "which version of Organizr do you want me to download?"
 		echo "- Master = [1] Dev = [2] Pre-Dev = [3]"
 		echo
@@ -163,18 +149,22 @@ read -r options
 			unzip -q /tmp/Organizr/cero-dev.zip -d /tmp/Organizr
 			q=$z
 			echo Organizr $q downloaded and unzipped
-			echo
+			echo           
 			echo Instaling Organizr...
 			if [ ! -d "$instvar" ]; then
 			mkdir -p $instvar
 			fi
 			cp -a /tmp/Organizr/Organizr-cero-dev/. $instvar/html
 			fi
-
-			#Moving Org files to destination and configuring permissions
-			if [ ! -d "$instvar/db" ]; then
+            if [ ! -d "$instvar/db" ]; then
 			mkdir $instvar/db
 			fi
+        }
+
+orgdlnvhostconfig_func()
+        { 
+        
+			#Configuring permissions on web folder and renaming nginx vhost files
 			chmod -R 775 $instvar
 			chown -R www-data $instvar
 			
@@ -191,6 +181,10 @@ read -r options
 			# reload Nginx to pull in new config
 			sudo /etc/init.d/nginx reload
 
+        }
+
+orginstinfo_func()
+        {
 			#Displaying installation info
 			echo
 			printf '###########################################'
@@ -210,9 +204,36 @@ read -r options
 			echo "Use the above db path when you're setting up the admin user"
 			echo "Visit localhost/ to create the admin user/setup your db directory and finialise your Organizr Install"
 			echo
-			echo "Press enter to return to menu"
-			read
-			;;
+       }		
+
+
+show_menus() {
+echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+echo " 	ORGANIZR UBUNTU - INSTALLER v1.1 "
+echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+echo " 1. Organizr + Nginx site Install" 
+echo " 2. Organizr Web Folder Only Install"
+echo " 3. Organizr Requirements Install"
+echo " 4. Organizr Complete Install (Org + Requirements)"
+echo " 5. Quit"
+echo
+printf "Enter your choice: "
+}
+read_options(){
+read -r options
+
+	case $options in
+	 "1")
+		echo "your choice: 1. Organizr + Nginx site Install"
+		#mark down
+		vhostcreate_func
+		orgdl_func
+		orgdlnvhostconfig_func
+		orginstinfo_func
+		#mark above
+		echo "Press enter to return to menu"
+		read
+		;;
 
 	 "2")
 		echo "your choice 2: Organizr Web Folder Only Install"
