@@ -170,7 +170,7 @@ read -r options
 			echo ---------------------------------------------
 			echo
 			echo "Use the above db path when you're setting up the admin user"
-			echo "Then visit localhost/index.php or domain.com/index.php to create the admin user and setup your db directory"
+			echo "Visit localhost/ to create the admin user/setup your db directory and finialise your Organizr Install"
 			echo
 			echo "Press enter to return to menu"
 			read
@@ -267,7 +267,7 @@ read -r options
 		echo
 		echo "Next if you haven't done already, configure your Nginx conf to point to the Org installation directoy"
 		echo "Use the above db path when you're setting up the admin user"
-		echo "Then visit localhost/index.php or domain.com/index.php to create the admin user and setup your db directory"
+		echo "Visit localhost/ to create the admin user/setup your db directory and finialise your Organizr Install"
 		echo
 		echo "Press any key to return to menu..."
 		read
@@ -491,7 +491,7 @@ read -r options
 			echo ---------------------------------------------
 			echo
 			echo "Use the above db path when you're setting up the admin user"
-			echo "Then visit localhost/ or domain.com to create the admin user and setup your db directory"
+			echo "Visit localhost/ to create the admin user/setup your db directory and finialise your Organizr Install"
 			echo
 			echo "Press enter to return to menu"
 			read
