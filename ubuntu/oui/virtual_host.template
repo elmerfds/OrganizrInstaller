@@ -40,9 +40,6 @@ server {
 	root ROOT/html;
 	index index.php index.html index.htm index.nginx-debian.html;
 
-	access_log     /var/log/nginx/nginx.DOMAIN.access.log;
-	error_log      /var/log/nginx/nginx.DOMAIN.error.log;
-
 	#Org Auth
 	location /auth-admin { rewrite ^ /auth.php?admin&ban=someone,thisperson; }
 	location /auth-user { rewrite ^ /auth.php?user&ban=someone,thisperson; }  
