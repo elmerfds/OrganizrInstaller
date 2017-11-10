@@ -77,7 +77,7 @@ read -r options
 		read -r dlvar
 		echo
 		echo "Where do you want to install Organizr?"
-		printf 'Please enter the full path: '
+		printf '- Please enter the full path: '
 		read instvar
 		echo
 
@@ -155,10 +155,10 @@ read -r options
 
 			#Displaying installation info
 			echo
-			printf '######################################'
+			printf '###########################################'
 			echo
 			echo "  Organizr $q Installion Complete  "
-			printf '######################################'
+			printf '###########################################'
 			echo
 			echo
 			echo ---------------------------------------------
@@ -169,7 +169,6 @@ read -r options
 			echo "Organzir db directory = $instvar/db "
 			echo ---------------------------------------------
 			echo
-#echo "Next if you haven't done already, configure your Nginx conf to point to the Org installation directoy"
 			echo "Use the above db path when you're setting up the admin user"
 			echo "Then visit localhost/index.php or domain.com/index.php to create the admin user and setup your db directory"
 			echo
@@ -280,27 +279,32 @@ read -r options
 		echo "Updating apt repositories"
 		apt-get update
         echo
-        echo "Install Unzip"
+        echo "Installing Unzip"
+		echo
         apt-get -y install unzip
         echo
 		echo "Installing Nginx"
         echo
-		echo
 		apt-get -y install nginx
 		echo
 		echo "Installing PHP"
+		echo
 		apt-get -y install php-fpm
 		echo
 		echo "Installing PHP-ZIP"
+		echo
 		apt-get -y install php-zip
 		echo
 		echo "Installing PDO:SQLite"
+		echo
 		apt-get -y install php-sqlite3
 		echo 
 		echo "Installing PHP cURL"
+		echo
 		apt-get -y install php-curl
 		echo
 		echo "Installing PHP simpleXML"
+		echo
 		apt-get -y install php-xml
 		echo
 		echo "Organizr Requirements have been installed successfully.."
@@ -312,32 +316,37 @@ read -r options
 		;;
         
 	 "4")
-		echo "your choice 3: Install Organzir Requirements"
+		echo "your choice 4: Organizr Complete Install (Org + Requirements) "
         echo
 		echo "Updating apt repositories"
 		apt-get update
         echo
-        echo "Install Unzip"
+        echo "Installing Unzip"
+		echo
         apt-get -y install unzip
         echo
 		echo "Installing Nginx"
         echo
-		echo
 		apt-get -y install nginx
 		echo
 		echo "Installing PHP"
+		echo
 		apt-get -y install php-fpm
 		echo
 		echo "Installing PHP-ZIP"
+		echo
 		apt-get -y install php-zip
 		echo
 		echo "Installing PDO:SQLite"
+		echo
 		apt-get -y install php-sqlite3
 		echo 
 		echo "Installing PHP cURL"
+		echo
 		apt-get -y install php-curl
 		echo
 		echo "Installing PHP simpleXML"
+		echo
 		apt-get -y install php-xml
 		echo
 		echo "Organizr Requirements have been installed successfully.."
@@ -345,8 +354,7 @@ read -r options
 		echo "Press any key to continue with Organizr + Nginx site config"
 		read
         
-        		echo "your choice 1"
-		echo
+        echo
 		printf "Enter your domanin name: " 
 		read -r dname
 		DOMAIN=$dname
@@ -391,7 +399,7 @@ read -r options
 		read -r dlvar
 		echo
 		echo "Where do you want to install Organizr?"
-		printf 'Please enter the full path: '
+		printf '- Please enter the full path: '
 		read instvar
 		echo
 
@@ -469,10 +477,10 @@ read -r options
 
 			#Displaying installation info
 			echo
-			printf '######################################'
+			printf '##########################################'
 			echo
 			echo "  Organizr $q Installion Complete  "
-			printf '######################################'
+			printf '##########################################'
 			echo
 			echo
 			echo ---------------------------------------------
@@ -483,9 +491,8 @@ read -r options
 			echo "Organzir db directory = $instvar/db "
 			echo ---------------------------------------------
 			echo
-#echo "Next if you haven't done already, configure your Nginx conf to point to the Org installation directoy"
 			echo "Use the above db path when you're setting up the admin user"
-			echo "Then visit localhost/index.php or domain.com/index.php to create the admin user and setup your db directory"
+			echo "Then visit localhost/ or domain.com to create the admin user and setup your db directory"
 			echo
 			echo "Press enter to return to menu"
 			read
