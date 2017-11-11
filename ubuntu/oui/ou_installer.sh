@@ -1,9 +1,11 @@
 #!/bin/bash -e
-#Organizr Ubuntu Installer v1.5.6
+#Organizr Ubuntu Installer
+version=v1.5.7
 
 x=Master
 y=Dev
 z=Pre-Dev
+
 
 #Nginx config variables
 NGINX_LOC='/etc/nginx'
@@ -13,6 +15,7 @@ NGINX_CONFIG='/etc/nginx/config'
 WEB_DIR='/var/www'
 SED=`which sed`
 CURRENT_DIR=`dirname $0`
+tmp='/tmp/Organizr'
 
 #Modules
 #Organizr Requirement Module
@@ -176,6 +179,10 @@ vhostconfig_mod()
 			sudo $SED -i "s/DOMAIN/$DOMAIN/g" $CONFIG_DOMAIN
 
 			#Delete default.conf nginx site
+			mkdir -p $tmp/bk/nginx_default_site
+ 			if [ -e $NGINX_SITES/default ] 
+			then cp -a $NGINX_SITES/default $tmp/bk/nginx_default_site
+			fi			
 			rm -r -f $NGINX_SITES/default
 			rm -r -f $NGINX_SITES_ENABLED/default
 			
@@ -210,7 +217,7 @@ orginstinfo_mod()
 
 show_menus() {
 echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-echo -e " 	  \e[1;36mORGANIZR UBUNTU - INSTALLER v1.5.6  \e[0m"
+echo -e " 	  \e[1;36mORGANIZR UBUNTU - INSTALLER $version  \e[0m"
 echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 echo " 1. Organizr + Nginx site Install" 
 echo " 2. Organizr Web Folder Only Install"
