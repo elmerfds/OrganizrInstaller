@@ -13,6 +13,7 @@ NGINX_CONFIG='/etc/nginx/config'
 WEB_DIR='/var/www'
 SED=`which sed`
 CURRENT_DIR=`dirname $0`
+tmp='/tmp/Organizr'
 
 #Modules
 #Organizr Requirement Module
@@ -176,6 +177,10 @@ vhostconfig_mod()
 			sudo $SED -i "s/DOMAIN/$DOMAIN/g" $CONFIG_DOMAIN
 
 			#Delete default.conf nginx site
+			mkdir -p $tmp/bk/nginx_default_site
+ 			if [ -e $NGINX_SITES/default ] 
+			then cp -a $NGINX_SITES/default $tmp/bk/nginx_default_site
+			fi			
 			rm -r -f $NGINX_SITES/default
 			rm -r -f $NGINX_SITES_ENABLED/default
 			
