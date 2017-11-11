@@ -1,6 +1,6 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
-version=v1.5.7
+version=v2.0.0
 
 x=Master
 y=Dev
@@ -223,7 +223,8 @@ echo " 1. Organizr + Nginx site Install"
 echo " 2. Organizr Web Folder Only Install"
 echo " 3. Organizr Requirements Install"
 echo " 4. Organizr Complete Install (Org + Requirements)"
-echo " 5. Quit"
+echo " 5. OUI Updater"
+echo " 6. Quit"
 echo
 printf "\e[1;36mEnter your choice: \e[0m"
 }
@@ -272,8 +273,16 @@ read -r options
 		echo "Press any key to return to menu..."
 		read
 		;;
-
 	 "5")
+		git reset --hard origin/master
+		echo
+                echo -e "\e[1;36mScript updated, reloading now...\e[0m"
+		sleep 3s
+		chmod +x $BASH_SOURCE
+		exec ./ou_installer.sh
+		;;
+
+	 "6")
 		exit 0;;
 
       esac
