@@ -223,7 +223,7 @@ echo " 1. Organizr + Nginx site Install"
 echo " 2. Organizr Web Folder Only Install"
 echo " 3. Organizr Requirements Install"
 echo " 4. Organizr Complete Install (Org + Requirements)"
-echo " 5. OUI Updater"
+echo " 5. OUI Auto Updater"
 echo " 6. Quit"
 echo
 printf "\e[1;36mEnter your choice: \e[0m"
