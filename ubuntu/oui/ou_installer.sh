@@ -1,9 +1,11 @@
 #!/bin/bash -e
-#Organizr Ubuntu Installer v1.5.6
+#Organizr Ubuntu Installer
+version=v1.5.7
 
 x=Master
 y=Dev
 z=Pre-Dev
+
 
 #Nginx config variables
 NGINX_LOC='/etc/nginx'
@@ -215,7 +217,7 @@ orginstinfo_mod()
 
 show_menus() {
 echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-echo -e " 	  \e[1;36mORGANIZR UBUNTU - INSTALLER v1.5.6  \e[0m"
+echo -e " 	  \e[1;36mORGANIZR UBUNTU - INSTALLER $version  \e[0m"
 echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 echo " 1. Organizr + Nginx site Install" 
 echo " 2. Organizr Web Folder Only Install"
