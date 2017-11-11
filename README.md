@@ -3,7 +3,7 @@ Automated install script for Organizr (github.com/causefx/Organizr). Only Ubuntu
 
 ## OUI (Organizr Ubuntu Installer)
 
-![menu](https://i.imgur.com/vaN8cE4.png)
+![menu](https://i.imgur.com/p5pwo3k.png)
 
 ### Optional Prerequisites
 1. Git: `sudo apt-get install git`
