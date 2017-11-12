@@ -6,7 +6,6 @@ x=Master
 y=Dev
 z=Pre-Dev
 
-
 #Nginx config variables
 NGINX_LOC='/etc/nginx'
 NGINX_SITES='/etc/nginx/sites-available'
@@ -111,182 +110,167 @@ orgdl_mod()
 		read instvar
 		echo
 
-			#Org Master Download and Install
-			if [ $dlvar = "1" ]
-			then 
-			echo -e "\e[1;36mDownloading the latest Organizr "$x" ...\e[0m"
-			rm -r -f /tmp/Organizr/master.zip
-			rm -r -f /tmp/Organizr/Organizr-master
-			wget --quiet -P /tmp/Organizr/ https://github.com/causefx/Organizr/archive/master.zip
-			unzip -q /tmp/Organizr/master.zip -d /tmp/Organizr
-			q=$x
-			echo "- Organizr $q downloaded and unzipped"
-			echo
-			echo -e "\e[1;36mInstalling Organizr...\e[0m"
-			if [ ! -d "$instvar" ]; then
-			mkdir -p $instvar
-			fi
-			cp -a /tmp/Organizr/Organizr-master/. $instvar/html
+		#Org Download and Install
+		if [ $dlvar = "1" ]
+		then 
+		dlbranch=Master
+		zipbranch=master.zip
+		zipextfname=Organizr-master
+			
+		elif [ $dlvar = "2" ]
+		then 
+		dlbranch=Develop
+		zipbranch=develop.zip
+		zipextfname=Organizr-develop
 
-			#Org Dev Download and Install
-			elif [ $dlvar = "2" ]
-			then 
-			echo -e "\e[1;36mDownloading the latest Organizr "$y" ...\e[0m"
-			rm -r -f /tmp/Organizr/develop.zip
-			rm -r -f /tmp/Organizr/Organizr-develop
-			wget --quiet -P /tmp/Organizr/ https://github.com/causefx/Organizr/archive/develop.zip
-			unzip -q /tmp/Organizr/develop.zip -d /tmp/Organizr
-			q=$y
-			echo "- Organizr $q downloaded and unzipped"
-			echo
-			echo -e "\e[1;36mInstalling Organizr...\e[0m"
-			if [ ! -d "$instvar" ]; then
-			mkdir -p $instvar
-			fi
-			cp -a /tmp/Organizr/Organizr-develop/. $instvar/html
+		elif [ $dlvar = "3" ]
+		then 
+		dlbranch=Pre-Dev
+		zipbranch=cero-dev.zip
+		zipextfname=Organizr-cero-dev
+		fi
 
-			#Org Pre-Dev Download and Install
-			elif [ $dlvar = "3" ]
-			then 
-			echo -e "\e[1;36mDownloading the latest Organizr "$z" ...\e[0m"
-			rm -r -f /tmp/Organizr/cero-dev.zip
-			rm -r -f /tmp/Organizr/Organizr-cero-dev
-			wget --quiet -P /tmp/Organizr/ https://github.com/causefx/Organizr/archive/cero-dev.zip
-			unzip -q /tmp/Organizr/cero-dev.zip -d /tmp/Organizr
-			q=$z
-			echo "- Organizr $q downloaded and unzipped"
-			echo           
-			echo -e "\e[1;36mInstalling Organizr...\e[0m"
-			if [ ! -d "$instvar" ]; then
-			mkdir -p $instvar
-			fi
-			cp -a /tmp/Organizr/Organizr-cero-dev/. $instvar/html
-			fi
-            if [ ! -d "$instvar/db" ]; then
-			mkdir $instvar/db
-			fi
-			#Configuring permissions on web folder
-			chmod -R 775 $instvar
-			chown -R www-data $instvar
+		echo -e "\e[1;36mDownloading the latest Organizr "$dlbranch" ...\e[0m"
+		rm -r -f /tmp/Organizr/$zipbranch
+		rm -r -f /tmp/Organizr/$zipextfname
+		wget --quiet -P /tmp/Organizr/ https://github.com/causefx/Organizr/archive/$zipbranch
+		unzip -q /tmp/Organizr/$zipbranch -d /tmp/Organizr
+		echo "- Organizr $dlbranch downloaded and unzipped"
+		echo
+		echo -e "\e[1;36mInstalling Organizr...\e[0m"
+
+		if [ ! -d "$instvar" ]; then
+		mkdir -p $instvar
+		fi
+		cp -a /tmp/Organizr/$zipextfname/. $instvar/html
+                
+		if [ ! -d "$instvar/db" ]; then
+		mkdir $instvar/db
+		fi
+		#Configuring permissions on web folder
+		chmod -R 775 $instvar
+		chown -R www-data $instvar
         }
 #Nginx vhost config
 vhostconfig_mod()
         {      
-			#Add in your domain name to your site nginx conf files
-			SITE_DIR=`echo $instvar`
-			sudo $SED -i "s/DOMAIN/$DOMAIN/g" $CONFIG
-			sudo $SED -i "s!ROOT!$SITE_DIR!g" $CONFIG
-			sudo $SED -i "s/DOMAIN/$DOMAIN/g" $CONFIG_DOMAIN
+		#Add in your domain name to your site nginx conf files
+		SITE_DIR=`echo $instvar`
+		sudo $SED -i "s/DOMAIN/$DOMAIN/g" $CONFIG
+		sudo $SED -i "s!ROOT!$SITE_DIR!g" $CONFIG
+		sudo $SED -i "s/DOMAIN/$DOMAIN/g" $CONFIG_DOMAIN
 
-			#Delete default.conf nginx site
-			mkdir -p $tmp/bk/nginx_default_site
- 			if [ -e $NGINX_SITES/default ] 
-			then cp -a $NGINX_SITES/default $tmp/bk/nginx_default_site
-			fi			
-			rm -r -f $NGINX_SITES/default
-			rm -r -f $NGINX_SITES_ENABLED/default
+		#Delete default.conf nginx site
+		mkdir -p $tmp/bk/nginx_default_site
+ 		if [ -e $NGINX_SITES/default ] 
+		then cp -a $NGINX_SITES/default $tmp/bk/nginx_default_site
+		fi			
+		rm -r -f $NGINX_SITES/default
+		rm -r -f $NGINX_SITES_ENABLED/default
 			
-			# reload Nginx to pull in new config
-			sudo /etc/init.d/nginx reload
+		# reload Nginx to pull in new config
+		sudo /etc/init.d/nginx reload
 
         }
 #Org Install info
 orginstinfo_mod()
         {
-			#Displaying installation info
-			echo
-			printf '############################################'
-			echo
-			echo -e "     \e[1;32mOrganizr $q Installion Complete  \e[0m"
-			printf '############################################'
-			echo
-			echo
-			echo ---------------------------------------------
-			echo -e " 	 \e[1;36mAbout your Organizr install    	\e[0m"
-			echo ---------------------------------------------
-			echo -e "Install directory     = \e[1;35m$instvar \e[0m"
-			echo -e "Organzir files stored = \e[1;35m$instvar/html \e[0m"
-			echo -e "Organzir db directory = \e[1;35m$instvar/db \e[0m"
-			echo ---------------------------------------------
-			echo
-			echo "- Use the above db path when you're setting up the admin user"
-			echo "- Visit localhost/ to create the admin user/setup your db directory and finialise your Organizr Install"
-			echo
-       }		
+		#Displaying installation info
+		echo
+		printf '############################################'
+		echo
+		echo -e "     \e[1;32mOrganizr $q Installion Complete  \e[0m"
+		printf '############################################'
+		echo
+		echo
+		echo ---------------------------------------------
+		echo -e " 	 \e[1;36mAbout your Organizr install    	\e[0m"
+		echo ---------------------------------------------
+		echo -e "Install directory     = \e[1;35m$instvar \e[0m"
+		echo -e "Organzir files stored = \e[1;35m$instvar/html \e[0m"
+		echo -e "Organzir db directory = \e[1;35m$instvar/db \e[0m"
+		echo ---------------------------------------------
+		echo
+		echo "- Use the above db path when you're setting up the admin user"
+		echo "- Visit localhost/ to create the admin user/setup your db directory and finialise your Organizr Install"
+		echo
+        }		
 
 
-show_menus() {
-echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-echo -e " 	  \e[1;36mORGANIZR UBUNTU - INSTALLER $version  \e[0m"
-echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-echo " 1. Organizr + Nginx site Install" 
-echo " 2. Organizr Web Folder Only Install"
-echo " 3. Organizr Requirements Install"
-echo " 4. Organizr Complete Install (Org + Requirements)"
-echo " 5. OUI Auto Updater"
-echo " 6. Quit"
-echo
-printf "\e[1;36mEnter your choice: \e[0m"
-}
+show_menus() 
+	{
+		echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+		echo -e " 	  \e[1;36mORGANIZR UBUNTU - INSTALLER $version  \e[0m"
+		echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+		echo "~ 1. Organizr + Nginx site Install		  ~" 
+		echo "~ 2. Organizr Web Folder Only Install		  ~"
+		echo "~ 3. Organizr Requirements Install		  ~"
+		echo "~ 4. Organizr Complete Install (Org + Requirements) ~"
+		echo "~ 5. OUI Auto Updater				  ~"
+		echo "~ 6. Quit 					  ~"
+		echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+		echo
+		printf "\e[1;36mEnter your choice: \e[0m"
+	}
 read_options(){
-read -r options
+		read -r options
 
-	case $options in
-	 "1")
-		echo "- Your choice: 1. Organizr + Nginx site Install"
-		vhostcreate_mod
-		orgdl_mod
-		vhostconfig_mod
-		orginstinfo_mod
-		echo "Press any key to return to menu..."
-		read
+		case $options in
+	 	"1")
+			echo "- Your choice: 1. Organizr + Nginx site Install"
+			vhostcreate_mod
+			orgdl_mod
+			vhostconfig_mod
+			orginstinfo_mod
+			echo "Press any key to return to menu..."
+			read
 		;;
 
-	 "2")
-		echo "- Your choice 2: Organizr Web Folder Only Install"
-		orgdl_mod
-		orginstinfo_mod
-		echo "- Next if you haven't done already, configure your Nginx conf to point to the Org installation directoy"
-		echo
-		echo "Press any key to return to menu..."
-		read
+	 	"2")
+			echo "- Your choice 2: Organizr Web Folder Only Install"
+			orgdl_mod
+			orginstinfo_mod
+			echo "- Next if you haven't done already, configure your Nginx conf to point to the Org installation directoy"
+			echo
+			echo "Press any key to return to menu..."
+			read
 		;; 
 
-	 "3")
-		echo "- Your choice 3: Install Organzir Requirements"
-		orgreq_mod
-        	echo "Press any key to return to menu..."
-		read
-
-
+	 	"3")
+			echo "- Your choice 3: Install Organzir Requirements"
+			orgreq_mod
+        		echo "Press any key to return to menu..."
+			read
 		;;
         
-	 "4")
-		echo "- Your choice 4: Organizr Complete Install (Org + Requirements) "
-        	orgreq_mod
-		echo "- Press any key to continue with Organizr + Nginx site config"
-		read
-        	vhostcreate_mod
-		orgdl_mod
-		vhostconfig_mod
-		orginstinfo_mod
-		echo "Press any key to return to menu..."
-		read
-		;;
-	 "5")
-		git reset --hard origin/master
-		echo
-                echo -e "\e[1;36mScript updated, reloading now...\e[0m"
-		sleep 3s
-		chmod +x $BASH_SOURCE
-		exec ./ou_installer.sh
+	 	"4")
+			echo "- Your choice 4: Organizr Complete Install (Org + Requirements) "
+	        	orgreq_mod
+			echo "- Press any key to continue with Organizr + Nginx site config"
+			read
+	        	vhostcreate_mod
+			orgdl_mod
+			vhostconfig_mod
+			orginstinfo_mod
+			echo "Press any key to return to menu..."
+			read
 		;;
 
-	 "6")
-		exit 0;;
+	 	"5")
+			git reset --hard origin/master
+			echo
+                	echo -e "\e[1;36mScript updated, reloading now...\e[0m"
+			sleep 3s
+			chmod +x $BASH_SOURCE
+			exec ./ou_installer.sh
+		;;
 
-      esac
-}
+		"6")
+			exit 0
+		;;
+
+	      	esac
+	     }
 
 while true 
 do
