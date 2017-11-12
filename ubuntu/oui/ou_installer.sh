@@ -1,6 +1,6 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
-version=v2.0.0
+version=v2.1.0
 
 x=Master
 y=Dev
