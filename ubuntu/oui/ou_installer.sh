@@ -257,7 +257,7 @@ read_options(){
 		;;
 
 	 	"5")
-		    git fetch -all
+		    	git fetch --all
 			git reset --hard origin/master
 			git pull origin master
 			echo
