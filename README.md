@@ -5,14 +5,11 @@ Automated install script for Organizr (github.com/causefx/Organizr). Only Ubuntu
 
 ![menu](https://i.imgur.com/p5pwo3k.png)
 
-### Optional Prerequisites
-1. Git: `sudo apt-get install git`
-
 ### How do I run it?
-1. `sudo git clone https://github.com/elmerfdz/OrganizrInstaller`
-2. `cd ~/OrganizrInstaller/ubuntu/oui`
-3. `sudo chmod +x ou_installer.sh`
-4. `sudo ./ou_installer.sh`
+1. `sudo apt-get install git`
+2. `sudo git clone https://github.com/elmerfdz/OrganizrInstaller /opt/OrganizrInstaller`
+3. `cd /opt/OrganizrInstaller/ubuntu/oui`
+4. `sudo bash ou_installer.sh`
 
 **Note:** Please make sure to run as sudo.
 
