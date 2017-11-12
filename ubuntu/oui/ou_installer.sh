@@ -1,6 +1,6 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
-version=v2.1.1
+version=v2.1.2
 
 x=Master
 y=Dev
@@ -105,8 +105,8 @@ orgdl_mod()
 		printf '\e[1;36mEnter a number: \e[0m'
 		read -r dlvar
 		echo
-		echo -e "\e[1;36mWhere do you want to install Organizr?.\e[0m"
-		printf 'Please enter the full path: '
+		echo -e "\e[1;36mWhere do you want to install Organizr? \e[0m [ /var/www/domain.com ]"
+		printf '\e[1;36m- \e[0m'
 		read instvar
 		echo
 
@@ -171,7 +171,6 @@ vhostconfig_mod()
 			
 		# reload Nginx to pull in new config
 		sudo /etc/init.d/nginx reload
-
         }
 #Org Install info
 orginstinfo_mod()
@@ -196,7 +195,6 @@ orginstinfo_mod()
 		echo "- Visit localhost/ to create the admin user/setup your db directory and finialise your Organizr Install"
 		echo
         }		
-
 
 show_menus() 
 	{
