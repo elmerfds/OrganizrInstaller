@@ -132,6 +132,7 @@ orgdl_mod()
 
 		echo -e "\e[1;36mDownloading the latest Organizr "$dlbranch" ...\e[0m"
 		rm -r -f /tmp/Organizr/$zipbranch
+		rm -r -f /tmp/Organizr/$zipbranch.*		
 		rm -r -f /tmp/Organizr/$zipextfname
 		wget --quiet -P /tmp/Organizr/ https://github.com/causefx/Organizr/archive/$zipbranch
 		unzip -q /tmp/Organizr/$zipbranch -d /tmp/Organizr
