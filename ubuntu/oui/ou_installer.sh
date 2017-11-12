@@ -1,6 +1,6 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
-version=v2.1.0
+version=v2.1.1
 
 x=Master
 y=Dev
@@ -202,12 +202,12 @@ show_menus()
 		echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 		echo -e " 	  \e[1;36mORGANIZR UBUNTU - INSTALLER $version  \e[0m"
 		echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-		echo "~ 1. Organizr + Nginx site Install		  ~" 
-		echo "~ 2. Organizr Web Folder Only Install		  ~"
-		echo "~ 3. Organizr Requirements Install		  ~"
-		echo "~ 4. Organizr Complete Install (Org + Requirements) ~"
-		echo "~ 5. OUI Auto Updater				  ~"
-		echo "~ 6. Quit 					  ~"
+		echo " 1. Organizr + Nginx site Install		  " 
+		echo " 2. Organizr Web Folder Only Install		 "
+		echo " 3. Organizr Requirements Install		  "
+		echo " 4. Organizr Complete Install (Org + Requirements) "
+		echo " 5. OUI Auto Updater				  "
+		echo " 6. Quit 					  "
 		echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 		echo
 		printf "\e[1;36mEnter your choice: \e[0m"
@@ -257,7 +257,9 @@ read_options(){
 		;;
 
 	 	"5")
+		    git fetch -all
 			git reset --hard origin/master
+			git pull origin master
 			echo
                 	echo -e "\e[1;36mScript updated, reloading now...\e[0m"
 			sleep 3s
