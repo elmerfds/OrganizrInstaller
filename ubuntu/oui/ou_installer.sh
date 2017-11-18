@@ -1,10 +1,11 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
-version=v2.1.2
+version=v2.5.0
 
-x=Master
-y=Dev
-z=Pre-Dev
+#Org Requirements
+orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
+orgreq=('unzip' 'nginx' 'php-fpm' 'php-zip' 'php-sqlite3' 'php-curl' 'php-xml')
+
 
 #Nginx config variables
 NGINX_LOC='/etc/nginx'
@@ -18,48 +19,27 @@ tmp='/tmp/Organizr'
 
 #Modules
 #Organizr Requirement Module
-orgreq_mod() {     
+orgreq_mod() { 
                 echo
-                echo -e "\e[1;36mUpdating apt repositories...\e[0m"
+                echo -e "\e[1;36m> Updating apt repositories...\e[0m"
 		echo
-	        apt-get update
+		apt-get update	    
                 echo
-                echo -e "\e[1;36mInstalling Unzip...\e[0m"
-		echo
-                apt-get -y install unzip
-                echo
-		echo -e "\e[1;36mInstalling Nginx...\e[0m"
-                echo
-		apt-get -y install nginx
-		echo
-		echo -e "\e[1;36mInstalling PHP...\e[0m"
-		echo
-		apt-get -y install php-fpm
-		echo
-		echo -e "\e[1;36mInstalling PHP-ZIP...\e[0m"
-		echo
-		apt-get -y install php-zip
-		echo
-		echo -e "\e[1;36mInstalling PDO:SQLite...\e[0m"
-		echo
-		apt-get -y install php-sqlite3
-		echo 
-		echo -e "\e[1;36mInstalling PHP cURL...\e[0m"
-		echo
-		apt-get -y install php-curl
-		echo
-		echo -e "\e[1;36mInstalling PHP simpleXML...\e[0m"
-		echo
-		apt-get -y install php-xml
-		echo
-		echo -e "\e[1;36mOrganizr Requirements have been installed successfully...\e[0m"
+		for ((i=0; i < "${#orgreqname[@]}"; i++)) 
+		do
+		    echo -e "\e[1;36m> Installing ${orgreqname[$i]}...\e[0m"
+		    echo
+		    apt-get -y install ${orgreq[$i]}
+		    echo
+		
+		done
 		echo
                 }
 #Nginx vhost creation module
 vhostcreate_mod()        
        {
         echo
-		printf "\e[1;36mEnter your domanin name: \e[0m" 
+		printf "\e[1;36m> Enter your domanin name\e[0m [ e.g domain.com ]\e[1;36m:\e[0m " 
 		read -r dname
 		DOMAIN=$dname
 		echo
@@ -68,9 +48,9 @@ vhostcreate_mod()
 		PATTERN="^([[:alnum:]]([[:alnum:]\-]{0,61}[[:alnum:]])?\.)+[[:alpha:]]{2,6}$"
 		if [[ "$DOMAIN" =~ $PATTERN ]]; then
 		DOMAIN=`echo $DOMAIN | tr '[A-Z]' '[a-z]'`
-		echo "- Creating vhost file for:" $DOMAIN
+		echo "> Creating vhost file for:" $DOMAIN
 		else
-		echo "invalid domain name"
+		echo "> invalid domain name"
 		exit 1 
 		fi
 
@@ -92,20 +72,20 @@ vhostcreate_mod()
 		sudo ln -s $CONFIG $NGINX_SITES_ENABLED/$DOMAIN.conf
 
 		echo
-		echo "- Site Created for $DOMAIN"
+		echo "> Site Created for $DOMAIN"
 		echo
        }
 #Organizr download module
 orgdl_mod()
         {
 		echo	      
-		echo -e "\e[1;36mwhich version of Organizr do you want me to download?.\e[0m"
-		echo "- Master = [1] Dev = [2] Pre-Dev = [3]"
+		echo -e "\e[1;36m> which version of Organizr do you want to install?.\e[0m"
+		echo -e "\e[1;36m- \e[0mMaster = [1] Dev = [2] Pre-Dev = [3]"
 		echo
-		printf '\e[1;36mEnter a number: \e[0m'
+		printf '\e[1;36m> Enter a number: \e[0m'
 		read -r dlvar
 		echo
-		echo -e "\e[1;36mWhere do you want to install Organizr? \e[0m [ /var/www/domain.com ]"
+		echo -e "\e[1;36m> Where do you want to install Organizr? \e[0m [ /var/www/domain.com ]"
 		printf '\e[1;36m- \e[0m'
 		read instvar
 		echo
@@ -130,15 +110,15 @@ orgdl_mod()
 		zipextfname=Organizr-cero-dev
 		fi
 
-		echo -e "\e[1;36mDownloading the latest Organizr "$dlbranch" ...\e[0m"
+		echo -e "\e[1;36m> Downloading the latest Organizr "$dlbranch" ...\e[0m"
 		rm -r -f /tmp/Organizr/$zipbranch
 		rm -r -f /tmp/Organizr/$zipbranch.*		
 		rm -r -f /tmp/Organizr/$zipextfname
 		wget --quiet -P /tmp/Organizr/ https://github.com/causefx/Organizr/archive/$zipbranch
 		unzip -q /tmp/Organizr/$zipbranch -d /tmp/Organizr
-		echo "- Organizr $dlbranch downloaded and unzipped"
+		echo -e "\e[1;36m> Organizr "$dlbranch" downloaded and unzipped \e[0m"
 		echo
-		echo -e "\e[1;36mInstalling Organizr...\e[0m"
+		echo -e "\e[1;36m> Installing Organizr...\e[0m"
 
 		if [ ! -d "$instvar" ]; then
 		mkdir -p $instvar
@@ -209,7 +189,7 @@ show_menus()
 		echo " 6. Quit 					  "
 		echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 		echo
-		printf "\e[1;36mEnter your choice: \e[0m"
+		printf "\e[1;36m> Enter your choice: \e[0m"
 	}
 read_options(){
 		read -r options
@@ -221,7 +201,7 @@ read_options(){
 			orgdl_mod
 			vhostconfig_mod
 			orginstinfo_mod
-			echo "Press any key to return to menu..."
+                	echo -e "\e[1;36m> \e[0mPress any key to return to menu..."
 			read
 		;;
 
@@ -231,27 +211,27 @@ read_options(){
 			orginstinfo_mod
 			echo "- Next if you haven't done already, configure your Nginx conf to point to the Org installation directoy"
 			echo
-			echo "Press any key to return to menu..."
+                	echo -e "\e[1;36m> \e[0mPress any key to return to menu..."
 			read
 		;; 
 
 	 	"3")
 			echo "- Your choice 3: Install Organzir Requirements"
 			orgreq_mod
-        		echo "Press any key to return to menu..."
+                	echo -e "\e[1;36m> \e[0mPress any key to return to menu..."
 			read
 		;;
         
 	 	"4")
 			echo "- Your choice 4: Organizr Complete Install (Org + Requirements) "
 	        	orgreq_mod
-			echo "- Press any key to continue with Organizr + Nginx site config"
+			echo -e "\e[1;36m> \e[0mPress any key to continue with Organizr + Nginx site config"
 			read
 	        	vhostcreate_mod
 			orgdl_mod
 			vhostconfig_mod
 			orginstinfo_mod
-			echo "Press any key to return to menu..."
+                	echo -e "\e[1;36m> \e[0mPress any key to return to menu..."
 			read
 		;;
 
