@@ -174,8 +174,19 @@ orginstinfo_mod()
 		echo "- Use the above db path when you're setting up the admin user"
 		echo "- Visit localhost/ to create the admin user/setup your db directory and finialise your Organizr Install"
 		echo
-        }		
-
+        }
+#OUI script Updater
+oui_updater_mod()
+		{
+		    	git fetch --all
+			git reset --hard origin/master
+			git pull origin master
+			echo
+                	echo -e "\e[1;36mScript updated, reloading now...\e[0m"
+			sleep 3s
+			chmod +x $BASH_SOURCE
+			exec ./ou_installer.sh
+		}
 show_menus() 
 	{
 		echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
@@ -236,14 +247,7 @@ read_options(){
 		;;
 
 	 	"5")
-		    	git fetch --all
-			git reset --hard origin/master
-			git pull origin master
-			echo
-                	echo -e "\e[1;36mScript updated, reloading now...\e[0m"
-			sleep 3s
-			chmod +x $BASH_SOURCE
-			exec ./ou_installer.sh
+	        	oui_updater_mod
 		;;
 
 		"6")
