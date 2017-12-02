@@ -177,7 +177,7 @@ orginstinfo_mod()
         }
 #OUI script Updater
 oui_updater_mod()
-		{
+	{
 		    	git fetch --all
 			git reset --hard origin/master
 			git pull origin master
@@ -186,7 +186,7 @@ oui_updater_mod()
 			sleep 3s
 			chmod +x $BASH_SOURCE
 			exec ./ou_installer.sh
-		}
+	}
 show_menus() 
 	{
 		echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
