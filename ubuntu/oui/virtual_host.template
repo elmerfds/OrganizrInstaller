@@ -46,7 +46,7 @@ server {
   	server_name www.DOMAIN DOMAIN localhost;
 
 	#error page
-	error_page 302 400 401 403 404 405 408 500 502 503 504  /error.php?error=$status;
+	error_page 400 401 403 404 405 408 500 502 503 504  /error.php?error=$status;
 
 	location / {try_files $uri $uri/ =404;}
 	include config/phpblock.conf;  #PHP Block
@@ -76,7 +76,6 @@ server {
 #	include config/DOMAIN.conf;
 #	include config/auth-admin.conf;
 #	include config/DOMAIN_ssl.conf;
-#	error_page 302 400 401 403 404 405 408 500 502 503 504 https://DOMAIN/error.php?error=$status;
 #	location / {
      		#auth_request /auth-user;
 #		proxy_pass http://plex-upstream;
@@ -95,7 +94,6 @@ server {
 #	include config/DOMAIN.conf;
 #	include config/auth-admin.conf;
 #	include config/DOMAIN_ssl.conf;
-#	error_page 302 400 401 403 404 405 408 500 502 503 504 https://DOMAIN/error.php?error=$status;
 #	location / {
 #		auth_request /auth-user;
 #		proxy_pass https://plexpy-upstream;
@@ -110,7 +108,6 @@ server {
 #	include config/DOMAIN.conf;
 #	include config/DOMAIN_ssl.conf;
 #	include config/auth-admin.conf;
-#	error_page 302 400 401 403 404 405 408 500 502 503 504 https://DOMAIN/error.php?error=$status;
 #	location / {
 #		auth_request /auth-admin;
 #		proxy_pass http://sonarr-upstream;
@@ -126,7 +123,6 @@ server {
 #	include config/DOMAIN.conf;
 #	include config/DOMAIN_ssl.conf;
 #	include config/auth-admin.conf;
-#	error_page 302 400 401 403 404 405 408 500 502 503 504 https://DOMAIN/error.php?error=$status;
 #	location / {
 #		auth_request /auth-admin;
 #		proxy_pass http://radarr-upstream;
@@ -141,7 +137,6 @@ server {
 #	include config/DOMAIN.conf;
 #	include config/DOMAIN_ssl.conf;
 #	include config/auth-admin.conf;
-#	error_page 302 400 401 403 404 405 408 500 502 503 504 https://DOMAIN/error.php?error=$status;
 #	location / {      
 #		auth_request /auth-admin;
 #		proxy_pass http://sabnzbd-upstream;
@@ -156,7 +151,6 @@ server {
 #	include config/DOMAIN_ssl.conf;
 #	include config/DOMAIN.conf;
 #	include config/auth-admin.conf;
-#	error_page 302 400 401 403 404 405 408 500 502 503 504 https://DOMAIN/error.php?error=$status;
 #	location / {      
 #		auth_request /auth-admin;
 #		proxy_pass http://deluge-upstream;
@@ -178,7 +172,6 @@ server {
 #	include config/DOMAIN_ssl.conf;
 #	include config/DOMAIN.conf;
 #	include config/auth-admin.conf;
-#	error_page 302 400 401 403 404 405 408 500 502 503 504 https://DOMAIN/error.php?error=$status;
 #	location / {
 #		auth_request /auth-user;
 #		proxy_pass http://ombi-upstream;
@@ -193,7 +186,6 @@ server {
 #	include config/DOMAIN_ssl.conf;
 #	include config/DOMAIN.conf;
 #	include config/auth-admin.conf;
-#	error_page 302 400 401 403 404 405 408 500 502 503 504 https://DOMAIN/error.php?error=$status;
 #	location ^~/ {
 #		auth_request /auth-admin;
 #		proxy_pass https://mylar-upstream;
@@ -208,7 +200,6 @@ server {
 #	include config/DOMAIN_ssl.conf;
 #	include config/DOMAIN.conf;
 #	include config/auth-admin.conf;
-#	error_page 302 400 401 403 404 405 408 500 502 503 504 https://DOMAIN/error.php?error=$status;
 #	location ^~/ {
 #		auth_request /auth-admin;
 #		proxy_pass http://headphones-upstream;
@@ -223,7 +214,6 @@ server {
 #	include config/DOMAIN_ssl.conf;
 #	include config/DOMAIN.conf;
 #	include config/auth-admin.conf;
-#	error_page 302 400 401 403 404 405 408 500 502 503 504 https://DOMAIN/error.php?error=$status;
 #	location ^~/ {
 #		auth_request /auth-admin;
 #		proxy_pass https://lazyl-upstream;
@@ -238,7 +228,6 @@ server {
 #	include config/DOMAIN_ssl.conf;
 #	include config/DOMAIN.conf;
 #	include config/auth-admin.conf;
-#	error_page 302 400 401 403 404 405 408 500 502 503 504 https://DOMAIN/error.php?error=$status;
 #	location ^~/ {
 #		auth_request /auth-admin;
 #		proxy_pass http://nzbhydra-upstream;
@@ -253,7 +242,6 @@ server {
 #	include config/DOMAIN_ssl.conf;
 #	include config/DOMAIN.conf;
 #	include config/auth-admin.conf;
-#	error_page 302 400 401 403 404 405 408 500 502 503 504 https://DOMAIN/error.php?error=$status;
 #	location ^~/ {
 #		auth_request /auth-user;
 #		proxy_pass https://comics-upstream;
@@ -268,7 +256,6 @@ server {
 #	include config/DOMAIN.conf;
 #	include config/DOMAIN_ssl.conf;
 #	include config/auth-admin.conf;
-#	error_page 302 400 401 403 404 405 408 500 502 503 504 https://DOMAIN/error.php?error=$status;
 #
 #   	location / {
 #		add_header X-Frame-Option "DENY";
@@ -287,7 +274,6 @@ server {
 #	include config/DOMAIN_ssl.conf;
 #	include config/DOMAIN.conf;
 #	include config/auth-admin.conf;
-#	error_page 302 400 401 403 404 405 408 500 502 503 504 https://DOMAIN/error.php?error=$status;
 #	location / {
 #		auth_request /auth-admin;
 #		proxy_pass https://unifi-upstream;
@@ -304,7 +290,6 @@ server {
 #	include config/DOMAIN_ssl.conf;
 #	include config/DOMAIN.conf;
 #	include config/auth-admin.conf;
-#	error_page 302 400 401 403 404 405 408 500 502 503 504 https://DOMAIN/error.php?error=$status;
 #	location / {
 #		auth_request /auth-admin;
 #		proxy_pass http://hasse-upstream;
@@ -326,7 +311,6 @@ server {
 #	include config/DOMAIN.conf;
 #	include config/DOMAIN_ssl.conf;
 #	include config/auth-admin.conf;
-#	error_page 302 400 401 403 404 405 408 500 502 503 504 https://DOMAIN/error.php?error=$status;
 #	location / {
 #		#include config/proxy.conf;
 #		auth_request /auth-admin;
@@ -355,7 +339,6 @@ server {
 #	include config/DOMAIN.conf;
 #	include config/DOMAIN_ssl.conf;
 #	include config/auth-admin.conf;
-#	error_page 302 400 401 403 404 405 408 500 502 503 504 https://DOMAIN/error.php?error=$status;
 #
 #   	location / {
 #		add_header X-Frame-Option "DENY";
@@ -378,7 +361,6 @@ server {
 #	include config/DOMAIN_ssl.conf;
 #	include config/DOMAIN.conf;
 #	include config/auth-admin.conf;
-#	error_page 302 400 401 403 404 405 408 500 502 503 504 https://DOMAIN/error.php?error=$status;
 #	location / {
 #		auth_request /auth-admin;
 #		proxy_pass http://jackett-upstream;
@@ -394,7 +376,6 @@ server {
 #	include config/DOMAIN_ssl.conf;
 #	include config/DOMAIN.conf;
 #	include config/auth-admin.conf;
-#	error_page 302 400 401 403 404 405 408 500 502 503 504 https://DOMAIN/error.php?error=$status;
 #	location / {
 #		auth_request /auth-user;
 #		proxy_pass http://ptweb-upstream;
@@ -433,7 +414,6 @@ server {
 #	include config/DOMAIN_ssl.conf;
 #	include config/DOMAIN.conf;
 #	include config/auth-admin.conf;
-#	error_page 302 400 401 403 404 405 408 500 502 503 504 https://DOMAIN/error.php?error=$status;
 #	location / {
 #		auth_request /auth-admin;
 #		proxy_pass http://cloudcmd-upstream;
