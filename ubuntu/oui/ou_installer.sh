@@ -211,13 +211,13 @@ uti_options(){
 	 	"1")
 			echo "- Your choice 1: Debian 8.x PHP7 fix"
 			echo
-			apt-update
+			apt-get update
 			apt install apt-transport-https
 			echo "deb http://packages.dotdeb.org jessie all" >> /etc/apt/sources.list
 			echo "deb-src http://packages.dotdeb.org jessie all" >> /etc/apt/sources.list
 			wget https://www.dotdeb.org/dotdeb.gpg  
 			apt-key add dotdeb.gpg
-			apt-update
+			apt-get update
 			echo			
                 	echo -e "\e[1;36m> \e[0mPress any key to return to menu..."
 			read
