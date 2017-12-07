@@ -1,6 +1,6 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
-version=v2.5.0
+version=v3.0.0
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -85,11 +85,16 @@ orgdl_mod()
 		printf '\e[1;36m> Enter a number: \e[0m'
 		read -r dlvar
 		echo
-		echo -e "\e[1;36m> Where do you want to install Organizr? \e[0m [ /var/www/domain.com ]"
+ 		if [ -z "$DOMAIN" ]; then
+		 echo -e "\e[1;36m> Please enter a name for your Organizr folder e.g\e[0m [domain.com or $(hostname).local]"
+		 read -r DOMAIN
+		fi		
+		echo
+		echo -e "\e[1;36m> Where do you want to install Organizr? \e[0m [Default = /var/www/$DOMAIN]"
 		printf '\e[1;36m- \e[0m'
 		read instvar
+		instvar=${instvar:-/var/www/$DOMAIN}
 		echo
-
 		#Org Download and Install
 		if [ $dlvar = "1" ]
 		then 
@@ -212,6 +217,7 @@ read_options(){
 			orgdl_mod
 			vhostconfig_mod
 			orginstinfo_mod
+			unset DOMAIN
                 	echo -e "\e[1;36m> \e[0mPress any key to return to menu..."
 			read
 		;;
@@ -222,6 +228,7 @@ read_options(){
 			orginstinfo_mod
 			echo "- Next if you haven't done already, configure your Nginx conf to point to the Org installation directoy"
 			echo
+			unset DOMAIN
                 	echo -e "\e[1;36m> \e[0mPress any key to return to menu..."
 			read
 		;; 
@@ -242,6 +249,7 @@ read_options(){
 			orgdl_mod
 			vhostconfig_mod
 			orginstinfo_mod
+			unset DOMAIN
                 	echo -e "\e[1;36m> \e[0mPress any key to return to menu..."
 			read
 		;;
