@@ -216,9 +216,8 @@ uti_options(){
 			echo "deb http://packages.dotdeb.org jessie all" >> /etc/apt/sources.list
 			echo "deb-src http://packages.dotdeb.org jessie all" >> /etc/apt/sources.list
 			wget https://www.dotdeb.org/dotdeb.gpg  
-			sudo apt-key add dotdeb.gpg
+			apt-key add dotdeb.gpg
 			apt-update
-			sudo apt update
 			echo			
                 	echo -e "\e[1;36m> \e[0mPress any key to return to menu..."
 			read
