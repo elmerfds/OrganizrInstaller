@@ -1,6 +1,6 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
-version=v3.0.1
+version=v3.0.3
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -192,6 +192,51 @@ oui_updater_mod()
 			chmod +x $BASH_SOURCE
 			exec ./ou_installer.sh
 	}
+#Utilities sub-menu
+uti_menus() 
+	{
+		echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+		echo -e " 	  \e[1;36mOUI: $version : Utilities  \e[0m"
+		echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+		echo " 1. Debian 8.x PHP7 fix	  " 
+		echo " 2. Back 					  "
+		echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+		echo
+		printf "\e[1;36m> Enter your choice: \e[0m"
+	}
+#Utilities sub-menu-options
+uti_options(){
+		read -r options
+		case $options in
+	 	"1")
+			echo "- Your choice 1: Debian 8.x PHP7 fix"
+			echo
+			apt-update
+			apt install apt-transport-https
+			echo "deb http://packages.dotdeb.org jessie all" >> /etc/apt/sources.list
+			echo "deb-src http://packages.dotdeb.org jessie all" >> /etc/apt/sources.list
+			wget https://www.dotdeb.org/dotdeb.gpg  
+			sudo apt-key add dotdeb.gpg
+			apt-update
+			sudo apt update
+			echo			
+                	echo -e "\e[1;36m> \e[0mPress any key to return to menu..."
+			read
+		;;
+
+		"2")
+			while true 
+			do
+			clear
+			show_menus
+			read_options
+			done
+		;;
+
+	      	esac
+	     }
+
+
 show_menus() 
 	{
 		echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
@@ -202,7 +247,8 @@ show_menus()
 		echo " 3. Organizr Requirements Install		  "
 		echo " 4. Organizr Complete Install (Org + Requirements) "
 		echo " 5. OUI Auto Updater				  "
-		echo " 6. Quit 					  "
+		echo " 6. Utilities				  "
+		echo " 7. Quit 					  "
 		echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 		echo
 		printf "\e[1;36m> Enter your choice: \e[0m"
@@ -259,8 +305,18 @@ read_options(){
 		;;
 
 		"6")
+			while true 
+			do
+			clear
+			uti_menus
+			uti_options
+			done
+		;;
+
+		"7")
 			exit 0
 		;;
+
 
 	      	esac
 	     }
@@ -271,6 +327,7 @@ do
 	show_menus
 	read_options
 done
+
 
 
 
