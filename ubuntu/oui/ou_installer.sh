@@ -1,6 +1,6 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
-version=v3.0.0
+version=v3.0.1
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -66,10 +66,10 @@ vhostcreate_mod()
 
 
 		# set up web root
-		sudo chmod 600 $CONFIG
+		chmod 600 $CONFIG
 
 		# create symlink to enable site
-		sudo ln -s $CONFIG $NGINX_SITES_ENABLED/$DOMAIN.conf
+		ln -s $CONFIG $NGINX_SITES_ENABLED/$DOMAIN.conf
 
 		echo
 		echo "> Site Created for $DOMAIN"
@@ -142,9 +142,9 @@ vhostconfig_mod()
         {      
 		#Add in your domain name to your site nginx conf files
 		SITE_DIR=`echo $instvar`
-		sudo $SED -i "s/DOMAIN/$DOMAIN/g" $CONFIG
-		sudo $SED -i "s!ROOT!$SITE_DIR!g" $CONFIG
-		sudo $SED -i "s/DOMAIN/$DOMAIN/g" $CONFIG_DOMAIN
+		$SED -i "s/DOMAIN/$DOMAIN/g" $CONFIG
+		$SED -i "s!ROOT!$SITE_DIR!g" $CONFIG
+		$SED -i "s/DOMAIN/$DOMAIN/g" $CONFIG_DOMAIN
 
 		#Delete default.conf nginx site
 		mkdir -p $tmp/bk/nginx_default_site
@@ -155,7 +155,7 @@ vhostconfig_mod()
 		rm -r -f $NGINX_SITES_ENABLED/default
 			
 		# reload Nginx to pull in new config
-		sudo /etc/init.d/nginx reload
+		/etc/init.d/nginx reload
         }
 #Org Install info
 orginstinfo_mod()
