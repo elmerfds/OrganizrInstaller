@@ -19,4 +19,4 @@ Automated install script for Organizr (github.com/causefx/Organizr). Only Ubuntu
 - Yes, 16.04
 
 ### Tested on Debian?
-- Not yet, let me know if you do.
+- Yes, 9.2.1
