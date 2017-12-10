@@ -122,4 +122,4 @@ echo Installation complete
 echo.
 set /p "=To open Organizr [http://localhost] " <nul
 pause
-rem start http://localhost
+start http://localhost
