@@ -8,7 +8,7 @@ ECHO	 \:\/:/  / \::/:/  / \::/\/__/
 ECHO	  \::/  /   \::/  /   \:\__\  
 ECHO	   \/__/     \/__/     \/__/  
 ECHO.
-ECHO    v0.6.6 Beta
+ECHO    v0.6.7 Beta
 ECHO.
 pause
 ECHO.
@@ -81,7 +81,7 @@ nssm restart nginx
 ECHO.
 ECHO Installing Visual C++ Redistributable for Visual Studio 2017 [PHP 7+ requirement]
 vc_redist.x64.exe /q /norestart
-ECHO
+ECHO.
 ECHO Creating PHP service
 nssm install php %nginx_loc%\php\php-cgi.exe
 nssm set php AppParameters -b 127.0.0.1:9000
