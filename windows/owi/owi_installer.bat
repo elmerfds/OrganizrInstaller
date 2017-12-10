@@ -104,7 +104,7 @@ cd %nginx_loc%
 nginx -s reload
 cd %~dp0
 
-copy %~dp0config\php.ini %nginx_loc%\php
+copy %~dp0config\php.ini %nginx_loc%\php\php.ini
 
 cd %nginx_loc%
 nginx -s reload
