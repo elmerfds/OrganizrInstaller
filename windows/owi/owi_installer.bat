@@ -8,7 +8,7 @@ ECHO	 \:\/:/  / \::/:/  / \::/\/__/
 ECHO	  \::/  /   \::/  /   \:\__\  
 ECHO	   \/__/     \/__/     \/__/  
 ECHO.
-ECHO    v0.6.5 Beta
+ECHO    v0.6.6 Beta
 ECHO.
 pause
 ECHO.
@@ -73,7 +73,7 @@ ECHO Username: %username%
 set /p pass=" Password: "
 ECHO.  
 nssm install nginx %nginx_loc%\nginx.exe
-nssm set nginx ObjectName .\%username% %pass%
+nssm set nginx ObjectName %userdomain%\%username% %pass%
 nssm start nginx
 nssm restart nginx
 
@@ -85,7 +85,7 @@ ECHO
 ECHO Creating PHP service
 nssm install php %nginx_loc%\php\php-cgi.exe
 nssm set php AppParameters -b 127.0.0.1:9000
-nssm set php ObjectName .\%username% %pass%
+nssm set php ObjectName %userdomain%\%username% %pass%
 nssm start php
 nssm restart php
 
