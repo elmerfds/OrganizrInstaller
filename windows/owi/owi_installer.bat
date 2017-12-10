@@ -8,7 +8,7 @@ ECHO	 \:\/:/  / \::/:/  / \::/\/__/
 ECHO	  \::/  /   \::/  /   \:\__\  
 ECHO	   \/__/     \/__/     \/__/  
 ECHO.
-ECHO    v0.5 Beta
+ECHO    v0.6 Beta
 ECHO.
 pause
 ECHO.
@@ -50,15 +50,15 @@ ECHO.    Done!
 ECHO.
 ECHO Moving Nginx and PHP to destination
 ECHO.
-move C:\Temp\owi\nginx-* nginx
-move C:\Temp\owi\nginx %nginx_loc%
-move C:\Temp\owi\nssm-* nssm
-move C:\Temp\owi\php %nginx_loc%\php
+move %~dp0nginx-* nginx
+move %~dp0nginx %nginx_loc%
+move %~dp0nssm-* nssm
+move %~dp0php %nginx_loc%\php
 
 ECHO.
 ECHO Moving NSSM to destination
 ECHO.
-move C:\Temp\owi\nssm\win64\nssm.exe C:\Windows\System32
+move %~dp0nssm\win64\nssm.exe C:\Windows\System32
 
 
 ECHO.
