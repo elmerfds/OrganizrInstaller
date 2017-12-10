@@ -112,11 +112,14 @@ cd %~dp0
 nssm restart php
 nssm restart nginx
 echo.
+timeout /t 4 /nobreak
 set /p "=Nginx status : " <nul
 nssm status nginx
-set /p "=PHP status   : " <nul
+set /p "=PHP   status : " <nul
 nssm status php
 echo.
 echo Installation complete
 echo.
+set /p "=To open Organizr [http://localhost] " <nul
 pause
+rem start http://localhost
