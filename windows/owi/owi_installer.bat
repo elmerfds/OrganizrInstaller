@@ -80,7 +80,7 @@ nssm restart nginx
 
 ECHO.
 ECHO Installing Visual C++ Redistributable for Visual Studio 2017 [PHP 7+ requirement]
-vc_redist.x64.exe /q
+vc_redist.x64.exe /q /norestart
 ECHO
 ECHO Creating PHP service
 nssm install php %nginx_loc%\php\php-cgi.exe
