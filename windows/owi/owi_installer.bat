@@ -1,15 +1,15 @@
-@echo off
+@ECHO off
 title Oraganizr Windows Installer
-echo	    ___       ___       ___   
-echo	   /\  \     /\__\     /\  \  
-echo	  /::\  \   /:/\__\   _\:\  \ 
-echo	 /:/\:\__\ /:/:/\__\ /\/::\__\
-echo	 \:\/:/  / \::/:/  / \::/\/__/
-echo	  \::/  /   \::/  /   \:\__\  
-echo	   \/__/     \/__/     \/__/  
-echo.
-echo    v0.5 Beta
-echo.
+ECHO	    ___       ___       ___   
+ECHO	   /\  \     /\__\     /\  \  
+ECHO	  /::\  \   /:/\__\   _\:\  \ 
+ECHO	 /:/\:\__\ /:/:/\__\ /\/::\__\
+ECHO	 \:\/:/  / \::/:/  / \::/\/__/
+ECHO	  \::/  /   \::/  /   \:\__\  
+ECHO	   \/__/     \/__/     \/__/  
+ECHO.
+ECHO    v0.5 Beta
+ECHO.
 pause
 ECHO.
 ECHO Where do you want to install Nginx? e.g 'c:\nginx'
@@ -30,8 +30,8 @@ powershell -Command "(New-Object Net.WebClient).DownloadFile('https://nssm.cc/ci
 powershell -Command "Invoke-WebRequest https://nssm.cc/ci/nssm-2.24-101-g897c7ad.zip -OutFile nssm.zip"
 ECHO.    Done!
 
-ECHO 4. Downloading VCRuntime
-powershell -Command "Invoke-WebRequest https://download.microsoft.com/download/6/A/A/6AA4EDFF-645B-48C5-81CC-ED5963AEAD48/vc_redist.x86.exe -OutFile vc_redist.x64.exe"
+ECHO 4. Downloading Visual C++ Redistributable for Visual Studio 2017
+powershell -Command "Invoke-WebRequest https://download.microsoft.com/download/3/b/f/3bf6e759-c555-4595-8973-86b7b4312927/vc_redist.x64.exe -OutFile vc_redist.x64.exe"
 ECHO.    Done!
 
 ECHO.
@@ -62,14 +62,15 @@ move C:\Temp\owi\nssm\win64\nssm.exe C:\Windows\System32
 
 
 ECHO.
-ECHO Download Complete...
+ECHO Download Completed...
 
 ECHO.
 ECHO Creating Nginx service
 ECHO.
 ECHO In order to save and reload Nginx configuration, you need to run the NGINX service as the currently logged in user
 ECHO Username: %username%
-set /p pass=" Password: " 
+set /p pass=" Password: "
+ECHO.  
 nssm install nginx %nginx_loc%\nginx.exe
 nssm set nginx ObjectName .\%username% %pass%
 nssm start nginx
@@ -77,7 +78,7 @@ nssm restart nginx
 
 
 ECHO.
-ECHO Installing Visual C++ Redistributable for Visual Studio 2015 [PHP 7+ requirement]
+ECHO Installing Visual C++ Redistributable for Visual Studio 2017 [PHP 7+ requirement]
 vc_redist.x64.exe /q
 ECHO
 ECHO Creating PHP service
@@ -118,7 +119,7 @@ nssm status nginx
 set /p "=PHP   status : " <nul
 nssm status php
 echo.
-echo Installation complete
+echo Installation Completed
 echo.
 set /p "=To open Organizr [http://localhost] " <nul
 pause
