@@ -50,15 +50,15 @@ ECHO.    Done!
 ECHO.
 ECHO Moving Nginx and PHP to destination
 ECHO.
-move C:\Temp\OWI\nginx-* nginx
-move C:\Temp\OWI\nginx %nginx_loc%
-move C:\Temp\OWI\nssm-* nssm
-move C:\Temp\OWI\php %nginx_loc%\php
+move C:\Temp\owi\nginx-* nginx
+move C:\Temp\owi\nginx %nginx_loc%
+move C:\Temp\owi\nssm-* nssm
+move C:\Temp\owi\php %nginx_loc%\php
 
 ECHO.
 ECHO Moving NSSM to destination
 ECHO.
-move C:\Temp\OWI\nssm\win64\nssm.exe C:\Windows\System32
+move C:\Temp\owi\nssm\win64\nssm.exe C:\Windows\System32
 
 
 ECHO.
