@@ -112,6 +112,11 @@ cd %~dp0
 nssm restart php
 nssm restart nginx
 echo.
+set /p "=Nginx status : " <nul
+nssm status nginx
+set /p "=PHP status   : " <nul
+nssm status php
+echo.
 echo Installation complete
 echo.
 pause
