@@ -8,10 +8,11 @@ ECHO	 \:\/:/  / \::/:/  / \::/\/__/
 ECHO	  \::/  /   \::/  /   \:\__\  
 ECHO	   \/__/     \/__/     \/__/  
 ECHO.
-ECHO    v0.6 Beta
+ECHO    v0.6.5 Beta
 ECHO.
 pause
 ECHO.
+cd %~dp0
 ECHO Where do you want to install Nginx? e.g 'c:\nginx'
 set /p nginx_loc=
 ECHO.
