@@ -111,5 +111,7 @@ nginx -s reload
 cd %~dp0
 nssm restart php
 nssm restart nginx
-
+echo.
+echo Installation complete
+echo.
 pause
