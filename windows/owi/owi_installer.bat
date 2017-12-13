@@ -1,5 +1,6 @@
 @ECHO off
 title Oraganizr Windows Installer
+COLOR 03
 ECHO      ___           ___                  
 ECHO     /  /\         /  /\           ___   
 ECHO    /  /::\       /  /:/_         /__/\  
@@ -10,7 +11,7 @@ ECHO \  \:\ /  /:/ \  \:\/:/ /:/  /__/\/:/
 ECHO  \  \:\  /:/   \  \::/ /:/   \  \::/    
 ECHO   \  \:\/:/     \  \:\/:/     \  \:\    
 ECHO    \  \::/       \  \::/       \__\/    
-ECHO     \__\/         \__\/             ~~ v0.6.9 Beta
+ECHO     \__\/         \__\/             ~~ v0.7.0 Beta
 ECHO.      
 pause
 ECHO.
@@ -89,6 +90,7 @@ ECHO Installing Visual C++ Redistributable for Visual Studio 2017 [PHP 7+ requir
 vc_redist.x64.exe /q /norestart
 ECHO.
 ECHO Creating PHP service
+ECHO.
 NSSM install PHP %nginx_loc%\php\php-cgi.exe
 NSSM set PHP AppParameters -b 127.0.0.1:9000
 NSSM set PHP ObjectName %userdomain%\%username% %pass%
@@ -97,6 +99,7 @@ NSSM restart PHP
 
 ECHO.
 ECHO Downloading Organizr Master
+ECHO.
 powershell -Command "(New-Object Net.WebClient).DownloadFile('https://github.com/causefx/Organizr/archive/master.zip', 'master.zip')"
 powershell -Command "Invoke-WebRequest https://github.com/causefx/Organizr/archive/master.zip -OutFile master.zip"
 powershell.exe -nologo -noprofile -command "& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::ExtractToDirectory('master.zip', '.'); }"
@@ -106,7 +109,9 @@ xcopy /e /i /y /s organizr %nginx_loc%\html\organizr
 RMDIR /s /q organizr
 
 ECHO.
+ECHO #############################
 ECHO Updating Nginx and PHP config
+ECHO #############################
 ECHO.
 COPY %~dp0config\nginx.conf %nginx_loc%\conf\nginx.conf
 CD %nginx_loc%
@@ -125,19 +130,26 @@ NSSM status NGINX
 SET /p "=PHP   status : " <nul
 NSSM status PHP
 ECHO.
-ECHO Installation Completed
+ECHO ########## Installation Completed ##########
 ECHO.
 SET /p "=To open Organizr [http://localhost] " <nul
 pause
 START http://localhost
 ECHO.
+ECHO ############################
 ECHO Cleaning up downloaded Files
+ECHO ############################
 ECHO.
-DEL /s /q %~dp0nginx.zip
-DEL /s /q %~dp0php.zip
-DEL /s /q %~dp0nssm.zip
-DEL /s /q %~dp0vc_redist.x64.exe
-RMDIR /s /q nssm
+DEL /s /q %~dp0nginx.zip >nul 2>&1
+ECHO nginx.zip      DELETED
+DEL /s /q %~dp0php.zip >nul 2>&1
+ECHO php.zip        DELETED
+DEL /s /q %~dp0nssm.zip >nul 2>&1
+ECHO nssm.zip       DELETED
+DEL /s /q %~dp0vc_redist.x64.exe >nul 2>&1
+ECHO vc_redist.exe  DELETED
+RMDIR /s /q nssm >nul 2>&1
+ECHO nssm directory REMOVED 
 ECHO.
 ECHO Done!
 ECHO.
