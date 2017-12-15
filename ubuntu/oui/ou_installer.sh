@@ -1,6 +1,6 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
-version=v3.0.3
+version=v3.8.0
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -35,25 +35,35 @@ orgreq_mod() {
 		done
 		echo
                 }
+#Domain validation 
+domainval_mod()
+	{
+		while true
+		do
+			echo -e "\e[1;36m> Enter a domain or a folder name for your install:\e[0m" 
+			echo -e "\e[1;36m> E.g domain.com / organizr.local / $(hostname).local / anything.local] \e[0m" 
+			printf '\e[1;36m- \e[0m'
+			read -r dname
+			DOMAIN=$dname
+	
+			# check the domain is roughly valid!
+			PATTERN="^([[:alnum:]]([[:alnum:]\-]{0,61}[[:alnum:]])?\.)+[[:alpha:]]{2,6}$"
+			if [[ "$DOMAIN" =~ $PATTERN ]]; then
+			DOMAIN=`echo $DOMAIN | tr '[A-Z]' '[a-z]'`
+			echo "> Creating vhost file for:" $DOMAIN
+			break
+			else
+			echo "> invalid domain name"
+			echo
+			fi
+		done	
+	}
 #Nginx vhost creation module
 vhostcreate_mod()        
        {
-        echo
-		printf "\e[1;36m> Enter your domanin name\e[0m [ e.g domain.com ]\e[1;36m:\e[0m " 
-		read -r dname
-		DOMAIN=$dname
-		echo
-
-		# check the domain is roughly valid!
-		PATTERN="^([[:alnum:]]([[:alnum:]\-]{0,61}[[:alnum:]])?\.)+[[:alpha:]]{2,6}$"
-		if [[ "$DOMAIN" =~ $PATTERN ]]; then
-		DOMAIN=`echo $DOMAIN | tr '[A-Z]' '[a-z]'`
-		echo "> Creating vhost file for:" $DOMAIN
-		else
-		echo "> invalid domain name"
-		exit 1 
-		fi
-
+        	echo
+		domainval_mod
+	
 		# Copy the virtual host template
 		CONFIG=$NGINX_SITES/$DOMAIN.conf
 		cp $CURRENT_DIR/virtual_host.template $CONFIG
@@ -71,10 +81,10 @@ vhostcreate_mod()
 		# create symlink to enable site
 		ln -s $CONFIG $NGINX_SITES_ENABLED/$DOMAIN.conf
 
-		echo
 		echo "> Site Created for $DOMAIN"
 		echo
        }
+
 #Organizr download module
 orgdl_mod()
         {
@@ -86,8 +96,8 @@ orgdl_mod()
 		read -r dlvar
 		echo
  		if [ -z "$DOMAIN" ]; then
-		 echo -e "\e[1;36m> Please enter a name for your Organizr folder e.g\e[0m [domain.com or $(hostname).local]"
-		 read -r DOMAIN
+		domainval_mod
+		 
 		fi		
 		echo
 		echo -e "\e[1;36m> Where do you want to install Organizr? \e[0m [Default = /var/www/$DOMAIN]"
