@@ -1,5 +1,5 @@
 #PROXY UPSTREAMS
-# Replcae the IP with your services IP if it's not installed on this machine
+# Replace the IP with your services IP if it's not installed on this machine
 # Remove '#' to enable the services you want
 
 #upstream organizr-upstream		{ server 127.0.0.1;       }
