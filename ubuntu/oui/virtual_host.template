@@ -1,5 +1,5 @@
 #PROXY UPSTREAMS
-# Replcae the IP with your services IP if it's not installed on this machine
+# Replace the IP with your services IP if it's not installed on this machine
 # Remove '#' to enable the services you want
 
 #upstream organizr-upstream		{ server 127.0.0.1;       }
@@ -7,6 +7,7 @@
 #upstream plexpy-upstream 		{ server 127.0.0.1:8181;  }
 #upstream ombi-upstream 		{ server 127.0.0.1:5000;  } 
 #upstream sabnzbd-upstream 		{ server 127.0.0.1:8080;  }
+#upstream nzbget-upstream		{ server 127.0.0.1:6789;  }
 #upstream radarr-upstream 		{ server 127.0.0.1:7878;  }
 #upstream sonarr-upstream 		{ server 127.0.0.1:8989;  }
 #upstream mylar-upstream		{ server 127.0.0.1:8090;  }
@@ -161,6 +162,19 @@ server {
 #	}
 #}
 
+#NZBGET SERVER
+#server {
+#    server_name  nzbget.DOMAIN;
+#	include config/DOMAIN.conf;
+#	include config/DOMAIN_ssl.conf;
+#	include config/auth-admin.conf;
+#	error_page 400 401 403 404 405 408 500 502 503 504 https://DOMAIN/error.php?error=$status;
+#	location / {      
+#		auth_request /auth-admin;
+#		proxy_pass http://nzbget-upstream;
+#		include config/proxy.conf;
+#	}
+#}
 
 #DELUGE SERVER
 #server {
@@ -454,5 +468,4 @@ server {
 #
 #	}
 #}
-
 
