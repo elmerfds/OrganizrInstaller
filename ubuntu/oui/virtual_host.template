@@ -171,7 +171,7 @@ server {
 #	error_page 400 401 403 404 405 408 500 502 503 504 https://DOMAIN/error.php?error=$status;
 #	location / {      
 #		auth_request /auth-admin;
-#		proxy_pass http://sabnzbd-upstream;
+#		proxy_pass http://nzbget-upstream;
 #		include config/proxy.conf;
 #	}
 #}
