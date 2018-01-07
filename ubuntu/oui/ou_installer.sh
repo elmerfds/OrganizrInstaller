@@ -1,6 +1,6 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
-version=v3.8.0
+version=v3.8.1
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -100,7 +100,7 @@ orgdl_mod()
 		 
 		fi		
 		echo
-		echo -e "\e[1;36m> Where do you want to install Organizr? \e[0m [Default = /var/www/$DOMAIN]"
+		echo -e "\e[1;36m> Where do you want to install Organizr? \e[0m [Press Return for Default = /var/www/$DOMAIN]"
 		printf '\e[1;36m- \e[0m'
 		read instvar
 		instvar=${instvar:-/var/www/$DOMAIN}
