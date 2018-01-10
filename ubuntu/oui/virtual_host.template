@@ -1,3 +1,6 @@
+#vhost_template: v2.0.0
+#author: elmerfdz
+
 #PROXY UPSTREAMS
 # Replace the IP with your services IP if it's not installed on this machine
 # Remove '#' to enable the services you want
