@@ -1,6 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
-version=v3.8.2
+#author: elmerfdz
+version=v3.8.5
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -40,6 +41,12 @@ domainval_mod()
 	{
 		while true
 		do
+			if [ $dlvar = "v2" ]; then
+			echo -e "\e[1;35mOrganizr v2 is in EARLY development stage and is not advised to use it as your daily driver.\e[0m"  
+			echo -e "Press CTRL + Z to quit or Return to continue"  
+			read
+			echo
+			fi
 			echo -e "\e[1;36m> Enter a domain or a folder name for your install:\e[0m" 
 			echo -e "\e[1;36m> E.g domain.com / organizr.local / $(hostname).local / anything.local] \e[0m" 
 			printf '\e[1;36m- \e[0m'
@@ -90,7 +97,7 @@ orgdl_mod()
         {
 		echo	      
 		echo -e "\e[1;36m> which version of Organizr do you want to install?.\e[0m"
-		echo -e "\e[1;36m- \e[0mMaster = [1] Dev = [2] Pre-Dev = [3]"
+		echo -e "\e[1;36m- \e[0m[1] = Master [2] = Dev [3] = Pre-Dev"
 		echo
 		printf '\e[1;36m> Enter a number: \e[0m'
 		read -r dlvar
@@ -123,6 +130,12 @@ orgdl_mod()
 		dlbranch=Pre-Dev
 		zipbranch=cero-dev.zip
 		zipextfname=Organizr-cero-dev
+
+		elif [ $dlvar = "v2" ]
+		then
+		dlbranch=Orgv2-Dev
+		zipbranch=v2-develop.zip
+		zipextfname=Organizr-2-develop
 		fi
 
 		echo -e "\e[1;36m> Downloading the latest Organizr "$dlbranch" ...\e[0m"
