@@ -1,6 +1,6 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
-version=v3.8.1
+version=v3.8.2
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -145,7 +145,7 @@ orgdl_mod()
 		fi
 		#Configuring permissions on web folder
 		chmod -R 775 $instvar
-		chown -R www-data $instvar
+		chown -R www-data:$(logname) $instvar
         }
 #Nginx vhost config
 vhostconfig_mod()
