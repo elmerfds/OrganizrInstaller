@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v3.8.5
+version=v4.0.0
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -17,6 +17,7 @@ WEB_DIR='/var/www'
 SED=`which sed`
 CURRENT_DIR=`dirname $0`
 tmp='/tmp/Organizr'
+dlvar=0
 
 #Modules
 #Organizr Requirement Module
@@ -168,6 +169,8 @@ vhostconfig_mod()
 		$SED -i "s/DOMAIN/$DOMAIN/g" $CONFIG
 		$SED -i "s!ROOT!$SITE_DIR!g" $CONFIG
 		$SED -i "s/DOMAIN/$DOMAIN/g" $CONFIG_DOMAIN
+		phpv=$(ls -t /etc/php | head -1)
+		$SED -i "s/VER/$phpv/g" $NGINX_CONFIG/phpblock.conf
 
 		#Delete default.conf nginx site
 		mkdir -p $tmp/bk/nginx_default_site
