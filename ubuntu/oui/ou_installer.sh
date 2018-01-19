@@ -13,7 +13,6 @@ NGINX_LOC='/etc/nginx'
 NGINX_SITES='/etc/nginx/sites-available'
 NGINX_SITES_ENABLED='/etc/nginx/sites-enabled'
 NGINX_CONFIG='/etc/nginx/config'
-phpv=$(ls -t /etc/php ¦ head -1)
 WEB_DIR='/var/www'
 SED=`which sed`
 CURRENT_DIR=`dirname $0`
@@ -169,6 +168,7 @@ vhostconfig_mod()
 		$SED -i "s/DOMAIN/$DOMAIN/g" $CONFIG
 		$SED -i "s!ROOT!$SITE_DIR!g" $CONFIG
 		$SED -i "s/DOMAIN/$DOMAIN/g" $CONFIG_DOMAIN
+		phpv=$(ls -t /etc/php | head -1)
 		$SED -i "s/VER/$phpv/g" $NGINX_CONFIG/phpblock.conf
 
 		#Delete default.conf nginx site
