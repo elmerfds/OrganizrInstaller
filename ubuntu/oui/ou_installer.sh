@@ -17,6 +17,7 @@ WEB_DIR='/var/www'
 SED=`which sed`
 CURRENT_DIR=`dirname $0`
 tmp='/tmp/Organizr'
+dlvar=0
 
 #Modules
 #Organizr Requirement Module
