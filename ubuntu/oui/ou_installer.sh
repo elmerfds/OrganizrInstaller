@@ -209,6 +209,7 @@ orginstinfo_mod()
 #OUI script Updater
 oui_updater_mod()
 	{
+			echo
 			echo "Which branch of OUI, do you want to install?"
 			echo "- [1] = Master [2] = Dev [3] = Experimental"
 			read -r oui_branch_no
