@@ -213,6 +213,7 @@ oui_updater_mod()
 			echo "Which branch of OUI, do you want to install?"
 			echo "- [1] = Master [2] = Dev [3] = Experimental"
 			read -r oui_branch_no
+			echo
 
 			if [ $oui_branch_no = "1" ]
 			then 
