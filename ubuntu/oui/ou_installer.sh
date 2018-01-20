@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v4.0.0
+version=v4.0.5
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -209,9 +209,26 @@ orginstinfo_mod()
 #OUI script Updater
 oui_updater_mod()
 	{
+			echo "Which branch of OUI, do you want to install?"
+			echo "- [1] = Master [2] = Dev [3] = Experimental"
+			read -r oui_branch_no
+
+			if [ $oui_branch_no = "1" ]
+			then 
+			oui_branch_name=master
+				
+			elif [ $oui_branch_no = "2" ]
+			then 
+			oui_branch_name=dev
+	
+			elif [ $oui_branch_no = "3" ]
+			then 
+			oui_branch_name=experimental
+			fi
+
 		    	git fetch --all
-			git reset --hard origin/master
-			git pull origin master
+			git reset --hard origin/$oui_branch_name
+			git pull origin $oui_branch_name
 			echo
                 	echo -e "\e[1;36mScript updated, reloading now...\e[0m"
 			sleep 3s
