@@ -21,50 +21,39 @@ dlvar=0
 
 #Modules
 #Organizr Requirement Module
-orgreq_mod() {
-
-  if ! grep "deb http://nginx.org/packages/ubuntu" /etc/apt/sources.list; then
-  echo
-  echo -e "\e[1;36m> Adding nginx apt repository...\e[0m"
-  echo "deb http://nginx.org/packages/ubuntu/ xenial nginx" >> /etc/apt/sources.list
-  wget http://nginx.org/keys/nginx_signing.key
-  apt-key add nginx_signing.key
-  rm nginx_signing.key
-  echo
-  fi
-
-    echo
-    echo -e "\e[1;36m> Updating apt repositories...\e[0m"
-		echo
-		apt-get update
+orgreq_mod() { 
                 echo
-		for ((i=0; i < "${#orgreqname[@]}"; i++))
+                echo -e "\e[1;36m> Updating apt repositories...\e[0m"
+		echo
+		apt-get update	    
+                echo
+		for ((i=0; i < "${#orgreqname[@]}"; i++)) 
 		do
 		    echo -e "\e[1;36m> Installing ${orgreqname[$i]}...\e[0m"
 		    echo
 		    apt-get -y install ${orgreq[$i]}
 		    echo
-
+		
 		done
 		echo
                 }
-#Domain validation
+#Domain validation 
 domainval_mod()
 	{
 		while true
 		do
 			if [ $dlvar = "v2" ]; then
-			echo -e "\e[1;35mOrganizr v2 is in EARLY development stage and is not advised to use it as your daily driver.\e[0m"
-			echo -e "Press CTRL + Z to quit or Return to continue"
+			echo -e "\e[1;35mOrganizr v2 is in EARLY development stage and is not advised to use it as your daily driver.\e[0m"  
+			echo -e "Press CTRL + Z to quit or Return to continue"  
 			read
 			echo
 			fi
-			echo -e "\e[1;36m> Enter a domain or a folder name for your install:\e[0m"
-			echo -e "\e[1;36m> E.g domain.com / organizr.local / $(hostname).local / anything.local] \e[0m"
+			echo -e "\e[1;36m> Enter a domain or a folder name for your install:\e[0m" 
+			echo -e "\e[1;36m> E.g domain.com / organizr.local / $(hostname).local / anything.local] \e[0m" 
 			printf '\e[1;36m- \e[0m'
 			read -r dname
 			DOMAIN=$dname
-
+	
 			# check the domain is roughly valid!
 			PATTERN="^([[:alnum:]]([[:alnum:]\-]{0,61}[[:alnum:]])?\.)+[[:alpha:]]{2,6}$"
 			if [[ "$DOMAIN" =~ $PATTERN ]]; then
@@ -75,19 +64,16 @@ domainval_mod()
 			echo "> invalid domain name"
 			echo
 			fi
-		done
+		done	
 	}
 #Nginx vhost creation module
-vhostcreate_mod()
+vhostcreate_mod()        
        {
         	echo
 		domainval_mod
-
+	
 		# Copy the virtual host template
 		CONFIG=$NGINX_SITES/$DOMAIN.conf
-    # Create $NGINX_SITES and $NGINX_SITES_ENABLED
-    mkdir -p $NGINX_SITES
-    mkdir -p $NGINX_SITES_ENABLED
 		cp $CURRENT_DIR/virtual_host.template $CONFIG
 		cp -a $CURRENT_DIR/config/ $NGINX_LOC
 		mv $NGINX_LOC/config/domain.com.conf $NGINX_LOC/config/$DOMAIN.conf
@@ -110,7 +96,7 @@ vhostcreate_mod()
 #Organizr download module
 orgdl_mod()
         {
-		echo
+		echo	      
 		echo -e "\e[1;36m> which version of Organizr do you want to install?.\e[0m"
 		echo -e "\e[1;36m- \e[0m[1] = Master [2] = Dev [3] = Pre-Dev"
 		echo
@@ -119,8 +105,8 @@ orgdl_mod()
 		echo
  		if [ -z "$DOMAIN" ]; then
 		domainval_mod
-
-		fi
+		 
+		fi		
 		echo
 		echo -e "\e[1;36m> Where do you want to install Organizr? \e[0m [Press Return for Default = /var/www/$DOMAIN]"
 		printf '\e[1;36m- \e[0m'
@@ -129,19 +115,19 @@ orgdl_mod()
 		echo
 		#Org Download and Install
 		if [ $dlvar = "1" ]
-		then
+		then 
 		dlbranch=Master
 		zipbranch=master.zip
 		zipextfname=Organizr-master
-
+			
 		elif [ $dlvar = "2" ]
-		then
+		then 
 		dlbranch=Develop
 		zipbranch=develop.zip
 		zipextfname=Organizr-develop
 
 		elif [ $dlvar = "3" ]
-		then
+		then 
 		dlbranch=Pre-Dev
 		zipbranch=cero-dev.zip
 		zipextfname=Organizr-cero-dev
@@ -155,7 +141,7 @@ orgdl_mod()
 
 		echo -e "\e[1;36m> Downloading the latest Organizr "$dlbranch" ...\e[0m"
 		rm -r -f /tmp/Organizr/$zipbranch
-		rm -r -f /tmp/Organizr/$zipbranch.*
+		rm -r -f /tmp/Organizr/$zipbranch.*		
 		rm -r -f /tmp/Organizr/$zipextfname
 		wget --quiet -P /tmp/Organizr/ https://github.com/causefx/Organizr/archive/$zipbranch
 		unzip -q /tmp/Organizr/$zipbranch -d /tmp/Organizr
@@ -167,7 +153,7 @@ orgdl_mod()
 		mkdir -p $instvar
 		fi
 		cp -a /tmp/Organizr/$zipextfname/. $instvar/html
-
+                
 		if [ ! -d "$instvar/db" ]; then
 		mkdir $instvar/db
 		fi
@@ -177,7 +163,7 @@ orgdl_mod()
         }
 #Nginx vhost config
 vhostconfig_mod()
-        {
+        {      
 		#Add in your domain name to your site nginx conf files
 		SITE_DIR=`echo $instvar`
 		$SED -i "s/DOMAIN/$DOMAIN/g" $CONFIG
@@ -188,12 +174,12 @@ vhostconfig_mod()
 
 		#Delete default.conf nginx site
 		mkdir -p $tmp/bk/nginx_default_site
- 		if [ -e $NGINX_SITES/default ]
+ 		if [ -e $NGINX_SITES/default ] 
 		then cp -a $NGINX_SITES/default $tmp/bk/nginx_default_site
-		fi
+		fi			
 		rm -r -f $NGINX_SITES/default
 		rm -r -f $NGINX_SITES_ENABLED/default
-
+			
 		# reload Nginx to pull in new config
 		/etc/init.d/nginx reload
         }
@@ -230,15 +216,15 @@ oui_updater_mod()
 			echo
 
 			if [ $oui_branch_no = "1" ]
-			then
+			then 
 			oui_branch_name=master
-
+				
 			elif [ $oui_branch_no = "2" ]
-			then
+			then 
 			oui_branch_name=dev
-
+	
 			elif [ $oui_branch_no = "3" ]
-			then
+			then 
 			oui_branch_name=experimental
 			fi
 
@@ -252,12 +238,12 @@ oui_updater_mod()
 			exec ./ou_installer.sh
 	}
 #Utilities sub-menu
-uti_menus()
+uti_menus() 
 	{
 		echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 		echo -e " 	  \e[1;36mOUI: $version : Utilities  \e[0m"
 		echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-		echo " 1. Debian 8.x PHP7 fix	  "
+		echo " 1. Debian 8.x PHP7 fix	  " 
 		echo " 2. Back 					  "
 		echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 		echo
@@ -274,16 +260,16 @@ uti_options(){
 			apt install apt-transport-https
 			echo "deb http://packages.dotdeb.org jessie all" >> /etc/apt/sources.list
 			echo "deb-src http://packages.dotdeb.org jessie all" >> /etc/apt/sources.list
-			wget https://www.dotdeb.org/dotdeb.gpg
+			wget https://www.dotdeb.org/dotdeb.gpg  
 			apt-key add dotdeb.gpg
 			apt-get update
-			echo
+			echo			
                 	echo -e "\e[1;36m> \e[0mPress any key to return to menu..."
 			read
 		;;
 
 		"2")
-			while true
+			while true 
 			do
 			clear
 			show_menus
@@ -295,12 +281,12 @@ uti_options(){
 	     }
 
 
-show_menus()
+show_menus() 
 	{
 		echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 		echo -e " 	  \e[1;36mORGANIZR UBUNTU - INSTALLER $version  \e[0m"
 		echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-		echo " 1. Organizr + Nginx site Install		  "
+		echo " 1. Organizr + Nginx site Install		  " 
 		echo " 2. Organizr Web Folder Only Install		 "
 		echo " 3. Organizr Requirements Install		  "
 		echo " 4. Organizr Complete Install (Org + Requirements) "
@@ -335,7 +321,7 @@ read_options(){
 			unset DOMAIN
                 	echo -e "\e[1;36m> \e[0mPress any key to return to menu..."
 			read
-		;;
+		;; 
 
 	 	"3")
 			echo "- Your choice 3: Install Organzir Requirements"
@@ -343,7 +329,7 @@ read_options(){
                 	echo -e "\e[1;36m> \e[0mPress any key to return to menu..."
 			read
 		;;
-
+        
 	 	"4")
 			echo "- Your choice 4: Organizr Complete Install (Org + Requirements) "
 	        	orgreq_mod
@@ -363,7 +349,7 @@ read_options(){
 		;;
 
 		"6")
-			while true
+			while true 
 			do
 			clear
 			uti_menus
@@ -379,9 +365,18 @@ read_options(){
 	      	esac
 	     }
 
-while true
+while true 
 do
 	clear
 	show_menus
 	read_options
 done
+
+
+
+
+
+
+
+
+
