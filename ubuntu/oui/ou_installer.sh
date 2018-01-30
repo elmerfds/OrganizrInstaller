@@ -22,7 +22,7 @@ dlvar=0
 #Modules
 #Organizr Requirement Module
 orgreq_mod() {
-  
+
   if ! grep "deb http://nginx.org/packages/ubuntu" /etc/apt/sources.list; then
   echo
   echo -e "\e[1;36m> Adding nginx apt repository...\e[0m"
@@ -82,6 +82,9 @@ vhostcreate_mod()
 
 		# Copy the virtual host template
 		CONFIG=$NGINX_SITES/$DOMAIN.conf
+    # Create $NGINX_SITES and $NGINX_SITES_ENABLED
+    mkdir -p $NGINX_SITES
+    mkdir -p $NGINX_SITES_ENABLED
 		cp $CURRENT_DIR/virtual_host.template $CONFIG
 		cp -a $CURRENT_DIR/config/ $NGINX_LOC
 		mv $NGINX_LOC/config/domain.com.conf $NGINX_LOC/config/$DOMAIN.conf
