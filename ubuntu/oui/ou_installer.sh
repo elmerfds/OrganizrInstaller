@@ -27,6 +27,9 @@ orgreq_mod() {
   echo
   echo -e "\e[1;36m> Adding nginx apt repository...\e[0m"
   echo "deb http://nginx.org/packages/ubuntu/ xenial nginx" >> /etc/apt/sources.list
+  wget http://nginx.org/keys/nginx_signing.key
+  apt-key add nginx_signing.key
+  rm nginx_signing.key
   echo
   fi
 
