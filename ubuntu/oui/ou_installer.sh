@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v4.2.0
+version=v4.2.1
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -248,7 +248,7 @@ uti_menus()
 		echo -e " 	  \e[1;36mOUI: $version : Utilities  \e[0m"
 		echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 		echo " 1. Debian 8.x PHP7 fix	  "
-        echo " 2. Add official Nginx APT repo + Install/Upgrade to latest Nginx "
+        	echo " 2. Add official Nginx APT repo + Install/Upgrade to latest Nginx "
 		echo " 3. Back 					  "
 		echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 		echo
@@ -275,20 +275,21 @@ uti_options(){
 
 	 	"2")
 			echo "- Your choice 2: Add official Nginx APT repo + Install/Upgrade to latest Nginx"
-  		    if ! grep -q "deb http://nginx.org/packages/ubuntu" /etc/apt/sources.list; then
-  		    echo
-  		    echo -e "\e[1;36m> Adding nginx apt repository...\e[0m"
-		    echo "deb http://nginx.org/packages/ubuntu/ xenial nginx" >> /etc/apt/sources.list
-  		    wget http://nginx.org/keys/nginx_signing.key
-		    apt-key add nginx_signing.key
-  		    rm nginx_signing.key
-            /etc/init.d/nginx restart 
-  		    echo
-  		    fi
+  		    	if ! grep -q "deb http://nginx.org/packages/ubuntu" /etc/apt/sources.list; then
+  		    	echo
+  		    	echo -e "\e[1;36m> Adding nginx apt repository...\e[0m"
+			echo
+		    	echo "deb http://nginx.org/packages/ubuntu/ xenial nginx" >> /etc/apt/sources.list
+  		    	wget http://nginx.org/keys/nginx_signing.key
+		    	apt-key add nginx_signing.key
+  		    	rm nginx_signing.key
+            		/etc/init.d/nginx restart 
+  		    	echo
+  		    	fi
 			echo -e "\e[1;36m> Installing Nginx...\e[0m"
-		    echo
-		    apt-get -y install nginx
-            echo
+		    	echo
+		    	apt-get -y install nginx
+            		echo
                 	echo -e "\e[1;36m> \e[0mPress any key to return to menu..."
 			read
 		;;
