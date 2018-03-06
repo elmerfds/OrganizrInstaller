@@ -16,7 +16,7 @@ ECHO.
 pause
 ECHO.
 SET nginx_v=1.12.2
-SET php_v=7.2.0
+SET php_v=7.2.2
 SET nssm_v=2.24-101
 SET vcr_v=2017
 CD %~dp0
@@ -29,8 +29,8 @@ powershell -Command "Invoke-WebRequest http://nginx.org/download/nginx-1.12.2.zi
 ECHO.    Done!
 
 ECHO 2. Downloading PHP   %php_v%
-powershell -Command "(New-Object Net.WebClient).DownloadFile('http://windows.php.net/downloads/releases/php-7.2.0-nts-Win32-VC15-x64.zip', 'php.zip')"
-powershell -Command "Invoke-WebRequest http://windows.php.net/downloads/releases/php-7.2.0-nts-Win32-VC15-x64.zip -OutFile php.zip"
+powershell -Command "(New-Object Net.WebClient).DownloadFile('http://windows.php.net/downloads/releases/php-7.2.2-nts-Win32-VC15-x64.zip', 'php.zip')"
+powershell -Command "Invoke-WebRequest http://windows.php.net/downloads/releases/php-7.2.2-nts-Win32-VC15-x64.zip -OutFile php.zip"
 ECHO.    Done!
 
 ECHO 3. Downloading NSSM  %nssm_v%

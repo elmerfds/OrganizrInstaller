@@ -1,6 +1,9 @@
-#PROXY UPSTREAMS
-# Replace the IP with your services IP if it's not installed on this machine
-# Remove '#' to enable the services you want
+##vhost_template: v2.0.0
+##author: elmerfdz
+
+##PROXY UPSTREAMS
+## Replace the IP with your services IP if it's not installed on this machine
+## Remove '#' to enable the services you want
 
 #upstream organizr-upstream		{ server 127.0.0.1;       }
 #upstream plex-upstream 		{ server 127.0.0.1:32400; }
@@ -28,12 +31,12 @@
 #upstream ptserver-upstream		{ server 127.0.0.1:8089;  }
 #upstream cloudcmd-upstream		{ server 127.0.0.1:8000;  }
 
-#SSL SERVER KEYS
-#Rename & Place your keys in the below location/REMOVE '#' from the next 2 lines to enable SSL
+##SSL SERVER KEYS
+##Rename & Place your keys in the below location/REMOVE '#' from the next 2 lines to enable SSL
 #ssl_certificate       /etc/nginx/config/ssl/DOMAIN/DOMAIN.pem;
 #ssl_certificate_key   /etc/nginx/config/ssl/DOMAIN/DOMAIN.com.key;
  
-#MAIN SERVER
+##MAIN SERVER
 server {
 	include config/DOMAIN_ssl.conf;
 	include config/DOMAIN.conf;
@@ -58,7 +61,7 @@ server {
 #		include config/phpblock.conf;
 #	}
 
-	#PLEX subdirectory block required for Org SSO
+##		PLEX subdirectory block required for Org SSO
 #    	location /plex/ {
 #        	proxy_pass http://plex-upstream/;
 #        	include config/proxy.conf;
@@ -68,22 +71,28 @@ server {
 #    	}
 
 
-	# ombi v3
-#       location /ombi {
-#       proxy_pass http://ombi-upstream;
-#       proxy_http_version 1.1;
-#       proxy_set_header Upgrade $http_upgrade;
-#       proxy_set_header Connection keep-alive;
-#       proxy_set_header Host $host;
-#        proxy_cache_bypass $http_upgrade;
+##      	ombi v3
+#	location /ombi/ {
+#    		proxy_pass http://ombi-upstream;
+#    		proxy_set_header Host $host;
+#    		proxy_set_header X-Forwarded-Host $server_name;
+#    		proxy_set_header X-Real-IP $remote_addr;
+#    		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+#    		proxy_set_header X-Forwarded-Ssl on;
+#    		proxy_set_header X-Forwarded-Proto $scheme;
+#    		proxy_read_timeout  90;
+#    		proxy_redirect http://ombi-upstream https://$host;
+#	}
+#	if ($http_referer ~* /ombi/) {
+#       	rewrite ^/dist/([0-9\d*]).js /ombi/dist/$1.js last;
 #	}
 
 }
 
 
-#REMOVE '#' TO ENABLE THE SUBDOMAINS FOR THE SERVICES YOU WANT
+##REMOVE '#' TO ENABLE THE SUBDOMAINS FOR THE SERVICES YOU WANT
 
-#PLEX SERVER
+##PLEX SERVER
 #server {
 #	server_name  plex.DOMAIN;
 #	include config/DOMAIN.conf;
@@ -102,7 +111,7 @@ server {
 #}
 
 
-#PLEXPY SERVER
+##PLEXPY SERVER
 #server {
 #	server_name  plexpy.DOMAIN;
 #	include config/DOMAIN.conf;
@@ -117,7 +126,7 @@ server {
 #	}
 #}
 
-#SONARR SERVER
+##SONARR SERVER
 #server {
 #	server_name  sonarr.DOMAIN;
 #	include config/DOMAIN.conf;
@@ -133,7 +142,7 @@ server {
 #	}
 #}
 
-#RADARR SERVER
+##RADARR SERVER
 #server {
 #	server_name  radarr.DOMAIN;
 #	include config/DOMAIN.conf;
@@ -148,7 +157,7 @@ server {
 #	}
 #}
 
-#SABnzbd SERVER
+##SABnzbd SERVER
 #server {
 #	server_name  sabnzbd.DOMAIN;
 #	include config/DOMAIN.conf;
@@ -162,7 +171,7 @@ server {
 #	}
 #}
 
-#NZBGET SERVER
+##NZBGET SERVER
 #server {
 #    server_name  nzbget.DOMAIN;
 #	include config/DOMAIN.conf;
@@ -176,7 +185,7 @@ server {
 #	}
 #}
 
-#DELUGE SERVER
+##DELUGE SERVER
 #server {
 #	server_name  deluge.DOMAIN;
 #	include config/DOMAIN_ssl.conf;
@@ -198,7 +207,7 @@ server {
 #	}
 #}
 
-#OMBI SERVER
+##OMBI SERVER
 #server {
 #	server_name  request.DOMAIN;
 #	include config/DOMAIN_ssl.conf;
@@ -213,7 +222,7 @@ server {
 #
 #}
 
-#MYLAR SERVER
+##MYLAR SERVER
 #server {
 #	server_name  mylar.DOMAIN;
 #	include config/DOMAIN_ssl.conf;
@@ -228,7 +237,7 @@ server {
 #	}
 #}
 
-#HEADPHONES SERVER
+##HEADPHONES SERVER
 #server {
 #	server_name  headphones.DOMAIN;
 #	include config/DOMAIN_ssl.conf;
@@ -243,7 +252,7 @@ server {
 #	}
 #}
 
-#LazyLibrarian SERVER
+##LazyLibrarian SERVER
 #server {
 #	server_name  lazyl.DOMAIN;
 #	include config/DOMAIN_ssl.conf;
@@ -258,7 +267,7 @@ server {
 #	}
 #}
 
-#NZBHYDRA SERVER
+##NZBHYDRA SERVER
 #server {
 #	server_name  nzbhydra.DOMAIN;
 #	include config/DOMAIN_ssl.conf;
@@ -273,7 +282,7 @@ server {
 #	}
 #}
 
-#UBOOQUITY SERVER
+##UBOOQUITY SERVER
 #server {
 #	server_name  comics.DOMAIN;
 #	include config/DOMAIN_ssl.conf;
@@ -288,7 +297,7 @@ server {
 #	}
 #}
 
-#UBOOQUITY ADMIN SERVER
+##UBOOQUITY ADMIN SERVER
 #server {
 #	server_name  ubooquity.DOMAIN;
 #	include config/DOMAIN.conf;
@@ -307,7 +316,7 @@ server {
 #    		}
 #	}
 
-#UNIFI CLOUD CONTROLLER SERVER
+##UNIFI CLOUD CONTROLLER SERVER
 #server {
 #	server_name  unifi.DOMAIN;
 #	include config/DOMAIN_ssl.conf;
@@ -324,7 +333,7 @@ server {
 #}
 
 
-#HOME ASSISTANT SERVER
+##HOME ASSISTANT SERVER
 #server {
 #	server_name  hasse.DOMAIN;
 #	include config/DOMAIN_ssl.conf;
@@ -341,7 +350,7 @@ server {
 #}
 
 
-#COCKPIT SERVER
+##COCKPIT SERVER
 #	map $http_upgrade $connection_upgrade {
 #	default upgrade;
 #	'' close;
@@ -375,7 +384,7 @@ server {
 #    		}
 #	}
 
-#NETDATA SERVER
+##NETDATA SERVER
 #server {
 #	server_name netdata.DOMAIN;
 #	include config/DOMAIN.conf;
@@ -398,7 +407,7 @@ server {
 #	}
 
 
-#JACKETT SERVER
+##JACKETT SERVER
 #server {
 #	server_name  jackett.DOMAIN;
 #	include config/DOMAIN_ssl.conf;
@@ -414,7 +423,7 @@ server {
 #	}
 #}
 
-#PlexTogether WEB SERVER
+##PlexTogether WEB SERVER
 #server {
 #	server_name  plextogether.DOMAIN;
 #	include config/DOMAIN_ssl.conf;
@@ -453,7 +462,7 @@ server {
 # 	}
 #}
 
-#CloudCommander
+##CloudCommander
 #server {
 #	server_name  cloudcmd.DOMAIN;
 #	include config/DOMAIN_ssl.conf;
@@ -468,5 +477,4 @@ server {
 #
 #	}
 #}
-
 

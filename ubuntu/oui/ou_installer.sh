@@ -1,6 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
-version=v3.8.0
+#author: elmerfdz
+version=v4.0.5
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -16,6 +17,7 @@ WEB_DIR='/var/www'
 SED=`which sed`
 CURRENT_DIR=`dirname $0`
 tmp='/tmp/Organizr'
+dlvar=0
 
 #Modules
 #Organizr Requirement Module
@@ -40,6 +42,12 @@ domainval_mod()
 	{
 		while true
 		do
+			if [ $dlvar = "v2" ]; then
+			echo -e "\e[1;35mOrganizr v2 is in EARLY development stage and is not advised to use it as your daily driver.\e[0m"  
+			echo -e "Press CTRL + Z to quit or Return to continue"  
+			read
+			echo
+			fi
 			echo -e "\e[1;36m> Enter a domain or a folder name for your install:\e[0m" 
 			echo -e "\e[1;36m> E.g domain.com / organizr.local / $(hostname).local / anything.local] \e[0m" 
 			printf '\e[1;36m- \e[0m'
@@ -90,7 +98,7 @@ orgdl_mod()
         {
 		echo	      
 		echo -e "\e[1;36m> which version of Organizr do you want to install?.\e[0m"
-		echo -e "\e[1;36m- \e[0mMaster = [1] Dev = [2] Pre-Dev = [3]"
+		echo -e "\e[1;36m- \e[0m[1] = Master [2] = Dev [3] = Pre-Dev"
 		echo
 		printf '\e[1;36m> Enter a number: \e[0m'
 		read -r dlvar
@@ -100,7 +108,7 @@ orgdl_mod()
 		 
 		fi		
 		echo
-		echo -e "\e[1;36m> Where do you want to install Organizr? \e[0m [Default = /var/www/$DOMAIN]"
+		echo -e "\e[1;36m> Where do you want to install Organizr? \e[0m [Press Return for Default = /var/www/$DOMAIN]"
 		printf '\e[1;36m- \e[0m'
 		read instvar
 		instvar=${instvar:-/var/www/$DOMAIN}
@@ -123,6 +131,12 @@ orgdl_mod()
 		dlbranch=Pre-Dev
 		zipbranch=cero-dev.zip
 		zipextfname=Organizr-cero-dev
+
+		elif [ $dlvar = "v2" ]
+		then
+		dlbranch=Orgv2-Dev
+		zipbranch=v2-develop.zip
+		zipextfname=Organizr-2-develop
 		fi
 
 		echo -e "\e[1;36m> Downloading the latest Organizr "$dlbranch" ...\e[0m"
@@ -145,7 +159,7 @@ orgdl_mod()
 		fi
 		#Configuring permissions on web folder
 		chmod -R 775 $instvar
-		chown -R www-data $instvar
+		chown -R www-data:$(logname) $instvar
         }
 #Nginx vhost config
 vhostconfig_mod()
@@ -155,6 +169,8 @@ vhostconfig_mod()
 		$SED -i "s/DOMAIN/$DOMAIN/g" $CONFIG
 		$SED -i "s!ROOT!$SITE_DIR!g" $CONFIG
 		$SED -i "s/DOMAIN/$DOMAIN/g" $CONFIG_DOMAIN
+		phpv=$(ls -t /etc/php | head -1)
+		$SED -i "s/VER/$phpv/g" $NGINX_CONFIG/phpblock.conf
 
 		#Delete default.conf nginx site
 		mkdir -p $tmp/bk/nginx_default_site
@@ -193,9 +209,28 @@ orginstinfo_mod()
 #OUI script Updater
 oui_updater_mod()
 	{
+			echo
+			echo "Which branch of OUI, do you want to install?"
+			echo "- [1] = Master [2] = Dev [3] = Experimental"
+			read -r oui_branch_no
+			echo
+
+			if [ $oui_branch_no = "1" ]
+			then 
+			oui_branch_name=master
+				
+			elif [ $oui_branch_no = "2" ]
+			then 
+			oui_branch_name=dev
+	
+			elif [ $oui_branch_no = "3" ]
+			then 
+			oui_branch_name=experimental
+			fi
+
 		    	git fetch --all
-			git reset --hard origin/master
-			git pull origin master
+			git reset --hard origin/$oui_branch_name
+			git pull origin $oui_branch_name
 			echo
                 	echo -e "\e[1;36mScript updated, reloading now...\e[0m"
 			sleep 3s
@@ -336,7 +371,6 @@ do
 	show_menus
 	read_options
 done
-
 
 
 
