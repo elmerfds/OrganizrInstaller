@@ -29,8 +29,8 @@ powershell -Command "Invoke-WebRequest http://nginx.org/download/nginx-1.12.2.zi
 ECHO.    Done!
 
 ECHO 2. Downloading PHP   %php_v%
-powershell -Command "(New-Object Net.WebClient).DownloadFile('http://windows.php.net/downloads/releases/php-7.2.2-nts-Win32-VC15-x64.zip', 'php.zip')"
-powershell -Command "Invoke-WebRequest http://windows.php.net/downloads/releases/php-7.2.2-nts-Win32-VC15-x64.zip -OutFile php.zip"
+powershell -Command "(New-Object Net.WebClient).DownloadFile('https://windows.php.net/downloads/releases/archives/php-7.2.2-nts-Win32-VC15-x64.zip', 'php.zip')"
+powershell -Command "Invoke-WebRequest https://windows.php.net/downloads/releases/archives/php-7.2.2-nts-Win32-VC15-x64.zip -OutFile php.zip"
 ECHO.    Done!
 
 ECHO 3. Downloading NSSM  %nssm_v%
