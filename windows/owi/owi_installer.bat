@@ -1,5 +1,6 @@
 @ECHO off
-title Oraganizr Windows Installer
+SET owi_v=v0.8.6 Beta
+title Oraganizr Windows Installer %owi_v%
 COLOR 03
 ECHO      ___           ___                  
 ECHO     /  /\         /  /\           ___   
@@ -11,17 +12,23 @@ ECHO \  \:\ /  /:/ \  \:\/:/ /:/  /__/\/:/
 ECHO  \  \:\  /:/   \  \::/ /:/   \  \::/    
 ECHO   \  \:\/:/     \  \:\/:/     \  \:\    
 ECHO    \  \::/       \  \::/       \__\/    
-ECHO     \__\/         \__\/             ~~ v0.8.0 Beta
+ECHO     \__\/         \__\/             ~~ %owi_v%
 ECHO.      
 pause
 ECHO.
+
 SET nginx_v=1.12.2
 SET php_v=7.2.2
 SET nssm_v=2.24-101
 SET vcr_v=2017
 CD %~dp0
-ECHO Where do you want to install Nginx? e.g 'c:\nginx'
-SET /p nginx_loc=
+
+ECHO Where do you want to install Nginx? 
+ECHO - Press enter to use default and recommended directory: c:\nginx
+SET /p "nginx_loc="
+IF "%nginx_loc%" == "" (
+  set nginx_loc=c:\nginx
+)
 ECHO.
 ECHO 1. Downloading Nginx %nginx_v%
 cscript dl_config\1_nginxdl.vbs //Nologo
@@ -74,8 +81,12 @@ ECHO.
 ECHO Creating Nginx service
 ECHO.
 ECHO In order to save and reload Nginx configuration, you need to run the NGINX service as the currently logged in user
+ECHO.
 ECHO Username: %username%
-set /p pass=" Password: "
+set "psCommand=powershell -Command "$pword = read-host 'Enter Password' -AsSecureString ; ^
+    $BSTR=[System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($pword); ^
+        [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)""
+for /f "usebackq delims=" %%p in (`%psCommand%`) do set pass=%%p
 ECHO.  
 NSSM install NGINX %nginx_loc%\nginx.exe
 NSSM set NGINX ObjectName %userdomain%\%username% %pass%
@@ -84,7 +95,7 @@ NSSM restart NGINX
 
 
 ECHO.
-ECHO Installing Visual C++ Redistributable for Visual Studio 2017 [PHP 7+ requirement]
+ECHO Installing Visual C++ Redistributable for Visual Studio 2017 [PHP 7+ req]
 vc_redist.x64.exe /q /norestart
 ECHO.
 ECHO Creating PHP service
@@ -146,7 +157,7 @@ ECHO nssm.zip       DELETED
 DEL /s /q %~dp0vc_redist.x64.exe >nul 2>&1
 ECHO vc_redist.exe  DELETED
 RMDIR /s /q nssm >nul 2>&1
-ECHO nssm directory REMOVED 
+ECHO nssm directory DELETED
 ECHO.
 ECHO Done!
 ECHO.
