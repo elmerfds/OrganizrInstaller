@@ -1,5 +1,6 @@
 @ECHO off
-title Oraganizr Windows Uninstaller
+SET owu_v=v1.5.0
+title Oraganizr Windows Uninstaller %owu_v%
 COLOR 03
 ECHO      ___           ___                  
 ECHO     /  /\         /  /\           ___   
@@ -11,9 +12,23 @@ ECHO \  \:\ /  /:/ \  \:\/:/ /:/  /__/\/:/
 ECHO  \  \:\  /:/   \  \::/ /:/   \  \::/    
 ECHO   \  \:\/:/     \  \:\/:/     \  \:\    
 ECHO    \  \::/       \  \::/       \__\/    
-ECHO     \__\/         \__\/             ~~ Uninstaller v1.0
+ECHO     \__\/         \__\/             ~~ %owu_v%
 ECHO.      
 pause
+CD %~dp0
+
+ECHO.
+ECHO Deleting any downloaded tools not cleared from the previous install
+DEL /s /q vc_redist.x64.exe >nul 2>&1
+DEL /s /q *.zip >nul 2>&1
+RMDIR /s /q php >nul 2>&1
+RMDIR /s /q nginx >nul 2>&1
+RMDIR /s /q nginx-1.12.2 >nul 2>&1
+RMDIR /s /q Organizr-master >nul 2>&1
+RMDIR /s /q nssm-2.24-101-g897c7ad >nul 2>&1
+RMDIR /s /q nssm >nul 2>&1
+ECHO.Done!
+ECHO.
 
 ECHO.
 ECHO 1. Stopping Nginx service
