@@ -11,7 +11,7 @@ ECHO \  \:\ /  /:/ \  \:\/:/ /:/  /__/\/:/
 ECHO  \  \:\  /:/   \  \::/ /:/   \  \::/    
 ECHO   \  \:\/:/     \  \:\/:/     \  \:\    
 ECHO    \  \::/       \  \::/       \__\/    
-ECHO     \__\/         \__\/             ~~ v0.7.0 Beta
+ECHO     \__\/         \__\/             ~~ v0.8.0 Beta
 ECHO.      
 pause
 ECHO.
@@ -24,22 +24,19 @@ ECHO Where do you want to install Nginx? e.g 'c:\nginx'
 SET /p nginx_loc=
 ECHO.
 ECHO 1. Downloading Nginx %nginx_v%
-powershell -Command "(New-Object Net.WebClient).DownloadFile('http://nginx.org/download/nginx-1.12.2.zip', 'nginx.zip')"
-powershell -Command "Invoke-WebRequest http://nginx.org/download/nginx-1.12.2.zip -OutFile nginx.zip"
+cscript dl_config\1_nginxdl.vbs //Nologo
 ECHO.    Done!
 
 ECHO 2. Downloading PHP   %php_v%
-powershell -Command "(New-Object Net.WebClient).DownloadFile('https://windows.php.net/downloads/releases/archives/php-7.2.2-nts-Win32-VC15-x64.zip', 'php.zip')"
-powershell -Command "Invoke-WebRequest https://windows.php.net/downloads/releases/archives/php-7.2.2-nts-Win32-VC15-x64.zip -OutFile php.zip"
+cscript dl_config\2_phpdl.vbs //Nologo
 ECHO.    Done!
 
 ECHO 3. Downloading NSSM  %nssm_v%
-powershell -Command "(New-Object Net.WebClient).DownloadFile('https://nssm.cc/ci/nssm-2.24-101-g897c7ad.zip', 'nssm.zip')"
-powershell -Command "Invoke-WebRequest https://nssm.cc/ci/nssm-2.24-101-g897c7ad.zip -OutFile nssm.zip"
+cscript dl_config\3_nssmdl.vbs //Nologo
 ECHO.    Done!
 
 ECHO 4. Downloading Visual C++ Redistributable for Visual Studio %vcr_v%
-powershell -Command "Invoke-WebRequest https://download.microsoft.com/download/3/b/f/3bf6e759-c555-4595-8973-86b7b4312927/vc_redist.x64.exe -OutFile vc_redist.x64.exe"
+cscript dl_config\4_vcr.vbs //Nologo
 ECHO.    Done!
 
 ECHO.
@@ -48,6 +45,7 @@ powershell.exe -nologo -noprofile -command "& { Add-Type -A 'System.IO.Compressi
 ECHO.    Done!
 
 ECHO 2. Unziping PHP
+powershell -Command "(Add-Type -AssemblyName System.IO.Compression.Filesystem)"
 powershell.exe -nologo -noprofile -command "& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::ExtractToDirectory('php.zip', 'php'); }"
 ECHO.    Done!
 
@@ -100,8 +98,7 @@ NSSM restart PHP
 ECHO.
 ECHO Downloading Organizr Master
 ECHO.
-powershell -Command "(New-Object Net.WebClient).DownloadFile('https://github.com/causefx/Organizr/archive/master.zip', 'master.zip')"
-powershell -Command "Invoke-WebRequest https://github.com/causefx/Organizr/archive/master.zip -OutFile master.zip"
+cscript dl_config\5_orgdl.vbs //Nologo
 powershell.exe -nologo -noprofile -command "& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::ExtractToDirectory('master.zip', '.'); }"
 MOVE %~dp0Organizr-master organizr
 DEL /s /q %~dp0master.zip
