@@ -18,7 +18,7 @@ pause
 ECHO.
 
 SET nginx_v=1.12.2
-SET php_v=7.2.2
+SET php_v=7.2.3
 SET nssm_v=2.24-101
 SET vcr_v=2017
 CD %~dp0
