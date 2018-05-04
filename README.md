@@ -40,3 +40,6 @@ Automated install script for Organizr (github.com/causefx/Organizr). Only Ubuntu
 
 ### OS Architecture
 - Currently x64 bit OS only.
+
+### Powered by
+- [WNPSI](https://github.com/elmerfdz/WNPSI)
