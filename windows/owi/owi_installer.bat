@@ -35,12 +35,7 @@ cscript dl_config\1_nginxdl.vbs //Nologo
 ECHO.    Done!
 
 ECHO 2. Downloading PHP   %php_v%
-<<<<<<< HEAD
-powershell -Command "(New-Object Net.WebClient).DownloadFile('http://windows.php.net/downloads/releases/php-7.2.2-nts-Win32-VC15-x64.zip', 'php.zip')"
-powershell -Command "Invoke-WebRequest http://windows.php.net/downloads/releases/php-7.2.2-nts-Win32-VC15-x64.zip -OutFile php.zip"
-=======
 cscript dl_config\2_phpdl.vbs //Nologo
->>>>>>> master
 ECHO.    Done!
 
 ECHO 3. Downloading NSSM  %nssm_v%
