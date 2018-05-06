@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v5.5.0
+version=v5.7.0
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -52,7 +52,7 @@ domainval_mod()
 			PATTERN="^([[:alnum:]]([[:alnum:]\-]{0,61}[[:alnum:]])?\.)+[[:alpha:]]{2,6}$"
 			if [[ "$DOMAIN" =~ $PATTERN ]]; then
 			DOMAIN=`echo $DOMAIN | tr '[A-Z]' '[a-z]'`
-			echo "> Creating vhost file for:" $DOMAIN
+			echo -e "\e[1;36m> \e[0mCreating vhost file for:" $DOMAIN
 			break
 			else
 			echo "> invalid domain name"
@@ -68,13 +68,14 @@ vhostcreate_mod()
 		#domainval_mod
 		# Copy the virtual host template
 		CONFIG=$NGINX_SITES/$DOMAIN.conf
-
+		echo -e "\e[1;36m> Nginx vhost template type?:\e[0m"
 		echo
 		echo -e "\e[1;36m[CF] \e[0mCloudFlare"
 		echo -e "\e[1;36m[LE] \e[0mLet's Encrypt/Standard [coming soon]"
 		echo
 		printf '\e[1;36m- \e[0m'
 		read -r vhost_template
+		vhost_template=${vhost_template:-CF}
 		
 		CFvhostcreate_mod
 		LEvhostcreate_mod
@@ -170,7 +171,9 @@ orgdl_mod()
 		 
 		fi		
 		echo
-		echo -e "\e[1;36m> Where do you want to install Organizr? \e[0m [Press Return for Default = /var/www/$DOMAIN]"
+		echo -e "\e[1;36m> Where do you want to install Organizr? \e[0m"
+		echo -e "\e[1;36m> \e[0m [Press Return for Default = /var/www/$DOMAIN]"
+		echo
 		printf '\e[1;36m- \e[0m'
 		read instvar
 		instvar=${instvar:-/var/www/$DOMAIN}
@@ -211,7 +214,7 @@ orgdl_mod()
 		rm -r -f /tmp/Organizr/$zipbranch
 		rm -r -f /tmp/Organizr/$zipbranch.*		
 		rm -r -f /tmp/Organizr/$zipextfname
-		wget --quiet -P /tmp/Organizr/ https://github.com/causefx/Organizr/archive/$zipbranch
+		wget -q --show-progress https://github.com/causefx/Organizr/archive/$zipbranch -P /tmp/Organizr/ 
 		unzip -q /tmp/Organizr/$zipbranch -d /tmp/Organizr
 		echo -e "\e[1;36m> Organizr "$dlbranch" downloaded and unzipped \e[0m"
 		echo
@@ -272,15 +275,26 @@ orginstinfo_mod()
 		echo -------------------------------------------------------
 		echo -e " 	   \e[1;36mAbout your Organizr install    	\e[0m"
 		echo -------------------------------------------------------
-		echo -e "Install directory     = \e[1;35m$instvar \e[0m"
-		echo -e "Organzir files stored = \e[1;35m$instvar/html \e[0m"
-		echo -e "Organzir db directory = \e[1;35m$instvar/db \e[0m"
-		echo -e "      Domain added to = \e[1;35m/etc/hosts \e[0m"
+		echo -e "\e[1;34mInstall directory\e[0m     = $instvar"
+		echo -e "\e[1;34mOrganzir files stored\e[0m = $instvar/html "
+		echo -e "\e[1;34mOrganzir db directory\e[0m = $instvar/db "
+		if [ "$options" != "2" ] 
+		then
+		echo -e "      \e[1;34mDomain added to\e[0m = /etc/hosts "
+		fi
 		echo -------------------------------------------------------
 		echo
 		echo "> Use the above db path when you're setting up the admin user"
-		echo -e "> Visit \e[1;34mhttp://$DOMAIN/\e[0m to create the admin user/setup your db directory and finialise your Organizr Install"
+		if [ "$options" == "1" ] || [ "$options" == "4" ] 
+		then
+		echo -e "> Open \e[1;36mhttp://$DOMAIN/\e[0m to create the admin user/setup your DB directory and finialise your Organizr Install"
 		echo
+
+		elif [ "$options" == "2" ]
+		then
+		echo "- Next if you haven't done already, create or configure your Nginx conf to point to the Org installation directoy"
+		echo
+		fi
         }
 #OUI script Updater
 oui_updater_mod()
@@ -393,7 +407,7 @@ read_options(){
 			echo "- Your choice 2: Organizr Web Folder Only Install"
 			orgdl_mod
 			orginstinfo_mod
-			echo "- Next if you haven't done already, configure your Nginx conf to point to the Org installation directoy"
+			#echo "- Next if you haven't done already, configure your Nginx conf to point to the Org installation directoy"
 			echo
 			unset DOMAIN
                 	echo -e "\e[1;36m> \e[0mPress any key to return to menu..."
