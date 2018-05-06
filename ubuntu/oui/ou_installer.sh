@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v5.6.0
+version=v5.7.0
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -75,6 +75,7 @@ vhostcreate_mod()
 		echo
 		printf '\e[1;36m- \e[0m'
 		read -r vhost_template
+		vhost_template=${vhost_template:-CF}
 		
 		CFvhostcreate_mod
 		LEvhostcreate_mod
