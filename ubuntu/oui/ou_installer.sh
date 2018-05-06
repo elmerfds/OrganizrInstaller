@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v4.0.5
+version=v5.5.0
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -42,12 +42,6 @@ domainval_mod()
 	{
 		while true
 		do
-			if [ $dlvar = "v2" ]; then
-			echo -e "\e[1;35mOrganizr v2 is in EARLY development stage and is not advised to use it as your daily driver.\e[0m"  
-			echo -e "Press CTRL + Z to quit or Return to continue"  
-			read
-			echo
-			fi
 			echo -e "\e[1;36m> Enter a domain or a folder name for your install:\e[0m" 
 			echo -e "\e[1;36m> E.g domain.com / organizr.local / $(hostname).local / anything.local] \e[0m" 
 			printf '\e[1;36m- \e[0m'
@@ -67,40 +61,108 @@ domainval_mod()
 		done	
 	}
 #Nginx vhost creation module
+
 vhostcreate_mod()        
        {
         	echo
-		domainval_mod
-	
+		#domainval_mod
 		# Copy the virtual host template
 		CONFIG=$NGINX_SITES/$DOMAIN.conf
-		cp $CURRENT_DIR/virtual_host.template $CONFIG
-		cp -a $CURRENT_DIR/config/ $NGINX_LOC
+
+		echo
+		echo -e "\e[1;36m[CF] \e[0mCloudFlare"
+		echo -e "\e[1;36m[LE] \e[0mLet's Encrypt/Standard [coming soon]"
+		echo
+		printf '\e[1;36m- \e[0m'
+		read -r vhost_template
+		
+		CFvhostcreate_mod
+		LEvhostcreate_mod
+
+
+		# set up web root
+		chmod 755 $CONFIG
+
+		# create symlink to enable site
+		ln -s $CONFIG $NGINX_SITES_ENABLED/$DOMAIN.conf
+
+		echo -e "\e[1;36m> \e[0mSite Created for $DOMAIN"
+		echo
+       }
+CFvhostcreate_mod()        
+       {
+		if [ "$org_v" == "1" ] && [ "$vhost_template" == "CF" ]
+		then
+		cp $CURRENT_DIR/templates/orgv1_cf.template $CONFIG
+		cp -a $CURRENT_DIR/config/cf/. $NGINX_LOC/config
 		mv $NGINX_LOC/config/domain.com.conf $NGINX_LOC/config/$DOMAIN.conf
 		mv $NGINX_LOC/config/domain.com_ssl.conf $NGINX_LOC/config/${DOMAIN}_ssl.conf
 		CONFIG_DOMAIN=$NGINX_CONFIG/$DOMAIN.conf
 		mkdir -p $NGINX_CONFIG/ssl/$DOMAIN
 		chmod -R 755 $NGINX_CONFIG/ssl/$DOMAIN
 
+		elif [ "$org_v" == "2" ] && [ "$vhost_template" == "CF" ]
+		then
+		cp $CURRENT_DIR/templates/orgv2_cf.template $CONFIG
+		cp -a $CURRENT_DIR/config/cf/. $NGINX_LOC/config
+		mv $NGINX_LOC/config/domain.com.conf $NGINX_LOC/config/$DOMAIN.conf
+		mv $NGINX_LOC/config/domain.com_ssl.conf $NGINX_LOC/config/${DOMAIN}_ssl.conf
+		CONFIG_DOMAIN=$NGINX_CONFIG/$DOMAIN.conf
+		mkdir -p $NGINX_CONFIG/ssl/$DOMAIN
+		chmod -R 755 $NGINX_CONFIG/ssl/$DOMAIN
+		fi
 
-		# set up web root
-		chmod 600 $CONFIG
+	}
 
-		# create symlink to enable site
-		ln -s $CONFIG $NGINX_SITES_ENABLED/$DOMAIN.conf
+LEvhostcreate_mod()        
+       {
+		if [ "$org_v" == "1" ] && [ "$vhost_template" == "LE" ]
+		then
+		cp $CURRENT_DIR/templates/orgv1_le.template $CONFIG
+		cp -a $CURRENT_DIR/config/le/. $NGINX_LOC/config
 
-		echo "> Site Created for $DOMAIN"
-		echo
-       }
+		elif [ "$org_v" == "2" ] && [ "$vhost_template" == "LE" ]
+		then
+		cp $CURRENT_DIR/templates/orgv2_le.template $CONFIG
+		cp -a $CURRENT_DIR/config/le/. $NGINX_LOC/config
+		
+
+		mv $NGINX_LOC/config/domain.com.conf $NGINX_LOC/config/$DOMAIN.conf
+		mv $NGINX_LOC/config/domain.com_ssl.conf $NGINX_LOC/config/${DOMAIN}_ssl.conf
+		CONFIG_DOMAIN=$NGINX_CONFIG/$DOMAIN.conf
+		mkdir -p $NGINX_CONFIG/ssl/$DOMAIN
+		chmod -R 755 $NGINX_CONFIG/ssl/$DOMAIN
+		fi
+
+	}
 
 #Organizr download module
 orgdl_mod()
         {
-		echo	      
-		echo -e "\e[1;36m> which version of Organizr do you want to install?.\e[0m"
-		echo -e "\e[1;36m- \e[0m[1] = Master [2] = Dev [3] = Pre-Dev"
 		echo
-		printf '\e[1;36m> Enter a number: \e[0m'
+		echo -e "\e[1;36m> which version of Organizr do you want to install?.\e[0m" 
+		echo -e "\e[1;36m[1] \e[0mOrganizr v1"
+		echo -e "\e[1;36m[2] \e[0mOrganizr v2 [BETA]" 
+		echo 
+		printf '\e[1;36m> \e[0m'
+		read -r org_v
+		echo
+		echo -e "\e[1;36m> which branch do you want to install?\e[0m .eg. 1a or 2a"
+		echo
+		if [ $org_v = "1" ]
+		then 
+		echo -e "\e[1;36m[1a] \e[0mMaster"
+		echo -e "\e[1;36m[1b] \e[0mDev"
+		echo -e "\e[1;36m[1c] \e[0mPre-Dev"
+		
+		elif [ $org_v = "2" ]
+		then 
+		echo -e "\e[1;36m[2a] \e[0mMaster [Coming Soon]"
+		echo -e "\e[1;36m[2b] \e[0mDev [BETA here]"
+		fi
+
+		echo
+		printf '\e[1;36m> Enter branch code: \e[0m'
 		read -r dlvar
 		echo
  		if [ -z "$DOMAIN" ]; then
@@ -114,25 +176,31 @@ orgdl_mod()
 		instvar=${instvar:-/var/www/$DOMAIN}
 		echo
 		#Org Download and Install
-		if [ $dlvar = "1" ]
+		if [ $dlvar = "1a" ]
 		then 
 		dlbranch=Master
 		zipbranch=master.zip
 		zipextfname=Organizr-master
 			
-		elif [ $dlvar = "2" ]
+		elif [ $dlvar = "1b" ]
 		then 
 		dlbranch=Develop
 		zipbranch=develop.zip
 		zipextfname=Organizr-develop
 
-		elif [ $dlvar = "3" ]
+		elif [ $dlvar = "1c" ]
 		then 
 		dlbranch=Pre-Dev
 		zipbranch=cero-dev.zip
 		zipextfname=Organizr-cero-dev
 
-		elif [ $dlvar = "v2" ]
+		elif [ $dlvar = "2a" ]
+		then
+		dlbranch=Orgv2-Dev
+		zipbranch=v2-develop.zip
+		zipextfname=Organizr-2-develop
+
+		elif [ $dlvar = "2b" ]
 		then
 		dlbranch=Orgv2-Dev
 		zipbranch=v2-develop.zip
@@ -183,27 +251,35 @@ vhostconfig_mod()
 		# reload Nginx to pull in new config
 		/etc/init.d/nginx reload
         }
+
+#Add site to hosts for local access
+addsite_to_hosts_mod()
+        {
+		sudo echo "127.0.0.1 $" $DOMAIN >> /etc/hosts
+	}
+
 #Org Install info
 orginstinfo_mod()
         {
 		#Displaying installation info
 		echo
-		printf '############################################'
+		printf '######################################################'
 		echo
-		echo -e "     \e[1;32mOrganizr $q Installion Complete  \e[0m"
-		printf '############################################'
+		echo -e "     	 \e[1;32mOrganizr $q Installion Complete  \e[0m"
+		printf '######################################################'
 		echo
 		echo
-		echo ---------------------------------------------
-		echo -e " 	 \e[1;36mAbout your Organizr install    	\e[0m"
-		echo ---------------------------------------------
+		echo -------------------------------------------------------
+		echo -e " 	   \e[1;36mAbout your Organizr install    	\e[0m"
+		echo -------------------------------------------------------
 		echo -e "Install directory     = \e[1;35m$instvar \e[0m"
 		echo -e "Organzir files stored = \e[1;35m$instvar/html \e[0m"
 		echo -e "Organzir db directory = \e[1;35m$instvar/db \e[0m"
-		echo ---------------------------------------------
+		echo -e "      Domain added to = \e[1;35m/etc/hosts \e[0m"
+		echo -------------------------------------------------------
 		echo
-		echo "- Use the above db path when you're setting up the admin user"
-		echo "- Visit localhost/ to create the admin user/setup your db directory and finialise your Organizr Install"
+		echo "> Use the above db path when you're setting up the admin user"
+		echo -e "> Visit \e[1;34mhttp://$DOMAIN/\e[0m to create the admin user/setup your db directory and finialise your Organizr Install"
 		echo
         }
 #OUI script Updater
@@ -303,9 +379,10 @@ read_options(){
 		case $options in
 	 	"1")
 			echo "- Your choice: 1. Organizr + Nginx site Install"
-			vhostcreate_mod
 			orgdl_mod
+			vhostcreate_mod
 			vhostconfig_mod
+			addsite_to_hosts_mod
 			orginstinfo_mod
 			unset DOMAIN
                 	echo -e "\e[1;36m> \e[0mPress any key to return to menu..."
@@ -335,9 +412,10 @@ read_options(){
 	        	orgreq_mod
 			echo -e "\e[1;36m> \e[0mPress any key to continue with Organizr + Nginx site config"
 			read
-	        	vhostcreate_mod
 			orgdl_mod
+	        	vhostcreate_mod
 			vhostconfig_mod
+			addsite_to_hosts_mod
 			orginstinfo_mod
 			unset DOMAIN
                 	echo -e "\e[1;36m> \e[0mPress any key to return to menu..."
