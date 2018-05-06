@@ -1,0 +1,481 @@
+##Orgv1 Let's encrypt vhost Placeholder
+##vhost_template: v2.0.0
+##author: elmerfdz
+
+##PROXY UPSTREAMS
+## Replace the IP with your services IP if it's not installed on this machine
+## Remove '#' to enable the services you want
+
+#upstream organizr-upstream		{ server 127.0.0.1;       }
+#upstream plex-upstream 		{ server 127.0.0.1:32400; }
+#upstream plexpy-upstream 		{ server 127.0.0.1:8181;  }
+#upstream ombi-upstream 		{ server 127.0.0.1:5000;  } 
+#upstream sabnzbd-upstream 		{ server 127.0.0.1:8080;  }
+#upstream nzbget-upstream		{ server 127.0.0.1:6789;  }
+#upstream radarr-upstream 		{ server 127.0.0.1:7878;  }
+#upstream sonarr-upstream 		{ server 127.0.0.1:8989;  }
+#upstream mylar-upstream		{ server 127.0.0.1:8090;  }
+#upstream headphones-upstream		{ server 127.0.0.1:8182;  }
+#upstream lazyl-upstream		{ server 127.0.0.1:5299;  }
+#upstream nzbhydra-upstream		{ server 127.0.0.1:5075;  }
+#upstream comics-upstream		{ server 127.0.0.1:2202;  }
+#upstream ubooquityadmin-upstream	{ server 127.0.0.1:2203;  }
+#upstream unifi-upstream		{ server 127.0.0.1:8443;  }
+#upstream hasse-upstream		{ server 127.0.0.1:8123;  }
+#upstream jackett-upstream		{ server 127.0.0.1:9117;  }
+#upstream mattermost-upstream		{ server 127.0.0.1:8065;  }
+#upstream deluge-upstream		{ server 127.0.0.1:8112;  }
+#upstream netdata-upstream		{ server 127.0.0.1:19999; }
+#upstream cockpit-upstream		{ server 127.0.0.1:9090;  }
+#upstream websocket			{ server 127.0.0.1:9090;  } #cockpit app requirement
+#upstream ptweb-upstream		{ server 127.0.0.1:8088;  }
+#upstream ptserver-upstream		{ server 127.0.0.1:8089;  }
+#upstream cloudcmd-upstream		{ server 127.0.0.1:8000;  }
+
+##SSL SERVER KEYS
+##Rename & Place your keys in the below location/REMOVE '#' from the next 2 lines to enable SSL
+#ssl_certificate       /etc/nginx/config/ssl/DOMAIN/DOMAIN.pem;
+#ssl_certificate_key   /etc/nginx/config/ssl/DOMAIN/DOMAIN.com.key;
+ 
+##MAIN SERVER
+server {
+	include config/DOMAIN_ssl.conf;
+	include config/DOMAIN.conf;
+
+	root ROOT/html;
+	index index.php index.html index.htm index.nginx-debian.html;
+
+	#Org Auth
+	location /auth-admin { rewrite ^ /auth.php?admin&ban=someone,thisperson; }
+	location /auth-user { rewrite ^ /auth.php?user&ban=someone,thisperson; }  
+  	server_name www.DOMAIN DOMAIN localhost;
+
+	#error page
+	error_page 400 401 403 404 405 408 500 502 503 504  /error.php?error=$status;
+
+	location / {try_files $uri $uri/ =404;}
+	include config/phpblock.conf;  #PHP Block
+
+	#PIMPMYLOG BLOCK WITH ORG AUTH
+#	location ^~ /PimpMyLog/ {
+#		auth_request /auth-admin;
+#		include config/phpblock.conf;
+#	}
+
+##		PLEX subdirectory block required for Org SSO
+#    	location /plex/ {
+#        	proxy_pass http://plex-upstream/;
+#        	include config/proxy.conf;
+#    	}
+#    	if ($http_referer ~* /plex/) {
+#        	rewrite ^/web/(.*) /plex/web/$1? redirect;
+#    	}
+
+
+##      	ombi v3
+#	location /ombi/ {
+#    		proxy_pass http://ombi-upstream;
+#    		proxy_set_header Host $host;
+#    		proxy_set_header X-Forwarded-Host $server_name;
+#    		proxy_set_header X-Real-IP $remote_addr;
+#    		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+#    		proxy_set_header X-Forwarded-Ssl on;
+#    		proxy_set_header X-Forwarded-Proto $scheme;
+#    		proxy_read_timeout  90;
+#    		proxy_redirect http://ombi-upstream https://$host;
+#	}
+#	if ($http_referer ~* /ombi/) {
+#       	rewrite ^/dist/([0-9\d*]).js /ombi/dist/$1.js last;
+#	}
+
+}
+
+
+##REMOVE '#' TO ENABLE THE SUBDOMAINS FOR THE SERVICES YOU WANT
+
+##PLEX SERVER
+#server {
+#	server_name  plex.DOMAIN;
+#	include config/DOMAIN.conf;
+#	include config/auth-admin.conf;
+#	include config/DOMAIN_ssl.conf;
+#	error_page 400 401 403 404 405 408 500 502 503 504 https://DOMAIN/error.php?error=$status;
+#	location / {
+     		#auth_request /auth-user;
+#		proxy_pass http://plex-upstream;
+#		include config/proxy.conf;
+#		proxy_redirect off;
+#		proxy_buffering off;
+#
+#
+#	}
+#}
+
+
+##PLEXPY SERVER
+#server {
+#	server_name  plexpy.DOMAIN;
+#	include config/DOMAIN.conf;
+#	include config/auth-admin.conf;
+#	include config/DOMAIN_ssl.conf;
+#	error_page 400 401 403 404 405 408 500 502 503 504 https://DOMAIN/error.php?error=$status;
+#	location / {
+#		auth_request /auth-user;
+#		proxy_pass https://plexpy-upstream;
+#		include config/proxy.conf;
+#
+#	}
+#}
+
+##SONARR SERVER
+#server {
+#	server_name  sonarr.DOMAIN;
+#	include config/DOMAIN.conf;
+#	include config/DOMAIN_ssl.conf;
+#	include config/auth-admin.conf;
+#	error_page 400 401 403 404 405 408 500 502 503 504 https://DOMAIN/error.php?error=$status;
+#	location / {
+#		auth_request /auth-admin;
+#		proxy_pass http://sonarr-upstream;
+#		include config/proxy.conf;
+		#proxy_bind $server_addr;
+#
+#	}
+#}
+
+##RADARR SERVER
+#server {
+#	server_name  radarr.DOMAIN;
+#	include config/DOMAIN.conf;
+#	include config/DOMAIN_ssl.conf;
+#	include config/auth-admin.conf;
+#	error_page 400 401 403 404 405 408 500 502 503 504 https://DOMAIN/error.php?error=$status;
+#	location / {
+#		auth_request /auth-admin;
+#		proxy_pass http://radarr-upstream;
+#		include config/proxy.conf;
+#
+#	}
+#}
+
+##SABnzbd SERVER
+#server {
+#	server_name  sabnzbd.DOMAIN;
+#	include config/DOMAIN.conf;
+#	include config/DOMAIN_ssl.conf;
+#	include config/auth-admin.conf;
+#	error_page 400 401 403 404 405 408 500 502 503 504 https://DOMAIN/error.php?error=$status;
+#	location / {      
+#		auth_request /auth-admin;
+#		proxy_pass http://sabnzbd-upstream;
+#		include config/proxy.conf;
+#	}
+#}
+
+##NZBGET SERVER
+#server {
+#    server_name  nzbget.DOMAIN;
+#	include config/DOMAIN.conf;
+#	include config/DOMAIN_ssl.conf;
+#	include config/auth-admin.conf;
+#	error_page 400 401 403 404 405 408 500 502 503 504 https://DOMAIN/error.php?error=$status;
+#	location / {      
+#		auth_request /auth-admin;
+#		proxy_pass http://nzbget-upstream;
+#		include config/proxy.conf;
+#	}
+#}
+
+##DELUGE SERVER
+#server {
+#	server_name  deluge.DOMAIN;
+#	include config/DOMAIN_ssl.conf;
+#	include config/DOMAIN.conf;
+#	include config/auth-admin.conf;
+#	error_page 400 401 403 404 405 408 500 502 503 504 https://DOMAIN/error.php?error=$status;
+#	location / {      
+#		auth_request /auth-admin;
+#		proxy_pass http://deluge-upstream;
+#		include config/proxy.conf;
+#
+#	}
+#
+#	location /upload {
+#		auth_request /auth-admin;
+#		proxy_pass http://deluge-upstream/upload;
+#		include config/proxy.conf;
+#
+#	}
+#}
+
+##OMBI SERVER
+#server {
+#	server_name  request.DOMAIN;
+#	include config/DOMAIN_ssl.conf;
+#	include config/DOMAIN.conf;
+#	include config/auth-admin.conf;
+#	error_page 400 401 403 404 405 408 500 502 503 504 https://DOMAIN/error.php?error=$status;
+#	location / {
+#		auth_request /auth-user;
+#		proxy_pass http://ombi-upstream;
+#
+#	}
+#
+#}
+
+##MYLAR SERVER
+#server {
+#	server_name  mylar.DOMAIN;
+#	include config/DOMAIN_ssl.conf;
+#	include config/DOMAIN.conf;
+#	include config/auth-admin.conf;
+#	error_page 400 401 403 404 405 408 500 502 503 504 https://DOMAIN/error.php?error=$status;
+#	location ^~/ {
+#		auth_request /auth-admin;
+#		proxy_pass https://mylar-upstream;
+#		include config/proxy.conf;
+#
+#	}
+#}
+
+##HEADPHONES SERVER
+#server {
+#	server_name  headphones.DOMAIN;
+#	include config/DOMAIN_ssl.conf;
+#	include config/DOMAIN.conf;
+#	include config/auth-admin.conf;
+#	error_page 400 401 403 404 405 408 500 502 503 504 https://DOMAIN/error.php?error=$status;
+#	location ^~/ {
+#		auth_request /auth-admin;
+#		proxy_pass http://headphones-upstream;
+#		include config/proxy.conf;
+#
+#	}
+#}
+
+##LazyLibrarian SERVER
+#server {
+#	server_name  lazyl.DOMAIN;
+#	include config/DOMAIN_ssl.conf;
+#	include config/DOMAIN.conf;
+#	include config/auth-admin.conf;
+#	error_page 400 401 403 404 405 408 500 502 503 504 https://DOMAIN/error.php?error=$status;
+#	location ^~/ {
+#		auth_request /auth-admin;
+#		proxy_pass https://lazyl-upstream;
+#		include config/proxy.conf;
+#
+#	}
+#}
+
+##NZBHYDRA SERVER
+#server {
+#	server_name  nzbhydra.DOMAIN;
+#	include config/DOMAIN_ssl.conf;
+#	include config/DOMAIN.conf;
+#	include config/auth-admin.conf;
+#	error_page 400 401 403 404 405 408 500 502 503 504 https://DOMAIN/error.php?error=$status;
+#	location ^~/ {
+#		auth_request /auth-admin;
+#		proxy_pass http://nzbhydra-upstream;
+#		include config/proxy.conf;
+#
+#	}
+#}
+
+##UBOOQUITY SERVER
+#server {
+#	server_name  comics.DOMAIN;
+#	include config/DOMAIN_ssl.conf;
+#	include config/DOMAIN.conf;
+#	include config/auth-admin.conf;
+#	error_page 400 401 403 404 405 408 500 502 503 504 https://DOMAIN/error.php?error=$status;
+#	location ^~/ {
+#		auth_request /auth-user;
+#		proxy_pass https://comics-upstream;
+#		include config/proxy.conf;
+#
+#	}
+#}
+
+##UBOOQUITY ADMIN SERVER
+#server {
+#	server_name  ubooquity.DOMAIN;
+#	include config/DOMAIN.conf;
+#	include config/DOMAIN_ssl.conf;
+#	include config/auth-admin.conf;
+#	error_page 400 401 403 404 405 408 500 502 503 504 https://DOMAIN/error.php?error=$status;
+#
+#   	location / {
+#		add_header X-Frame-Option "DENY";
+#		auth_request /auth-admin;
+#       	proxy_pass https://ubooquityadmin-upstream;
+#        	proxy_http_version 1.1;
+#       	proxy_pass_request_headers on;
+#        	proxy_set_header Connection "keep-alive";
+#       	proxy_store off;
+#    		}
+#	}
+
+##UNIFI CLOUD CONTROLLER SERVER
+#server {
+#	server_name  unifi.DOMAIN;
+#	include config/DOMAIN_ssl.conf;
+#	include config/DOMAIN.conf;
+#	include config/auth-admin.conf;
+#	error_page 400 401 403 404 405 408 500 502 503 504 https://DOMAIN/error.php?error=$status;
+#	location / {
+#		auth_request /auth-admin;
+#		proxy_pass https://unifi-upstream;
+#		include config/proxy.conf;
+#		proxy_buffering	off;
+#
+#	}
+#}
+
+
+##HOME ASSISTANT SERVER
+#server {
+#	server_name  hasse.DOMAIN;
+#	include config/DOMAIN_ssl.conf;
+#	include config/DOMAIN.conf;
+#	include config/auth-admin.conf;
+#	error_page 400 401 403 404 405 408 500 502 503 504 https://DOMAIN/error.php?error=$status;
+#	location / {
+#		auth_request /auth-admin;
+#		proxy_pass http://hasse-upstream;
+#		include config/proxy.conf;
+#		proxy_buffering	off;
+#
+#	}
+#}
+
+
+##COCKPIT SERVER
+#	map $http_upgrade $connection_upgrade {
+#	default upgrade;
+#	'' close;
+#	}
+#
+#server {
+#	server_name  cockpit.DOMAIN;
+#	include config/DOMAIN.conf;
+#	include config/DOMAIN_ssl.conf;
+#	include config/auth-admin.conf;
+#	error_page 400 401 403 404 405 408 500 502 503 504 https://DOMAIN/error.php?error=$status;
+#	location / {
+#		#include config/proxy.conf;
+#		auth_request /auth-admin;
+#		proxy_pass http://cockpit-upstream;
+#		add_header X-Frame-Option "DENY";
+#	        proxy_http_version 1.1;
+#       	proxy_buffering off;
+#        	proxy_set_header X-Real-IP  $remote_addr;
+#        	proxy_set_header Host $host;
+#        	proxy_set_header X-Forwarded-For $remote_addr;
+        	# needed for websocket
+#        	proxy_set_header Upgrade $http_upgrade;
+#       	proxy_set_header Connection $connection_upgrade;
+        	# change scheme of "Origin" to http
+#        	proxy_set_header Origin http://$host;
+#
+        	# Pass ETag header from cockpit to clients.
+        	# See: https://github.com/cockpit-project/cockpit/issues/5239
+#        	gzip off;
+#    		}
+#	}
+
+##NETDATA SERVER
+#server {
+#	server_name netdata.DOMAIN;
+#	include config/DOMAIN.conf;
+#	include config/DOMAIN_ssl.conf;
+#	include config/auth-admin.conf;
+#	error_page 400 401 403 404 405 408 500 502 503 504 https://DOMAIN/error.php?error=$status;
+#
+#   	location / {
+#		add_header X-Frame-Option "DENY";
+#       	proxy_set_header X-Forwarded-Host $host;
+#        	proxy_set_header X-Forwarded-Server $host;
+#	        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+#		auth_request /auth-admin;
+#       	proxy_pass http://netdata-upstream;
+#        	proxy_http_version 1.1;
+#       	proxy_pass_request_headers on;
+#        	proxy_set_header Connection "keep-alive";
+#        	proxy_store off;
+#    		}
+#	}
+
+
+##JACKETT SERVER
+#server {
+#	server_name  jackett.DOMAIN;
+#	include config/DOMAIN_ssl.conf;
+#	include config/DOMAIN.conf;
+#	include config/auth-admin.conf;
+#	error_page 400 401 403 404 405 408 500 502 503 504 https://DOMAIN/error.php?error=$status;
+#	location / {
+#		auth_request /auth-admin;
+#		proxy_pass http://jackett-upstream;
+#		include config/proxy.conf;
+#		proxy_buffering	off;
+#
+#	}
+#}
+
+##PlexTogether WEB SERVER
+#server {
+#	server_name  plextogether.DOMAIN;
+#	include config/DOMAIN_ssl.conf;
+#	include config/DOMAIN.conf;
+#	include config/auth-admin.conf;
+#	error_page 400 401 403 404 405 408 500 502 503 504 https://DOMAIN/error.php?error=$status;
+#	location / {
+#		auth_request /auth-user;
+#		proxy_pass http://ptweb-upstream;
+		#include config/proxy.conf;
+#		proxy_hide_header X-Frame-Options;
+#		add_header X-Frame-Option "DENY";
+# 	    	proxy_http_version 1.1;
+# 	    	proxy_set_header Upgrade $http_upgrade;
+# 	    	proxy_set_header Connection "upgrade";
+#	}
+
+# 	location /ptweb {
+#		auth_request /auth-user;
+# 		proxy_pass http://ptweb-upstream/ptweb;
+#		proxy_hide_header X-Frame-Options;
+#		add_header X-Frame-Option "DENY";
+# 	    	proxy_http_version 1.1;
+# 	    	proxy_set_header Upgrade $http_upgrade;
+# 	    	proxy_set_header Connection "upgrade";
+# 	}
+
+# 	location /ptserver {
+#		auth_request /auth-user;
+# 		proxy_pass http://ptserver-upstream/ptserver;
+#		proxy_hide_header X-Frame-Options;
+#		add_header X-Frame-Option "DENY";
+#	    	proxy_http_version 1.1;
+# 	    	proxy_set_header Upgrade $http_upgrade;
+# 	    	proxy_set_header Connection "upgrade";
+# 	}
+#}
+
+##CloudCommander
+#server {
+#	server_name  cloudcmd.DOMAIN;
+#	include config/DOMAIN_ssl.conf;
+#	include config/DOMAIN.conf;
+#	include config/auth-admin.conf;
+#	error_page 400 401 403 404 405 408 500 502 503 504 https://DOMAIN/error.php?error=$status;
+#	location / {
+#		auth_request /auth-admin;
+#		proxy_pass http://cloudcmd-upstream;
+#		include config/proxy.conf;
+#		proxy_buffering	off;
+#
+#	}
+#}
+
