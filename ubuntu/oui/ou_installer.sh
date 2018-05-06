@@ -287,7 +287,7 @@ orginstinfo_mod()
 		echo "> Use the above db path when you're setting up the admin user"
 		if [ "$options" == "1" ] || [ "$options" == "4" ] 
 		then
-		echo -e "> Open \e[1;36mhttp://$DOMAIN/\e[0m to create the admin user/setup your DB directory and finialise your Organizr Install"
+		echo -e "> Open \e[1;36mhttp://$DOMAIN/\e[0m to create the admin user/setup your DB directory and finalise your Organizr Install"
 		echo
 
 		elif [ "$options" == "2" ]
