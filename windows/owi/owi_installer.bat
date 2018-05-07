@@ -1,5 +1,5 @@
 @ECHO off
-SET owi_v=v0.8.6 Beta
+SET owi_v=v0.8.7 Beta
 title Oraganizr Windows Installer %owi_v%
 COLOR 03
 ECHO      ___           ___                  
@@ -103,6 +103,10 @@ ECHO.
 NSSM install PHP %nginx_loc%\php\php-cgi.exe
 NSSM set PHP AppParameters -b 127.0.0.1:9000
 NSSM set PHP ObjectName %userdomain%\%username% %pass%
+ECHO.
+SETX /m PHP_FCGI_CHILDREN 3
+SETX /m PHP_FCGI_MAX_REQUESTS 128
+ECHO.
 NSSM start PHP
 NSSM restart PHP
 
