@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v5.7.0
+version=v5.7.1
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -258,7 +258,7 @@ vhostconfig_mod()
 #Add site to hosts for local access
 addsite_to_hosts_mod()
         {
-		sudo echo "127.0.0.1 $" $DOMAIN >> /etc/hosts
+		sudo echo "127.0.0.1 $DOMAIN"  >> /etc/hosts
 	}
 
 #Org Install info
