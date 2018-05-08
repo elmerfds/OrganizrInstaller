@@ -1,6 +1,6 @@
 ## OCI (Organizr CentOS Installer) BETA
 
-![menu](https://i.imgur.com/r9lajzW.png)
+![menu](https://i.imgur.com/7nSnAXl.png)
 
 ### How do I run it?
 1. `sudo yum install git`
