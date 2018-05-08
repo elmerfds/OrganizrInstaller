@@ -47,16 +47,16 @@ cscript dl_config\4_vcr.vbs //Nologo
 ECHO.    Done!
 
 ECHO.
-ECHO 1. Unziping Nginx
+ECHO 1. Unzipping Nginx
 powershell.exe -nologo -noprofile -command "& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::ExtractToDirectory('nginx.zip', '.'); }"
 ECHO.    Done!
 
-ECHO 2. Unziping PHP
+ECHO 2. Unzipping PHP
 powershell -Command "(Add-Type -AssemblyName System.IO.Compression.Filesystem)"
 powershell.exe -nologo -noprofile -command "& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::ExtractToDirectory('php.zip', 'php'); }"
 ECHO.    Done!
 
-ECHO 3. Unziping NSM
+ECHO 3. Unzipping NSM
 powershell.exe -nologo -noprofile -command "& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::ExtractToDirectory('nssm.zip', '.'); }"
 ECHO.    Done!
 
