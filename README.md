@@ -1,5 +1,5 @@
 # OrganizrInstaller
-Automated install script for Organizr (github.com/causefx/Organizr). Only Ubuntu/Debian supported right now! 
+Automated install script for Organizr (github.com/causefx/Organizr). Only Ubuntu/Debian/CentOS and Windows supported right now! 
 
 ## OUI (Organizr Ubuntu Installer)
 
