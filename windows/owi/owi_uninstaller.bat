@@ -1,5 +1,5 @@
 @ECHO off
-SET owu_v=v1.5.0
+SET owu_v=v1.5.1
 title Oraganizr Windows Uninstaller %owu_v%
 COLOR 03
 ECHO      ___           ___                  
@@ -23,7 +23,8 @@ DEL /s /q vc_redist.x64.exe >nul 2>&1
 DEL /s /q *.zip >nul 2>&1
 RMDIR /s /q php >nul 2>&1
 RMDIR /s /q nginx >nul 2>&1
-RMDIR /s /q nginx-1.12.2 >nul 2>&1
+MOVE %~dp0nginx-* nginx >nul 2>&1
+RMDIR /s /q nginx >nul 2>&1
 RMDIR /s /q Organizr-master >nul 2>&1
 RMDIR /s /q nssm-2.24-101-g897c7ad >nul 2>&1
 RMDIR /s /q nssm >nul 2>&1
