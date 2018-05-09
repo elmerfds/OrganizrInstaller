@@ -1,5 +1,5 @@
 @ECHO off
-SET owi_v=v0.8.7 Beta
+SET owi_v=v0.8.8 Beta
 title Oraganizr Windows Installer %owi_v%
 COLOR 03
 ECHO      ___           ___                  
@@ -18,7 +18,7 @@ pause
 ECHO.
 
 SET nginx_v=1.12.2
-SET php_v=7.2.3
+SET php_v=7.2.4
 SET nssm_v=2.24-101
 SET vcr_v=2017
 CD %~dp0
@@ -64,6 +64,7 @@ ECHO.
 ECHO Moving Nginx and PHP to destination
 ECHO.
 MOVE %~dp0nginx-* nginx
+MOVE %~dp0nginx\html %~dp0nginx\www
 MOVE %~dp0nginx %nginx_loc%
 MOVE %~dp0nssm-* nssm
 MOVE %~dp0php %nginx_loc%\php
@@ -104,6 +105,7 @@ NSSM install PHP %nginx_loc%\php\php-cgi.exe
 NSSM set PHP AppParameters -b 127.0.0.1:9000
 NSSM set PHP ObjectName %userdomain%\%username% %pass%
 ECHO.
+ECHO Setting PHP system variables
 SETX /m PHP_FCGI_CHILDREN 3
 SETX /m PHP_FCGI_MAX_REQUESTS 128
 ECHO.
@@ -117,7 +119,7 @@ cscript dl_config\5_orgdl.vbs //Nologo
 powershell.exe -nologo -noprofile -command "& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::ExtractToDirectory('master.zip', '.'); }"
 MOVE %~dp0Organizr-master organizr
 DEL /s /q %~dp0master.zip
-xcopy /e /i /y /s organizr %nginx_loc%\html\organizr
+xcopy /e /i /y /s organizr %nginx_loc%\www\organizr\html
 RMDIR /s /q organizr
 
 ECHO.
@@ -126,6 +128,7 @@ ECHO Updating Nginx and PHP config
 ECHO #############################
 ECHO.
 COPY %~dp0config\nginx.conf %nginx_loc%\conf\nginx.conf
+mkdir %nginx_loc%\www\organizr\db
 CD %nginx_loc%
 nginx -s reload
 CD %~dp0
