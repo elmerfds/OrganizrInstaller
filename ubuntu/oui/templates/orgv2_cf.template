@@ -233,7 +233,7 @@ server {
 #	include config/DOMAIN.conf;
 #	include config/v2-auth-org.conf;
 #	error_page 400 401 403 404 405 408 500 502 503 504 https://DOMAIN/?error=$status;
-#	location ^~/ {
+#	location / {
 #		auth_request /auth-0;   #admin only
 #		proxy_pass https://mylar-upstream;
 #		include config/proxy.conf;
@@ -248,7 +248,7 @@ server {
 #	include config/DOMAIN.conf;
 #	include config/v2-auth-org.conf;
 #	error_page 400 401 403 404 405 408 500 502 503 504 https://DOMAIN/?error=$status;
-#	location ^~/ {
+#	location / {
 #		auth_request /auth-0;   #admin only
 #		proxy_pass http://headphones-upstream;
 #		include config/proxy.conf;
@@ -263,7 +263,7 @@ server {
 #	include config/DOMAIN.conf;
 #	include config/v2-auth-org.conf;
 #	error_page 400 401 403 404 405 408 500 502 503 504 https://DOMAIN/?error=$status;
-#	location ^~/ {
+#	location / {
 #		auth_request /auth-0;   #admin only
 #		proxy_pass https://lazyl-upstream;
 #		include config/proxy.conf;
@@ -278,7 +278,7 @@ server {
 #	include config/DOMAIN.conf;
 #	include config/v2-auth-org.conf;
 #	error_page 400 401 403 404 405 408 500 502 503 504 https://DOMAIN/?error=$status;
-#	location ^~/ {
+#	location / {
 #		auth_request /auth-0;   #admin only
 #		proxy_pass http://nzbhydra-upstream;
 #		include config/proxy.conf;
@@ -293,7 +293,7 @@ server {
 #	include config/DOMAIN.conf;
 #	include config/v2-auth-org.conf;
 #	error_page 400 401 403 404 405 408 500 502 503 504 https://DOMAIN/?error=$status;
-#	location ^~/ {
+#	location / {
 #		auth_request /auth-998;   #logged in User
 #		proxy_pass https://comics-upstream;
 #		include config/proxy.conf;
