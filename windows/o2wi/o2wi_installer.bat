@@ -1,5 +1,5 @@
 @ECHO off
-SET owi_v=v0.8.8 Beta
+SET owi_v=v0.9.0 Beta
 title Oraganizr v2 Windows Installer %owi_v%
 COLOR 03
 ECHO      ___           ___                  
@@ -23,7 +23,7 @@ SET nginx_v=1.12.2
 SET php_v=7.2.4
 SET nssm_v=2.24-101
 SET vcr_v=2017
-CD %~dp0
+CD /d %~dp0
 
 ECHO Where do you want to install Nginx? 
 ECHO - Press enter to use default and recommended directory: c:\nginx
@@ -67,14 +67,14 @@ ECHO Moving Nginx and PHP to destination
 ECHO.
 MOVE %~dp0nginx-* nginx
 MOVE %~dp0nginx\html %~dp0nginx\www
-MOVE %~dp0nginx %nginx_loc%
+ROBOCOPY %~dp0nginx %nginx_loc% /E /MOVE /NFL /NDL /NJH /nc /ns /np
 MOVE %~dp0nssm-* nssm
-MOVE %~dp0php %nginx_loc%\php
+ROBOCOPY %~dp0php %nginx_loc%\php /E /MOVE /NFL /NDL /NJH /nc /ns /np
 
 ECHO.
 ECHO Moving NSSM to destination
 ECHO.
-MOVE %~dp0nssm\win64\nssm.exe C:\Windows\System32
+ROBOCOPY %~dp0nssm\win64\ C:\Windows\System32 /E /MOVE /NFL /NDL /NJH /nc /ns /np
 
 
 ECHO.
@@ -121,8 +121,8 @@ cscript dl_config\5_orgdl.vbs //Nologo
 powershell.exe -nologo -noprofile -command "& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::ExtractToDirectory('Organizr-2-develop.zip', '.'); }"
 MOVE %~dp0Organizr-2-develop organizr
 DEL /s /q %~dp0Organizr-2-develop.zip
-xcopy /e /i /y /s organizr %nginx_loc%\www\organizr\html
-RMDIR /s /q organizr
+ROBOCOPY organizr %nginx_loc%\www\organizr\html /E /MOVE /NFL /NDL /NJH /nc /ns /np
+REM RMDIR /s /q organizr
 
 ECHO.
 ECHO #############################
@@ -131,13 +131,13 @@ ECHO #############################
 ECHO.
 COPY %~dp0config\nginx.conf %nginx_loc%\conf\nginx.conf
 mkdir %nginx_loc%\www\organizr\db
-CD %nginx_loc%
+CD /d %nginx_loc%
 nginx -s reload
-CD %~dp0
+CD /d %~dp0
 COPY %~dp0config\php.ini %nginx_loc%\php\php.ini
-CD %nginx_loc%
+CD /d %nginx_loc%
 nginx -s reload
-CD %~dp0
+CD /d %~dp0
 NSSM restart PHP
 NSSM restart NGINX
 ECHO.

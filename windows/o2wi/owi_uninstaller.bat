@@ -15,7 +15,7 @@ ECHO    \  \::/       \  \::/       \__\/
 ECHO     \__\/         \__\/             ~~ %owu_v%
 ECHO.      
 pause
-CD %~dp0
+CD /d %~dp0
 
 ECHO.
 ECHO Deleting any downloaded tools not cleared from the previous install

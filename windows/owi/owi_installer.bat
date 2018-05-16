@@ -1,5 +1,5 @@
 @ECHO off
-SET owi_v=v0.8.8 Beta
+SET owi_v=v0.8.9 Beta
 title Oraganizr Windows Installer %owi_v%
 COLOR 03
 ECHO      ___           ___                  
@@ -21,7 +21,7 @@ SET nginx_v=1.12.2
 SET php_v=7.2.4
 SET nssm_v=2.24-101
 SET vcr_v=2017
-CD %~dp0
+CD /d %~dp0
 
 ECHO Where do you want to install Nginx? 
 ECHO - Press enter to use default and recommended directory: c:\nginx
