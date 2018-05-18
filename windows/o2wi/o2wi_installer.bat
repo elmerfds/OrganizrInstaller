@@ -1,5 +1,5 @@
 @ECHO off
-SET owi_v=v0.9.0 Beta
+SET owi_v=v0.9.1 Beta
 title Oraganizr v2 Windows Installer %owi_v%
 COLOR 03
 ECHO      ___           ___                  
@@ -74,7 +74,7 @@ ROBOCOPY %~dp0php %nginx_loc%\php /E /MOVE /NFL /NDL /NJH /nc /ns /np
 ECHO.
 ECHO Moving NSSM to destination
 ECHO.
-ROBOCOPY %~dp0nssm\win64\ C:\Windows\System32 /E /MOVE /NFL /NDL /NJH /nc /ns /np
+ROBOCOPY %~dp0nssm\win64\ C:\Windows\System32 /E /MOVE /NFL /NDL /NJH /nc /ns /np /R:0 /W:1
 
 
 ECHO.
