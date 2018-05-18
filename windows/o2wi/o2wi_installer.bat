@@ -1,5 +1,5 @@
 @ECHO off
-SET owi_v=v0.9.1 Beta
+SET owi_v=v0.9.2 Beta
 title Oraganizr v2 Windows Installer %owi_v%
 COLOR 03
 ECHO      ___           ___                  
@@ -32,6 +32,10 @@ IF "%nginx_loc%" == "" (
   set nginx_loc=c:\nginx
 )
 ECHO.
+ECHO #############################
+ECHO Downloading Requirements
+ECHO #############################
+ECHO.
 ECHO 1. Downloading Nginx %nginx_v%
 cscript dl_config\1_nginxdl.vbs //Nologo
 ECHO.    Done!
@@ -49,6 +53,10 @@ cscript dl_config\4_vcr.vbs //Nologo
 ECHO.    Done!
 
 ECHO.
+ECHO #############################
+ECHO Unzipping Files
+ECHO #############################
+ECHO.
 ECHO 1. Unzipping Nginx
 powershell.exe -nologo -noprofile -command "& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::ExtractToDirectory('nginx.zip', '.'); }"
 ECHO.    Done!
@@ -63,7 +71,9 @@ powershell.exe -nologo -noprofile -command "& { Add-Type -A 'System.IO.Compressi
 ECHO.    Done!
 
 ECHO.
+ECHO ####################################
 ECHO Moving Nginx and PHP to destination
+ECHO ####################################
 ECHO.
 MOVE %~dp0nginx-* nginx
 MOVE %~dp0nginx\html %~dp0nginx\www
@@ -72,7 +82,9 @@ MOVE %~dp0nssm-* nssm
 ROBOCOPY %~dp0php %nginx_loc%\php /E /MOVE /NFL /NDL /NJH /nc /ns /np
 
 ECHO.
+ECHO #############################
 ECHO Moving NSSM to destination
+ECHO #############################
 ECHO.
 ROBOCOPY %~dp0nssm\win64\ C:\Windows\System32 /E /MOVE /NFL /NDL /NJH /nc /ns /np /R:0 /W:1
 
@@ -81,7 +93,9 @@ ECHO.
 ECHO Download Completed...
 
 ECHO.
+ECHO #############################
 ECHO Creating Nginx service
+ECHO #############################
 ECHO.
 ECHO In order to save and reload Nginx configuration, you need to run the NGINX service as the currently logged in user
 ECHO.
@@ -101,7 +115,9 @@ ECHO.
 ECHO Installing Visual C++ Redistributable for Visual Studio 2017 [PHP 7+ req]
 vc_redist.x64.exe /q /norestart
 ECHO.
+ECHO #############################
 ECHO Creating PHP service
+ECHO #############################
 ECHO.
 NSSM install PHP %nginx_loc%\php\php-cgi.exe
 NSSM set PHP AppParameters -b 127.0.0.1:9000
@@ -115,7 +131,9 @@ NSSM start PHP
 NSSM restart PHP
 
 ECHO.
-ECHO Downloading Organizr Master
+ECHO #############################
+ECHO Downloading Organizr v2 BETA
+ECHO #############################
 ECHO.
 cscript dl_config\5_orgdl.vbs //Nologo
 powershell.exe -nologo -noprofile -command "& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::ExtractToDirectory('Organizr-2-develop.zip', '.'); }"
