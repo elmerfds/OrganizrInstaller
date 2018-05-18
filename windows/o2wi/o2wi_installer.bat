@@ -34,7 +34,7 @@ IF "%nginx_loc%" == "" (
 ECHO.
 ECHO #############################
 ECHO Downloading Requirements
-ECHO #############################
+ECHO ############################
 ECHO.
 ECHO 1. Downloading Nginx %nginx_v%
 cscript dl_config\1_nginxdl.vbs //Nologo
@@ -53,32 +53,40 @@ cscript dl_config\4_vcr.vbs //Nologo
 ECHO.    Done!
 
 ECHO.
+ECHO Download Completed...
+
+ECHO.
 ECHO #############################
 ECHO Unzipping Files
 ECHO #############################
 ECHO.
-ECHO 1. Unzipping Nginx
+ECHO 1. Unziping Nginx
 powershell.exe -nologo -noprofile -command "& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::ExtractToDirectory('nginx.zip', '.'); }"
 ECHO.    Done!
 
-ECHO 2. Unzipping PHP
+ECHO 2. Unziping PHP
 powershell -Command "(Add-Type -AssemblyName System.IO.Compression.Filesystem)"
 powershell.exe -nologo -noprofile -command "& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::ExtractToDirectory('php.zip', 'php'); }"
 ECHO.    Done!
 
-ECHO 3. Unzipping NSM
+ECHO 3. Unziping NSM
 powershell.exe -nologo -noprofile -command "& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::ExtractToDirectory('nssm.zip', '.'); }"
 ECHO.    Done!
 
 ECHO.
 ECHO ####################################
-ECHO Moving Nginx and PHP to destination
+ECHO Moving Nginx to destination
 ECHO ####################################
 ECHO.
-MOVE %~dp0nginx-* nginx
-MOVE %~dp0nginx\html %~dp0nginx\www
+MOVE %~dp0nginx-* nginx >nul 2>&1
+MOVE %~dp0nginx\html %~dp0nginx\www >nul 2>&1
 ROBOCOPY %~dp0nginx %nginx_loc% /E /MOVE /NFL /NDL /NJH /nc /ns /np
-MOVE %~dp0nssm-* nssm
+
+ECHO.
+ECHO ####################################
+ECHO Moving PHP to destination
+ECHO ####################################
+ECHO.
 ROBOCOPY %~dp0php %nginx_loc%\php /E /MOVE /NFL /NDL /NJH /nc /ns /np
 
 ECHO.
@@ -86,18 +94,16 @@ ECHO #############################
 ECHO Moving NSSM to destination
 ECHO #############################
 ECHO.
+MOVE %~dp0nssm-* nssm >nul 2>&1
 ROBOCOPY %~dp0nssm\win64\ C:\Windows\System32 /E /MOVE /NFL /NDL /NJH /nc /ns /np /R:0 /W:1
 
-
-ECHO.
-ECHO Download Completed...
 
 ECHO.
 ECHO #############################
 ECHO Creating Nginx service
 ECHO #############################
 ECHO.
-ECHO In order to save and reload Nginx configuration, you need to run the NGINX service as the currently logged in user
+ECHO In order to save and reload Nginx configuration, you need to run the NGINX service as the administrator
 ECHO.
 ECHO Username: %username%
 set "psCommand=powershell -Command "$pword = read-host 'Enter Password' -AsSecureString ; ^
@@ -137,7 +143,7 @@ ECHO #############################
 ECHO.
 cscript dl_config\5_orgdl.vbs //Nologo
 powershell.exe -nologo -noprofile -command "& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::ExtractToDirectory('Organizr-2-develop.zip', '.'); }"
-MOVE %~dp0Organizr-2-develop organizr
+MOVE %~dp0Organizr-2-develop organizr >nul 2>&1
 DEL /s /q %~dp0Organizr-2-develop.zip
 ROBOCOPY organizr %nginx_loc%\www\organizr\html /E /MOVE /NFL /NDL /NJH /nc /ns /np
 REM RMDIR /s /q organizr
