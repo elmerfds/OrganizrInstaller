@@ -2,11 +2,11 @@
 ##vhost_template_v: v1.0.0
 ##author: elmerfdz
 
-## http://DOMIAN redirects to https://DOMIAN
+## http://DOMAIN redirects to https://DOMAIN
 server {
 	listen 80;
 	listen [::]:80;
-	server_name DOMIAN www.DOMIAN;
+	server_name DOMAIN www.DOMAIN;
 
 	include /etc/nginx/config/letsencrypt.conf;
 
@@ -15,15 +15,15 @@ server {
 	}
 }
 
-## Serves https://www.DOMIAN
+## Serves https://www.DOMAIN
 server {
-	server_name DOMIAN www.DOMIAN;
+	server_name DOMAIN www.DOMAIN;
 	listen 443 ssl http2 default_server;
 	listen [::]:443 ssl http2 default_server;
 
-	ssl_certificate /etc/letsencrypt/live/www.DOMIAN/fullchain.pem;
-	ssl_certificate_key /etc/letsencrypt/live/www.DOMIAN/privkey.pem;
-	ssl_trusted_certificate /etc/letsencrypt/live/www.DOMIAN/fullchain.pem;
+	ssl_certificate /etc/letsencrypt/live/www.DOMAIN/fullchain.pem;
+	ssl_certificate_key /etc/letsencrypt/live/www.DOMAIN/privkey.pem;
+	ssl_trusted_certificate /etc/letsencrypt/live/www.DOMAIN/fullchain.pem;
 	include /etc/nginx/config/ssl.conf;
 
 	root ROOT/html;

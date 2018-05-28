@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v5.7.1
+version=v5.9.1
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -128,19 +128,11 @@ LEvhostcreate_mod()
 		LEcertbot_mod
 		cp $CURRENT_DIR/templates/orgv1_le.template $CONFIG
 
-		mv $NGINX_LOC/config/domain.com.conf $NGINX_LOC/config/$DOMAIN.conf
-		mv $NGINX_LOC/config/domain.com_ssl.conf $NGINX_LOC/config/${DOMAIN}_ssl.conf
-		CONFIG_DOMAIN=$NGINX_CONFIG/$DOMAIN.conf
-
 		elif [ "$org_v" == "2" ] && [ "$vhost_template" == "LE" ]
 		then
 		cp -a $CURRENT_DIR/config/le/. $NGINX_LOC/config
 		LEcertbot_mod
 		cp $CURRENT_DIR/templates/orgv2_le.template $CONFIG
-
-		mv $NGINX_LOC/config/domain.com.conf $NGINX_LOC/config/$DOMAIN.conf
-		mv $NGINX_LOC/config/domain.com_ssl.conf $NGINX_LOC/config/${DOMAIN}_ssl.conf
-		CONFIG_DOMAIN=$NGINX_CONFIG/$DOMAIN.conf
 		fi
 
 	}
@@ -174,10 +166,10 @@ LEcertbot_mod()
 			/etc/init.d/nginx reload
 
 			##Install certbot packages
-			apt-get install software-properties-common
-			add-apt-repository ppa:certbot/certbot
+			apt-get install software-properties-common -y
+			add-apt-repository ppa:certbot/certbot -y
 			apt-get update
-			apt-get install certbot
+			apt-get install certbot -y
 
 			## Get the certificate, acme v2
 			echo -e "\e[1;36m> Enter an email address, which will be used to generate the SSL certs?.\e[0m"
@@ -291,7 +283,9 @@ vhostconfig_mod()
 		SITE_DIR=`echo $instvar`
 		$SED -i "s/DOMAIN/$DOMAIN/g" $CONFIG
 		$SED -i "s!ROOT!$SITE_DIR!g" $CONFIG
-		$SED -i "s/DOMAIN/$DOMAIN/g" $CONFIG_DOMAIN
+		if [ "$vhost_template" == "CF" ]
+		then $SED -i "s/DOMAIN/$DOMAIN/g" $CONFIG_DOMAIN
+		fi
 		phpv=$(ls -t /etc/php | head -1)
 		$SED -i "s/VER/$phpv/g" $NGINX_CONFIG/phpblock.conf
 
