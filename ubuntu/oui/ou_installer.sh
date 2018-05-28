@@ -49,7 +49,7 @@ domainval_mod()
 			DOMAIN=$dname
 	
 			# check the domain is roughly valid!
-			PATTERN="^([[:alnum:]]([[:alnum:]\-]{0,61}[[:alnum:]])?\.)+[[:alpha:]]{2,6}$"
+			PATTERN="^([[:alnum:]]([[:alnum:]\-]{0,61}[[:alnum:]])?\.)+[[:alpha:]]{2,10}$"
 			if [[ "$DOMAIN" =~ $PATTERN ]]; then
 			DOMAIN=`echo $DOMAIN | tr '[A-Z]' '[a-z]'`
 			echo -e "\e[1;36m> \e[0mCreating vhost file for:" $DOMAIN
