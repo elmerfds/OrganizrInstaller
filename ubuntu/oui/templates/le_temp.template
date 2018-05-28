@@ -1,0 +1,14 @@
+#TEMP conf file so that LE can connect to server and continue to generate the certs
+server {
+	listen 80 default_server;
+	listen [::]:80 default_server ipv6only=on;
+	server_name DOMAIN www.DOMAIN;
+
+	include /etc/nginx/config/letsencrypt.conf;
+
+	root /var/www/DOMAIN;
+	index index.html;
+	location / {
+		try_files $uri $uri/ =404;
+	}
+}

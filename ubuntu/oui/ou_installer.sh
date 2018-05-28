@@ -18,6 +18,7 @@ SED=`which sed`
 CURRENT_DIR=`dirname $0`
 tmp='/tmp/Organizr'
 dlvar=0
+LE_WEB='/var/www/letsencrypt/.well-known/acme-challenge'
 
 #Modules
 #Organizr Requirement Module
@@ -61,7 +62,6 @@ domainval_mod()
 		done	
 	}
 #Nginx vhost creation module
-
 vhostcreate_mod()        
        {
         	echo
@@ -117,25 +117,77 @@ CFvhostcreate_mod()
 
 LEvhostcreate_mod()        
        {
+		echo -e "\e[1;36m> Please note, since you've selected the Let's Encrypt Option, will start by preparing your system to generte LE SSL certs.\e[0m" 
+		echo -e "\e[1;36m> Please make sure, you've configured your domain with the correct DNS records.\e[0m"
+		echo -e "\e[1;36m> If you're using CloudFlare (CF) as your DNS, then this is supported by this option.\e[0m"
+		echo -e "\e[1;36m> If you haven't preparared your setup to carry out the above, then please terminate this script.\e[0m"  
+		echo  
 		if [ "$org_v" == "1" ] && [ "$vhost_template" == "LE" ]
 		then
+		cp -a $CURRENT_DIR/config/le/. $NGINX_LOC/config
+		LEcertbot_mod
 		cp $CURRENT_DIR/templates/orgv1_le.template $CONFIG
-		cp -a $CURRENT_DIR/config/le/. $NGINX_LOC/config
-
-		elif [ "$org_v" == "2" ] && [ "$vhost_template" == "LE" ]
-		then
-		cp $CURRENT_DIR/templates/orgv2_le.template $CONFIG
-		cp -a $CURRENT_DIR/config/le/. $NGINX_LOC/config
-		
 
 		mv $NGINX_LOC/config/domain.com.conf $NGINX_LOC/config/$DOMAIN.conf
 		mv $NGINX_LOC/config/domain.com_ssl.conf $NGINX_LOC/config/${DOMAIN}_ssl.conf
 		CONFIG_DOMAIN=$NGINX_CONFIG/$DOMAIN.conf
-		mkdir -p $NGINX_CONFIG/ssl/$DOMAIN
-		chmod -R 755 $NGINX_CONFIG/ssl/$DOMAIN
+
+		elif [ "$org_v" == "2" ] && [ "$vhost_template" == "LE" ]
+		then
+		cp -a $CURRENT_DIR/config/le/. $NGINX_LOC/config
+		LEcertbot_mod
+		cp $CURRENT_DIR/templates/orgv2_le.template $CONFIG
+
+		mv $NGINX_LOC/config/domain.com.conf $NGINX_LOC/config/$DOMAIN.conf
+		mv $NGINX_LOC/config/domain.com_ssl.conf $NGINX_LOC/config/${DOMAIN}_ssl.conf
+		CONFIG_DOMAIN=$NGINX_CONFIG/$DOMAIN.conf
 		fi
 
 	}
+
+LEcertbot_mod() 
+		{
+			if [ ! -d "$LE_WEB" ]; then
+			mkdir -p $LE_WEB
+			fi
+			
+			#Configuring permissions on LE web folder
+			chmod -R 775 $LE_WEB
+			chown -R www-data:$(logname) $LE_WEB
+
+			#Copy LE TEMP conf file so that LE can connect to server and continue to generate the certs
+			cp $CURRENT_DIR/templates/le_temp.template $CONFIG
+			$SED -i "s/DOMAIN/$DOMAIN/g" $CONFIG
+			
+			#Delete default.conf nginx site
+			mkdir -p $tmp/bk/nginx_default_site
+ 			if [ -e $NGINX_SITES/default ] 
+			then cp -a $NGINX_SITES/default $tmp/bk/nginx_default_site
+			fi			
+			rm -r -f $NGINX_SITES/default
+			rm -r -f $NGINX_SITES_ENABLED/default
+
+			# create symlink to enable site
+			ln -s $CONFIG $NGINX_SITES_ENABLED/$DOMAIN.conf
+
+			# reload Nginx to pull in new config
+			/etc/init.d/nginx reload
+
+			##Install certbot packages
+			apt-get install software-properties-common
+			add-apt-repository ppa:certbot/certbot
+			apt-get update
+			apt-get install certbot
+
+			## Get the certificate, acme v2
+			echo -e "\e[1;36m> Enter an email address, which will be used to generate the SSL certs?.\e[0m"
+			read -r email_var
+			certbot certonly --agree-tos --no-eff-email --email $email_var --server https://acme-v02.api.letsencrypt.org/directory --manual -d *.$DOMAIN -d $DOMAIN
+
+			## Once Cert has been generated, delete the created conf file.
+			rm -r -f $NGINX_SITES/$DOMAIN.conf
+			rm -r -f $NGINX_SITES_ENABLED/$DOMAIN.conf
+		}
 
 #Organizr download module
 orgdl_mod()
@@ -427,7 +479,7 @@ read_options(){
 			echo -e "\e[1;36m> \e[0mPress any key to continue with Organizr + Nginx site config"
 			read
 			orgdl_mod
-	        	vhostcreate_mod
+	        vhostcreate_mod
 			vhostconfig_mod
 			addsite_to_hosts_mod
 			orginstinfo_mod
