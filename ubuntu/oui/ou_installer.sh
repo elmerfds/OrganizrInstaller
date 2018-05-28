@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v5.9.1
+version=v5.9.2
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -120,7 +120,8 @@ LEvhostcreate_mod()
 		echo -e "\e[1;36m> Please note, since you've selected the Let's Encrypt Option, will start by preparing your system to generte LE SSL certs.\e[0m" 
 		echo -e "\e[1;36m> Please make sure, you've configured your domain with the correct DNS records.\e[0m"
 		echo -e "\e[1;36m> If you're using CloudFlare (CF) as your DNS, then this is supported by this option.\e[0m"
-		echo -e "\e[1;36m> If you haven't preparared your setup to carry out the above, then please terminate this script.\e[0m"  
+		echo -e "\e[1;36m> If you haven't preparared your setup to carry out the above, then please terminate this script.\e[0m" 
+		read 
 		echo  
 		if [ "$org_v" == "1" ] && [ "$vhost_template" == "LE" ]
 		then
@@ -172,6 +173,7 @@ LEcertbot_mod()
 			apt-get install certbot -y
 
 			## Get the certificate, acme v2
+			echo
 			echo -e "\e[1;36m> Enter an email address, which will be used to generate the SSL certs?.\e[0m"
 			read -r email_var
 			certbot certonly --agree-tos --no-eff-email --email $email_var --server https://acme-v02.api.letsencrypt.org/directory --manual -d *.$DOMAIN -d $DOMAIN
