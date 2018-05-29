@@ -547,9 +547,3 @@ do
 	show_menus
 	read_options
 done
-
-
-
-
-
-
