@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v6.0.0
+version=v6.0.1
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -391,7 +391,7 @@ oui_updater_mod()
 			sleep 3s
 			chmod +x $BASH_SOURCE
 			exec ./ou_installer.sh
-	}LEcertbot-dryrun_mod
+	}
 #Utilities sub-menu
 uti_menus() 
 	{
