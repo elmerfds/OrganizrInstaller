@@ -204,7 +204,7 @@ LEcertbot-wildcard-renew_mod()
 		{
 			echo
 			domainval_mod
-			certbot certonly --manual -d *.$DOMAIN -d $DOMAIN --preferred-challenges dns-01 --server https://acme-staging-v02.api.letsencrypt.org/directory
+			certbot certonly --manual -d *.$DOMAIN -d $DOMAIN --preferred-challenges dns-01 --server https://acme-v02.api.letsencrypt.org/directory
 		}
 
 #Organizr download module
@@ -406,9 +406,10 @@ uti_menus()
 		echo -e " 	  \e[1;36mOUI: $version : Utilities  \e[0m"
 		echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 		echo " 1. Debian 8.x PHP7 fix	  " 
-		echo " 2. Let's Encrypt: Test Cert Renewal	  " 
-		echo " 3. Let's Encrypt: Force Renewal	  " 
-		echo " 4. Back 					  "
+		echo " 2. Let's Encrypt: Test Cert Renewal (non wildcard cert)	  " 
+		echo " 3. Let's Encrypt: Force Renewal (non wildcard cert)	  " 
+		echo " 4. Let's Encrypt: Force Renewal	  " 
+		echo " 5. Back 					  "
 		echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 		echo
 		printf "\e[1;36m> Enter your choice: \e[0m"
