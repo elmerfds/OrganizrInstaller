@@ -442,7 +442,7 @@ uti_options(){
 			read
 		;;		
 
-		"4")
+			"4")
 			while true 
 			do
 			clear
@@ -547,9 +547,6 @@ do
 	show_menus
 	read_options
 done
-
-
-
 
 
 
