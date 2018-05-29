@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v6.0.2
+version=v6.1.0
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -125,24 +125,46 @@ LEvhostcreate_mod()
 		echo 
 		echo -e "\e[1;36m> Or press any key to continue.\e[0m"		 
 		read 
-		echo  
+		echo 
+		echo -e "\e[1;36m> LE Cert type?:\e[0m"
+		echo
+		echo -e "\e[1;36m[S] \e[0mSingle Domain Cert"
+		echo -e "\e[1;36m[W] \e[0mWildcard [non DNS plugin]"
+		echo
+		printf '\e[1;36m- \e[0m'
+		read -r LEcert_type
+		LEcert_type=${LEcert_type:-W}
+
 		if [ "$org_v" == "1" ] && [ "$vhost_template" == "LE" ]
 		then
 		cp -a $CURRENT_DIR/config/le/. $NGINX_LOC/config
 		LEcertbot_mod
-		cp $CURRENT_DIR/templates/orgv1_le.template $CONFIG
+			if [ "$LEcert_type" == "W" ] && [ "$LEcert_type" == "w" ]
+			then
+				cp $CURRENT_DIR/templates/orgv1_le-w.template $CONFIG
+			
+			elif [ "$LEcert_type" == "S" ] && [ "$LEcert_type" == "s" ]
+			then
+				cp $CURRENT_DIR/templates/orgv1_le-s.template $CONFIG
+				#Create LE Certbot renewal cron job
+				{ crontab -l 2>/dev/null; echo "20 3 * * * certbot renew --noninteractive --renew-hook "/etc/init.d/nginx reload""; } | crontab -
+			fi
 		
-		#Create LE Certbot renewal cron job
-		{ crontab -l 2>/dev/null; echo "20 3 * * * certbot renew --noninteractive --renew-hook "/etc/init.d/nginx reload""; } | crontab -
-
 		elif [ "$org_v" == "2" ] && [ "$vhost_template" == "LE" ]
 		then
 		cp -a $CURRENT_DIR/config/le/. $NGINX_LOC/config
 		LEcertbot_mod
-		cp $CURRENT_DIR/templates/orgv2_le.template $CONFIG
+			if [ "$LEcert_type" == "W" ] && [ "$LEcert_type" == "w" ]
+			then
+				cp $CURRENT_DIR/templates/orgv2_le-w.template $CONFIG
+			
+			elif [ "$LEcert_type" == "S" ] && [ "$LEcert_type" == "s" ]
+			then
+				cp $CURRENT_DIR/templates/orgv2_le-s.template $CONFIG
+				#Create LE Certbot renewal cron job
+				{ crontab -l 2>/dev/null; echo "20 3 * * * certbot renew --noninteractive --renew-hook "/etc/init.d/nginx reload""; } | crontab -
+			fi
 
-		#Create LE Certbot renewal cron job
-		{ crontab -l 2>/dev/null; echo "20 3 * * * certbot renew --noninteractive --renew-hook "/etc/init.d/nginx reload""; } | crontab -
 		fi
 
 	}
@@ -185,7 +207,16 @@ LEcertbot_mod()
 			echo
 			echo -e "\e[1;36m> Enter an email address, which will be used to generate the SSL certs?.\e[0m"
 			read -r email_var
+
+
+			if [ "$LEcert_type" == "W" ] && [ "$LEcert_type" == "w" ]
+			then
 			certbot certonly --agree-tos --no-eff-email --email $email_var --server https://acme-v02.api.letsencrypt.org/directory --manual -d *.$DOMAIN -d $DOMAIN
+			
+			elif [ "$LEcert_type" == "S" ] && [ "$LEcert_type" == "s" ]
+			then
+			certbot certonly --webroot --agree-tos --no-eff-email --email $email_var -w /var/www/letsencrypt -d www.$DOMAIN -d $DOMAIN
+			fi
 
 			## Once Cert has been generated, delete the created conf file.
 			rm -r -f $NGINX_SITES/$DOMAIN.conf
@@ -203,7 +234,25 @@ LEcertbot-dryrun_mod()
 LEcertbot-wildcard-renew_mod()
 		{
 			echo
-			domainval_mod
+			while true
+				do
+				echo -e "\e[1;36m> Enter your domain name:\e[0m" 
+				echo -e "\e[1;36m> E.g domain.com / organizr.local] \e[0m" 
+				printf '\e[1;36m- \e[0m'
+				read -r dname
+				DOMAIN=$dname
+	
+				# check the domain is roughly valid!
+				PATTERN="^([[:alnum:]]([[:alnum:]\-]{0,61}[[:alnum:]])?\.)+[[:alpha:]]{2,10}$"
+				if [[ "$DOMAIN" =~ $PATTERN ]]; then
+				DOMAIN=`echo $DOMAIN | tr '[A-Z]' '[a-z]'`
+				echo -e "\e[1;36m> \e[0mCreating vhost file for:" $DOMAIN
+				break
+				else
+				echo "> invalid domain name"
+				echo
+				fi
+			done	
 			certbot certonly --manual -d *.$DOMAIN -d $DOMAIN --preferred-challenges dns-01 --server https://acme-v02.api.letsencrypt.org/directory
 		}
 

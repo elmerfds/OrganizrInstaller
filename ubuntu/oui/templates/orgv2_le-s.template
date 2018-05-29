@@ -1,4 +1,5 @@
-##Orgv2 Let's encrypt vhost 
+##Orgv2 Let's encrypt vhost
+##Cert_type: Single SSL Cert
 ##vhost_template_v: v1.0.0
 ##author: elmerfdz
 
@@ -21,9 +22,9 @@ server {
 	listen 443 ssl http2 default_server;
 	listen [::]:443 ssl http2 default_server;
 
-	ssl_certificate /etc/letsencrypt/live/DOMAIN/fullchain.pem;
-	ssl_certificate_key /etc/letsencrypt/live/DOMAIN/privkey.pem;
-	ssl_trusted_certificate /etc/letsencrypt/live/DOMAIN/fullchain.pem;
+	ssl_certificate /etc/letsencrypt/live/www.DOMAIN/fullchain.pem;
+	ssl_certificate_key /etc/letsencrypt/live/www.DOMAIN/privkey.pem;
+	ssl_trusted_certificate /etc/letsencrypt/live/www.DOMAIN/fullchain.pem;
 	include /etc/nginx/config/ssl.conf;
 
 	root ROOT/html;
