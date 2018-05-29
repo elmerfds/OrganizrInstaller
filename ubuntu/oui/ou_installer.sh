@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v6.0.1
+version=v6.0.2
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -198,7 +198,14 @@ LEcertbot-dryrun_mod()
 			echo -e "\e[1;36m> Testing Certbot Renew (dry-run).\e[0m"
 			certbot renew --dry-run
 			echo
-		}		
+		}
+
+LEcertbot-wildcard-renew_mod()
+		{
+			echo
+			domainval_mod
+			certbot certonly --manual -d *.$DOMAIN -d $DOMAIN --preferred-challenges dns-01 --server https://acme-staging-v02.api.letsencrypt.org/directory
+		}
 
 #Organizr download module
 orgdl_mod()
@@ -426,7 +433,7 @@ uti_options(){
 		;;
 
 			"2")
-			echo "- Your choice 2: Let's Encrypt: Test Cert Renewal"
+			echo "- Your choice 2: Let's Encrypt: Test Cert Renewal (non wildcard cert)"
 			LEcertbot-dryrun_mod
 			echo			
                 	echo -e "\e[1;36m> \e[0mPress any key to return to menu..."
@@ -434,15 +441,25 @@ uti_options(){
 		;;
 
 			"3")
-			echo "- Your choice 3: Let's Encrypt: Force Renewal"
+			echo "- Your choice 3: Let's Encrypt: Force Renewal (non wildcard cert)"
 			#Create LE Certbot renewal cron job
 			certbot renew --noninteractive --renew-hook "/etc/init.d/nginx reload"
 			echo			
                 	echo -e "\e[1;36m> \e[0mPress any key to return to menu..."
 			read
-		;;		
+		;;	
 
 			"4")
+			echo "- Your choice 4: Let's Encrypt: Wilcard Cert Renewal"
+			#LE Wildcard cert renewal
+			LEcertbot-wildcard-renew_mod
+			unset DOMAIN
+			echo			
+                	echo -e "\e[1;36m> \e[0mPress any key to return to menu..."
+			read
+		;;				
+
+			"5")
 			while true 
 			do
 			clear
