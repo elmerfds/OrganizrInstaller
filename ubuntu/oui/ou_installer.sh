@@ -455,9 +455,9 @@ uti_menus()
 		echo -e " 	  \e[1;36mOUI: $version : Utilities  \e[0m"
 		echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 		echo " 1. Debian 8.x PHP7 fix	  " 
-		echo " 2. Let's Encrypt: Test Cert Renewal (non wildcard cert)	  " 
-		echo " 3. Let's Encrypt: Force Renewal (non wildcard cert)	  " 
-		echo " 4. Let's Encrypt: Force Renewal	  " 
+		echo " 2. Let's Encrypt: Test Single Domain Cert Renewal	  " 
+		echo " 3. Let's Encrypt: Single Domain Cert Renewal 	  " 
+		echo " 4. Let's Encrypt: Wilcard Cert Renewal	  " 
 		echo " 5. Back 					  "
 		echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 		echo
