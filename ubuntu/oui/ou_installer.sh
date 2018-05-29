@@ -118,7 +118,7 @@ CFvhostcreate_mod()
 LEvhostcreate_mod()        
        {
 		echo
-		echo -e "\e[1;36m> Please note, since you've selected the Let's Encrypt Option, will start by preparing your system to generte LE SSL certs.\e[0m" 
+		echo -e "\e[1;36m> Please note, since you've selected the Let's Encrypt Option, will start by preparing your system to generte LE WILDCARD SSL certs.\e[0m" 
 		echo -e "\e[1;36m> Please make sure, you've configured your domain with the correct DNS records.\e[0m"
 		echo -e "\e[1;36m> If you're using CloudFlare (CF) as your DNS, then this is supported by this option.\e[0m"
 		echo -e "\e[1;36m> If you haven't preparared your setup to carry out the above, then please terminate this script.\e[0m"
@@ -181,7 +181,7 @@ LEcertbot_mod()
 			apt-get update
 			apt-get install certbot -y
 
-			## Get the certificate, acme v2
+			## Get wildcard certificate, acme v2
 			echo
 			echo -e "\e[1;36m> Enter an email address, which will be used to generate the SSL certs?.\e[0m"
 			read -r email_var
