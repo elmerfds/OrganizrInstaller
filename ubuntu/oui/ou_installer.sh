@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v5.9.2
+version=v6.0.0
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -131,12 +131,18 @@ LEvhostcreate_mod()
 		cp -a $CURRENT_DIR/config/le/. $NGINX_LOC/config
 		LEcertbot_mod
 		cp $CURRENT_DIR/templates/orgv1_le.template $CONFIG
+		
+		#Create LE Certbot renewal cron job
+		{ crontab -l 2>/dev/null; echo "20 3 * * * certbot renew --noninteractive --renew-hook "/etc/init.d/nginx reload""; } | crontab -
 
 		elif [ "$org_v" == "2" ] && [ "$vhost_template" == "LE" ]
 		then
 		cp -a $CURRENT_DIR/config/le/. $NGINX_LOC/config
 		LEcertbot_mod
 		cp $CURRENT_DIR/templates/orgv2_le.template $CONFIG
+
+		#Create LE Certbot renewal cron job
+		{ crontab -l 2>/dev/null; echo "20 3 * * * certbot renew --noninteractive --renew-hook "/etc/init.d/nginx reload""; } | crontab -
 		fi
 
 	}
@@ -185,6 +191,14 @@ LEcertbot_mod()
 			rm -r -f $NGINX_SITES/$DOMAIN.conf
 			rm -r -f $NGINX_SITES_ENABLED/$DOMAIN.conf
 		}
+
+LEcertbot-dryrun_mod() 
+		{
+			echo
+			echo -e "\e[1;36m> Testing Certbot Renew (dry-run).\e[0m"
+			certbot renew --dry-run
+			echo
+		}		
 
 #Organizr download module
 orgdl_mod()
@@ -377,7 +391,7 @@ oui_updater_mod()
 			sleep 3s
 			chmod +x $BASH_SOURCE
 			exec ./ou_installer.sh
-	}
+	}LEcertbot-dryrun_mod
 #Utilities sub-menu
 uti_menus() 
 	{
@@ -385,7 +399,9 @@ uti_menus()
 		echo -e " 	  \e[1;36mOUI: $version : Utilities  \e[0m"
 		echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 		echo " 1. Debian 8.x PHP7 fix	  " 
-		echo " 2. Back 					  "
+		echo " 2. Let's Encrypt: Test Cert Renewal	  " 
+		echo " 3. Let's Encrypt: Force Renewal	  " 
+		echo " 4. Back 					  "
 		echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 		echo
 		printf "\e[1;36m> Enter your choice: \e[0m"
@@ -409,7 +425,24 @@ uti_options(){
 			read
 		;;
 
-		"2")
+			"2")
+			echo "- Your choice 2: Let's Encrypt: Test Cert Renewal"
+			LEcertbot-dryrun_mod
+			echo			
+                	echo -e "\e[1;36m> \e[0mPress any key to return to menu..."
+			read
+		;;
+
+			"3")
+			echo "- Your choice 3: Let's Encrypt: Force Renewal"
+			#Create LE Certbot renewal cron job
+			certbot renew --noninteractive --renew-hook "/etc/init.d/nginx reload"
+			echo			
+                	echo -e "\e[1;36m> \e[0mPress any key to return to menu..."
+			read
+		;;		
+
+		"4")
 			while true 
 			do
 			clear
