@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v6.1.0
+version=v6.1.2
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -139,11 +139,11 @@ LEvhostcreate_mod()
 		then
 		cp -a $CURRENT_DIR/config/le/. $NGINX_LOC/config
 		LEcertbot_mod
-			if [ "$LEcert_type" == "W" ] && [ "$LEcert_type" == "w" ]
+			if [ "$LEcert_type" == "W" ] || [ "$LEcert_type" == "w" ]
 			then
 				cp $CURRENT_DIR/templates/orgv1_le-w.template $CONFIG
 			
-			elif [ "$LEcert_type" == "S" ] && [ "$LEcert_type" == "s" ]
+			elif [ "$LEcert_type" == "S" ] || [ "$LEcert_type" == "s" ]
 			then
 				cp $CURRENT_DIR/templates/orgv1_le-s.template $CONFIG
 				#Create LE Certbot renewal cron job
@@ -154,11 +154,11 @@ LEvhostcreate_mod()
 		then
 		cp -a $CURRENT_DIR/config/le/. $NGINX_LOC/config
 		LEcertbot_mod
-			if [ "$LEcert_type" == "W" ] && [ "$LEcert_type" == "w" ]
+			if [ "$LEcert_type" == "W" ] || [ "$LEcert_type" == "w" ]
 			then
 				cp $CURRENT_DIR/templates/orgv2_le-w.template $CONFIG
 			
-			elif [ "$LEcert_type" == "S" ] && [ "$LEcert_type" == "s" ]
+			elif [ "$LEcert_type" == "S" ] || [ "$LEcert_type" == "s" ]
 			then
 				cp $CURRENT_DIR/templates/orgv2_le-s.template $CONFIG
 				#Create LE Certbot renewal cron job
@@ -209,11 +209,11 @@ LEcertbot_mod()
 			read -r email_var
 
 
-			if [ "$LEcert_type" == "W" ] && [ "$LEcert_type" == "w" ]
+			if [ "$LEcert_type" == "W" ] || [ "$LEcert_type" == "w" ]
 			then
 			certbot certonly --agree-tos --no-eff-email --email $email_var --server https://acme-v02.api.letsencrypt.org/directory --manual -d *.$DOMAIN -d $DOMAIN
 			
-			elif [ "$LEcert_type" == "S" ] && [ "$LEcert_type" == "s" ]
+			elif [ "$LEcert_type" == "S" ] || [ "$LEcert_type" == "s" ]
 			then
 			certbot certonly --webroot --agree-tos --no-eff-email --email $email_var -w /var/www/letsencrypt -d www.$DOMAIN -d $DOMAIN
 			fi
