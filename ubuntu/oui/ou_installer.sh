@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v6.1.2
+version=v6.1.3
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -71,7 +71,7 @@ vhostcreate_mod()
 		echo -e "\e[1;36m> Nginx vhost template type?:\e[0m"
 		echo
 		echo -e "\e[1;36m[CF] \e[0mCloudFlare"
-		echo -e "\e[1;36m[LE] \e[0mLet's Encrypt/Standard [coming soon]"
+		echo -e "\e[1;36m[LE] \e[0mLet's Encrypt/Standard"
 		echo
 		printf '\e[1;36m- \e[0m'
 		read -r vhost_template
@@ -118,7 +118,7 @@ CFvhostcreate_mod()
 LEvhostcreate_mod()        
        {
 		echo
-		echo -e "\e[1;36m> Please note, since you've selected the Let's Encrypt Option, will start by preparing your system to generte LE WILDCARD SSL certs.\e[0m" 
+		echo -e "\e[1;36m> Please note, since you've selected the Let's Encrypt Option, will start by preparing your system to generte LE SSL certs.\e[0m" 
 		echo -e "\e[1;36m> Please make sure, you've configured your domain with the correct DNS records.\e[0m"
 		echo -e "\e[1;36m> If you're using CloudFlare (CF) as your DNS, then this is supported by this option.\e[0m"
 		echo -e "\e[1;36m> If you haven't preparared your setup to carry out the above, then please terminate this script.\e[0m"
