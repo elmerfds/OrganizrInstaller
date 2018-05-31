@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v6.1.3
+version=v6.1.4
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -94,7 +94,7 @@ CFvhostcreate_mod()
        {
 		if [ "$org_v" == "1" ] && [ "$vhost_template" == "CF" ]
 		then
-		cp $CURRENT_DIR/templates/orgv1_cf.template $CONFIG
+		cp $CURRENT_DIR/templates/cf/orgv1_cf.template $CONFIG
 		cp -a $CURRENT_DIR/config/cf/. $NGINX_LOC/config
 		mv $NGINX_LOC/config/domain.com.conf $NGINX_LOC/config/$DOMAIN.conf
 		mv $NGINX_LOC/config/domain.com_ssl.conf $NGINX_LOC/config/${DOMAIN}_ssl.conf
@@ -104,7 +104,7 @@ CFvhostcreate_mod()
 
 		elif [ "$org_v" == "2" ] && [ "$vhost_template" == "CF" ]
 		then
-		cp $CURRENT_DIR/templates/orgv2_cf.template $CONFIG
+		cp $CURRENT_DIR/templates/cf/orgv2_cf.template $CONFIG
 		cp -a $CURRENT_DIR/config/cf/. $NGINX_LOC/config
 		mv $NGINX_LOC/config/domain.com.conf $NGINX_LOC/config/$DOMAIN.conf
 		mv $NGINX_LOC/config/domain.com_ssl.conf $NGINX_LOC/config/${DOMAIN}_ssl.conf
@@ -141,11 +141,11 @@ LEvhostcreate_mod()
 		LEcertbot_mod
 			if [ "$LEcert_type" == "W" ] || [ "$LEcert_type" == "w" ]
 			then
-				cp $CURRENT_DIR/templates/orgv1_le-w.template $CONFIG
+				cp $CURRENT_DIR/templates/le/orgv1_le-w.template $CONFIG
 			
 			elif [ "$LEcert_type" == "S" ] || [ "$LEcert_type" == "s" ]
 			then
-				cp $CURRENT_DIR/templates/orgv1_le-s.template $CONFIG
+				cp $CURRENT_DIR/templates/le/orgv1_le-s.template $CONFIG
 				#Create LE Certbot renewal cron job
 				{ crontab -l 2>/dev/null; echo "20 3 * * * certbot renew --noninteractive --renew-hook "/etc/init.d/nginx reload""; } | crontab -
 			fi
@@ -156,11 +156,11 @@ LEvhostcreate_mod()
 		LEcertbot_mod
 			if [ "$LEcert_type" == "W" ] || [ "$LEcert_type" == "w" ]
 			then
-				cp $CURRENT_DIR/templates/orgv2_le-w.template $CONFIG
+				cp $CURRENT_DIR/templates/le/orgv2_le-w.template $CONFIG
 			
 			elif [ "$LEcert_type" == "S" ] || [ "$LEcert_type" == "s" ]
 			then
-				cp $CURRENT_DIR/templates/orgv2_le-s.template $CONFIG
+				cp $CURRENT_DIR/templates/le/orgv2_le-s.template $CONFIG
 				#Create LE Certbot renewal cron job
 				{ crontab -l 2>/dev/null; echo "20 3 * * * certbot renew --noninteractive --renew-hook "/etc/init.d/nginx reload""; } | crontab -
 			fi
@@ -180,7 +180,7 @@ LEcertbot_mod()
 			chown -R www-data:$(logname) $LE_WEB
 
 			#Copy LE TEMP conf file so that LE can connect to server and continue to generate the certs
-			cp $CURRENT_DIR/templates/le_temp.template $CONFIG
+			cp $CURRENT_DIR/templates/le/le_temp.template $CONFIG
 			$SED -i "s/DOMAIN/$DOMAIN/g" $CONFIG
 			
 			#Delete default.conf nginx site
