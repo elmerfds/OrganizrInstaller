@@ -7,4 +7,4 @@ server {
 	root /var/www/DOMAIN;
 	index index.html;
 	location / {try_files $uri $uri/ =404;}
-}
+	}
