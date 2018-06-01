@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v5.7.1
+version=v6.1.8
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -13,11 +13,13 @@ NGINX_LOC='/etc/nginx'
 NGINX_SITES='/etc/nginx/sites-available'
 NGINX_SITES_ENABLED='/etc/nginx/sites-enabled'
 NGINX_CONFIG='/etc/nginx/config'
+NGINX_APPS='/etc/nginx/conf.d/apps'
 WEB_DIR='/var/www'
 SED=`which sed`
 CURRENT_DIR=`dirname $0`
 tmp='/tmp/Organizr'
 dlvar=0
+LE_WEB='/var/www/letsencrypt/.well-known/acme-challenge'
 
 #Modules
 #Organizr Requirement Module
@@ -61,7 +63,6 @@ domainval_mod()
 		done	
 	}
 #Nginx vhost creation module
-
 vhostcreate_mod()        
        {
         	echo
@@ -71,7 +72,7 @@ vhostcreate_mod()
 		echo -e "\e[1;36m> Nginx vhost template type?:\e[0m"
 		echo
 		echo -e "\e[1;36m[CF] \e[0mCloudFlare"
-		echo -e "\e[1;36m[LE] \e[0mLet's Encrypt/Standard [coming soon]"
+		echo -e "\e[1;36m[LE] \e[0mLet's Encrypt/Standard"
 		echo
 		printf '\e[1;36m- \e[0m'
 		read -r vhost_template
@@ -94,7 +95,7 @@ CFvhostcreate_mod()
        {
 		if [ "$org_v" == "1" ] && [ "$vhost_template" == "CF" ]
 		then
-		cp $CURRENT_DIR/templates/orgv1_cf.template $CONFIG
+		cp $CURRENT_DIR/templates/cf/orgv1_cf.template $CONFIG
 		cp -a $CURRENT_DIR/config/cf/. $NGINX_LOC/config
 		mv $NGINX_LOC/config/domain.com.conf $NGINX_LOC/config/$DOMAIN.conf
 		mv $NGINX_LOC/config/domain.com_ssl.conf $NGINX_LOC/config/${DOMAIN}_ssl.conf
@@ -104,7 +105,7 @@ CFvhostcreate_mod()
 
 		elif [ "$org_v" == "2" ] && [ "$vhost_template" == "CF" ]
 		then
-		cp $CURRENT_DIR/templates/orgv2_cf.template $CONFIG
+		cp $CURRENT_DIR/templates/cf/orgv2_cf.template $CONFIG
 		cp -a $CURRENT_DIR/config/cf/. $NGINX_LOC/config
 		mv $NGINX_LOC/config/domain.com.conf $NGINX_LOC/config/$DOMAIN.conf
 		mv $NGINX_LOC/config/domain.com_ssl.conf $NGINX_LOC/config/${DOMAIN}_ssl.conf
@@ -117,25 +118,148 @@ CFvhostcreate_mod()
 
 LEvhostcreate_mod()        
        {
+		echo
+		echo -e "\e[1;36m> Please note, since you've selected the Let's Encrypt Option, will start by preparing your system to generte LE SSL certs.\e[0m" 
+		echo -e "\e[1;36m> Please make sure, you've configured your domain with the correct DNS records.\e[0m"
+		echo -e "\e[1;36m> If you're using CloudFlare (CF) as your DNS, then this is supported by this option.\e[0m"
+		echo -e "\e[1;36m> If you haven't preparared your setup to carry out the above, then please terminate this script.\e[0m"
+		echo 
+		echo -e "\e[1;36m> Or press any key to continue.\e[0m"		 
+		read 
+		echo 
+		echo -e "\e[1;36m> LE Cert type?:\e[0m"
+		echo
+		echo -e "\e[1;36m[S] \e[0mSingle Domain Cert"
+		echo -e "\e[1;36m[W] \e[0mWildcard [non DNS plugin]"
+		echo
+		printf '\e[1;36m- \e[0m'
+		read -r LEcert_type
+		LEcert_type=${LEcert_type:-W}
+
+		#Apps folder
+		mkdir -p $NGINX_APPS
+		cp -a $CURRENT_DIR/config/app/. $NGINX_APPS
+
 		if [ "$org_v" == "1" ] && [ "$vhost_template" == "LE" ]
 		then
-		cp $CURRENT_DIR/templates/orgv1_le.template $CONFIG
 		cp -a $CURRENT_DIR/config/le/. $NGINX_LOC/config
-
+		LEcertbot_mod
+			if [ "$LEcert_type" == "W" ] || [ "$LEcert_type" == "w" ]
+			then
+				cp $CURRENT_DIR/templates/le/orgv1_le-w.template $CONFIG
+			
+			elif [ "$LEcert_type" == "S" ] || [ "$LEcert_type" == "s" ]
+			then
+				cp $CURRENT_DIR/templates/le/orgv1_le-s.template $CONFIG
+				#Create LE Certbot renewal cron job
+				{ crontab -l 2>/dev/null; echo "20 3 * * * certbot renew --noninteractive --renew-hook "/etc/init.d/nginx reload""; } | crontab -
+			fi
+		
 		elif [ "$org_v" == "2" ] && [ "$vhost_template" == "LE" ]
 		then
-		cp $CURRENT_DIR/templates/orgv2_le.template $CONFIG
 		cp -a $CURRENT_DIR/config/le/. $NGINX_LOC/config
-		
+		LEcertbot_mod
+			if [ "$LEcert_type" == "W" ] || [ "$LEcert_type" == "w" ]
+			then
+				cp $CURRENT_DIR/templates/le/orgv2_le-w.template $CONFIG
+			
+			elif [ "$LEcert_type" == "S" ] || [ "$LEcert_type" == "s" ]
+			then
+				cp $CURRENT_DIR/templates/le/orgv2_le-s.template $CONFIG
+				#Create LE Certbot renewal cron job
+				{ crontab -l 2>/dev/null; echo "20 3 * * * certbot renew --noninteractive --renew-hook "/etc/init.d/nginx reload""; } | crontab -
+			fi
 
-		mv $NGINX_LOC/config/domain.com.conf $NGINX_LOC/config/$DOMAIN.conf
-		mv $NGINX_LOC/config/domain.com_ssl.conf $NGINX_LOC/config/${DOMAIN}_ssl.conf
-		CONFIG_DOMAIN=$NGINX_CONFIG/$DOMAIN.conf
-		mkdir -p $NGINX_CONFIG/ssl/$DOMAIN
-		chmod -R 755 $NGINX_CONFIG/ssl/$DOMAIN
 		fi
 
 	}
+
+LEcertbot_mod() 
+		{
+			if [ ! -d "$LE_WEB" ]; then
+			mkdir -p $LE_WEB
+			fi
+			
+			#Configuring permissions on LE web folder
+			chmod -R 775 $LE_WEB
+			chown -R www-data:$(logname) $LE_WEB
+
+			#Copy LE TEMP conf file so that LE can connect to server and continue to generate the certs
+			cp $CURRENT_DIR/templates/le/le_temp.template $CONFIG
+			$SED -i "s/DOMAIN/$DOMAIN/g" $CONFIG
+			
+			#Delete default.conf nginx site
+			mkdir -p $tmp/bk/nginx_default_site
+ 			if [ -e $NGINX_SITES/default ] 
+			then cp -a $NGINX_SITES/default $tmp/bk/nginx_default_site
+			fi			
+			rm -r -f $NGINX_SITES/default
+			rm -r -f $NGINX_SITES_ENABLED/default
+
+			# create symlink to enable site
+			ln -s $CONFIG $NGINX_SITES_ENABLED/$DOMAIN.conf
+
+			# reload Nginx to pull in new config
+			/etc/init.d/nginx reload
+
+			##Install certbot packages
+			apt-get install software-properties-common -y
+			add-apt-repository ppa:certbot/certbot -y
+			apt-get update
+			apt-get install certbot -y
+
+			## Get wildcard certificate, acme v2
+			echo
+			echo -e "\e[1;36m> Enter an email address, which will be used to generate the SSL certs?.\e[0m"
+			read -r email_var
+
+
+			if [ "$LEcert_type" == "W" ] || [ "$LEcert_type" == "w" ]
+			then
+			certbot certonly --agree-tos --no-eff-email --email $email_var --server https://acme-v02.api.letsencrypt.org/directory --manual -d *.$DOMAIN -d $DOMAIN
+			
+			elif [ "$LEcert_type" == "S" ] || [ "$LEcert_type" == "s" ]
+			then
+			certbot certonly --webroot --agree-tos --no-eff-email --email $email_var -w /var/www/letsencrypt -d www.$DOMAIN -d $DOMAIN
+			fi
+
+			## Once Cert has been generated, delete the created conf file.
+			rm -r -f $NGINX_SITES/$DOMAIN.conf
+			rm -r -f $NGINX_SITES_ENABLED/$DOMAIN.conf
+		}
+
+LEcertbot-dryrun_mod() 
+		{
+			echo
+			echo -e "\e[1;36m> Testing Certbot Renew (dry-run).\e[0m"
+			certbot renew --dry-run
+			echo
+		}
+
+LEcertbot-wildcard-renew_mod()
+		{
+			echo
+			while true
+				do
+				echo -e "\e[1;36m> Enter your domain name:\e[0m" 
+				echo -e "\e[1;36m> E.g domain.com / organizr.local] \e[0m" 
+				printf '\e[1;36m- \e[0m'
+				read -r dname
+				DOMAIN=$dname
+	
+				# check the domain is roughly valid!
+				PATTERN="^([[:alnum:]]([[:alnum:]\-]{0,61}[[:alnum:]])?\.)+[[:alpha:]]{2,10}$"
+				if [[ "$DOMAIN" =~ $PATTERN ]]; then
+				DOMAIN=`echo $DOMAIN | tr '[A-Z]' '[a-z]'`
+				echo -e "\e[1;36m> \e[0mCreating vhost file for:" $DOMAIN
+				break
+				else
+				echo "> invalid domain name"
+				echo
+				fi
+			done	
+			certbot certonly --manual -d *.$DOMAIN -d $DOMAIN --preferred-challenges dns-01 --server https://acme-v02.api.letsencrypt.org/directory
+		}
 
 #Organizr download module
 orgdl_mod()
@@ -239,7 +363,9 @@ vhostconfig_mod()
 		SITE_DIR=`echo $instvar`
 		$SED -i "s/DOMAIN/$DOMAIN/g" $CONFIG
 		$SED -i "s!ROOT!$SITE_DIR!g" $CONFIG
-		$SED -i "s/DOMAIN/$DOMAIN/g" $CONFIG_DOMAIN
+		if [ "$vhost_template" == "CF" ]
+		then $SED -i "s/DOMAIN/$DOMAIN/g" $CONFIG_DOMAIN
+		fi
 		phpv=$(ls -t /etc/php | head -1)
 		$SED -i "s/VER/$phpv/g" $NGINX_CONFIG/phpblock.conf
 
@@ -334,7 +460,10 @@ uti_menus()
 		echo -e " 	  \e[1;36mOUI: $version : Utilities  \e[0m"
 		echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 		echo " 1. Debian 8.x PHP7 fix	  " 
-		echo " 2. Back 					  "
+		echo " 2. Let's Encrypt: Test Single Domain Cert Renewal	  " 
+		echo " 3. Let's Encrypt: Single Domain Cert Renewal 	  " 
+		echo " 4. Let's Encrypt: Wilcard Cert Renewal	  " 
+		echo " 5. Back 					  "
 		echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 		echo
 		printf "\e[1;36m> Enter your choice: \e[0m"
@@ -358,7 +487,34 @@ uti_options(){
 			read
 		;;
 
-		"2")
+			"2")
+			echo "- Your choice 2: Let's Encrypt: Test Cert Renewal (non wildcard cert)"
+			LEcertbot-dryrun_mod
+			echo			
+                	echo -e "\e[1;36m> \e[0mPress any key to return to menu..."
+			read
+		;;
+
+			"3")
+			echo "- Your choice 3: Let's Encrypt: Force Renewal (non wildcard cert)"
+			#Create LE Certbot renewal cron job
+			certbot renew --noninteractive --renew-hook "/etc/init.d/nginx reload"
+			echo			
+                	echo -e "\e[1;36m> \e[0mPress any key to return to menu..."
+			read
+		;;	
+
+			"4")
+			echo "- Your choice 4: Let's Encrypt: Wilcard Cert Renewal"
+			#LE Wildcard cert renewal
+			LEcertbot-wildcard-renew_mod
+			unset DOMAIN
+			echo			
+                	echo -e "\e[1;36m> \e[0mPress any key to return to menu..."
+			read
+		;;				
+
+			"5")
 			while true 
 			do
 			clear
@@ -427,7 +583,7 @@ read_options(){
 			echo -e "\e[1;36m> \e[0mPress any key to continue with Organizr + Nginx site config"
 			read
 			orgdl_mod
-	        	vhostcreate_mod
+	        vhostcreate_mod
 			vhostconfig_mod
 			addsite_to_hosts_mod
 			orginstinfo_mod
@@ -463,12 +619,3 @@ do
 	show_menus
 	read_options
 done
-
-
-
-
-
-
-
-
-
