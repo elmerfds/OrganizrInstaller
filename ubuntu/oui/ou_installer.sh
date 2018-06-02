@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v6.9.4
+version=v6.9.5
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -237,8 +237,6 @@ LEcertbot_mod()
 			read -r CF_API
 			echo
 
-			#chmod -R 600 $cred_folder #debug
-
 			apt-get install certbot python-pip -y
 			sudo -u "$(logname)" pip install certbot-dns-cloudflare
 
@@ -247,6 +245,7 @@ LEcertbot_mod()
 			#Update CF plugin file
 			$SED -i "s/CF_EMAIL/$CF_EMAIL/g" $cred_folder/cloudflare.ini
 			$SED -i "s/CF_API/$CF_API/g" $cred_folder/cloudflare.ini
+			chmod -R 600 $cred_folder #debug
 
 			elif [ "$dns_plugin" == "N" ] || [ "$dns_plugin" == "n" ]
 			then
