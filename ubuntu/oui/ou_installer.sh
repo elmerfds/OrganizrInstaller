@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v7.0.2
+version=v7.0.3
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -267,7 +267,7 @@ LEcertbot_mod()
 			then
 				if [ "$dns_plugin" == "Y" ] || [ "$dns_plugin" == "y" ]
 				then
-				certbot certonly --dns-cloudflare --dns-cloudflare-credentials $cred_folder/cloudflare.ini --server https://acme-v02.api.letsencrypt.org/directory --email $email_var --agree-tos -d *.$DOMAIN -d $DOMAIN
+				certbot certonly --dns-cloudflare --dns-cloudflare-credentials $cred_folder/cloudflare.ini --server https://acme-v02.api.letsencrypt.org/directory --email $email_var --agree-tos --no-eff-email -d *.$DOMAIN -d $DOMAIN
 				
 				elif [ "$dns_plugin" == "N" ] || [ "$dns_plugin" == "n" ]
 				then
