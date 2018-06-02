@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v6.9.7
+version=v7.0.0
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -143,6 +143,7 @@ LEvhostcreate_mod()
 		echo -e "\e[1;36m> Is your domain on Cloudflare? [y/n] .\e[0m"
 		echo  "- Going ahead with the above will automate the DNS challenges for you."
 		echo  "- To do that, these packages will be installed: python3-pip & certbot-dns-cloudflare pip3 package"
+		printf '\e[1;36m- [y/n]: \e[0m'
 		read -r dns_plugin
 		dns_plugin=${dns_plugin:-n}
 		echo		
@@ -257,14 +258,16 @@ LEcertbot_mod()
 			## Get wildcard certificate, acme v2
 			echo
 			echo -e "\e[1;36m> Enter an email address, which will be used to generate the SSL certs?.\e[0m"
+			echo -e "\e[1;36m> Do you want to use this one: $CF_EMAIL ? [y/n].\e[0m"
 			read -r email_var
+			email_var=${email_var:-$CF_EMAIL}
 
 
 			if [ "$LEcert_type" == "W" ] || [ "$LEcert_type" == "w" ]
 			then
 				if [ "$dns_plugin" == "Y" ] || [ "$dns_plugin" == "y" ]
 				then
-				certbot certonly --dns-cloudflare --dns-cloudflare-credentials $cred_folder/cloudflare.ini --server https://acme-v02.api.letsencrypt.org/directory --email $email_var -d *.$DOMAIN -d $DOMAIN
+				certbot certonly --dns-cloudflare --dns-cloudflare-credentials $cred_folder/cloudflare.ini --server https://acme-v02.api.letsencrypt.org/directory --email $email_var --agree-tos -d *.$DOMAIN -d $DOMAIN
 				
 				elif [ "$dns_plugin" == "N" ] || [ "$dns_plugin" == "n" ]
 				then
