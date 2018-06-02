@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v7.0.3
+version=v7.0.4
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -233,10 +233,12 @@ LEcertbot_mod()
 			then
 			echo
 			echo -e "\e[1;36m> Enter your Cloudflare email.\e[0m"
+			printf '\e[1;36m- \e[0m' 
 			read -r CF_EMAIL
 			echo
 			echo -e "\e[1;36m> Enter your Cloudflare API.\e[0m" 
-			echo "- You can get your Cloudflare API from here: https://dash.cloudflare.com/profile" 
+			echo "- You can get your Cloudflare API from here: https://dash.cloudflare.com/profile"
+			printf '\e[1;36m- \e[0m' 
 			read -r CF_API
 			echo
 
@@ -258,7 +260,7 @@ LEcertbot_mod()
 			## Get wildcard certificate, acme v2
 			echo
 			echo -e "\e[1;36m> Enter an email address, which will be used to generate the SSL certs?.\e[0m"
-			echo -e "> Press Enter to use this \e[1;36m$CF_EMAIL\e[0m or enter a different one"
+			echo -e "> Press Enter to use \e[1;36m$CF_EMAIL\e[0m or enter a different one"
 			read -r email_var
 			email_var=${email_var:-$CF_EMAIL}
 
