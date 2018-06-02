@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v6.9.5
+version=v6.9.6
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -141,6 +141,8 @@ LEvhostcreate_mod()
 		then
 		echo
 		echo -e "\e[1;36m> Is your domain on Cloudflare? [y/n] .\e[0m"
+		echo  "- Going ahead with the above will automate the DNS challenges for you."
+		echo  "- To do that that, these packages will be installed: python3-pip & certbot-dns-cloudflare pip3 package"
 		read -r dns_plugin
 		dns_plugin=${dns_plugin:-n}
 		echo		
@@ -237,8 +239,8 @@ LEcertbot_mod()
 			read -r CF_API
 			echo
 
-			apt-get install certbot python-pip -y
-			sudo -u "$(logname)" pip install certbot-dns-cloudflare
+			apt-get install python3-pip -y
+			sudo -u "$(logname)" pip3 install certbot-dns-cloudflare
 
 			mkdir -p $cred_folder #create secret folder to store Certbot CF plugin creds
 			cp -a $CURRENT_DIR/config/le-dnsplugins/cf/. $cred_folder #copy CF credentials file
