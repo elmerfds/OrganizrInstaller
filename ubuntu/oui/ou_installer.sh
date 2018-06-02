@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v6.7.0
+version=v6.8.0
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -142,7 +142,8 @@ LEvhostcreate_mod()
 		echo
 		echo -e "\e[1;36m> Is your domain on Cloudflare? [y/n] .\e[0m"
 		read -r dns_plugin
-		dns_plugin=${dns_plugin:-n}		
+		dns_plugin=${dns_plugin:-n}
+		echo		
 		fi
 		
 		mkdir -p $NGINX_APPS 								#Apps folder
@@ -230,11 +231,12 @@ LEcertbot_mod()
 			mkdir -p $cred_folder
 			cp -a $CURRENT_DIR/config/le-dnsplugins/cf/. $cred_folder #copy CF credentials
 
+			echo
 			echo -e "\e[1;36m> Enter your Cloudflare email.\e[0m"
 			read -r CF_EMAIL
 			echo
 			echo -e "\e[1;36m> Enter your Cloudflare API.\e[0m" 
-			echo "You can get your Cloudflare API from here: https://dash.cloudflare.com/profile" 
+			echo "- You can get your Cloudflare API from here: https://dash.cloudflare.com/profile" 
 			read -r CF_API
 			echo
 
@@ -242,8 +244,8 @@ LEcertbot_mod()
 			$SED -i "s/CF_API/$CF_API/g" $cred_folder/cloudflare.ini
 			chmod -R 600 $cred_folder
 
-			apt-get install certbot python-pip
-			pip install certbot-dns-cloudflare
+			apt-get install certbot python-pip -y
+			sudo -u "$(logname)" pip install certbot-dns-cloudflare
 
 			elif [ "$dns_plugin" == "N" ] || [ "$dns_plugin" == "n" ]
 			then
