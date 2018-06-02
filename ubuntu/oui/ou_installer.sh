@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v6.9.0
+version=v6.9.2
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -19,7 +19,7 @@ SED=`which sed`
 CURRENT_DIR=`dirname $0`
 tmp='/tmp/Organizr'
 dlvar=0
-cred_folder='~/.secrets/certbot'
+cred_folder='/etc/letsencrypt/.secrets/certbot'
 LE_WEB='/var/www/letsencrypt/.well-known/acme-challenge'
 
 #Modules
@@ -237,8 +237,6 @@ LEcertbot_mod()
 			read -r CF_API
 			echo
 
-			$SED -i "s/CF_EMAIL/$CF_EMAIL/g" $cred_folder/cloudflare.ini
-			$SED -i "s/CF_API/$CF_API/g" $cred_folder/cloudflare.ini
 			#chmod -R 600 $cred_folder #debug
 
 			apt-get install certbot python-pip -y
@@ -246,6 +244,9 @@ LEcertbot_mod()
 
 			mkdir -p $cred_folder #create secret folder to store Certbot CF plugin creds
 			cp -a $CURRENT_DIR/config/le-dnsplugins/cf/. $cred_folder #copy CF credentials file
+			#Update CF plugin file
+			$SED -i "s/CF_EMAIL/$CF_EMAIL/g" $cred_folder/cloudflare.ini
+			$SED -i "s/CF_API/$CF_API/g" $cred_folder/cloudflare.ini
 
 			elif [ "$dns_plugin" == "N" ] || [ "$dns_plugin" == "n" ]
 			then
