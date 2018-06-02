@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v7.0.1
+version=v7.0.2
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -258,7 +258,7 @@ LEcertbot_mod()
 			## Get wildcard certificate, acme v2
 			echo
 			echo -e "\e[1;36m> Enter an email address, which will be used to generate the SSL certs?.\e[0m"
-			echo -e "> Press Enter to use this one or type in a different one:\e[1;36m$CF_EMAIL\e[0m"
+			echo -e "> Press Enter to use this \e[1;36m$CF_EMAIL\e[0m or enter a different one"
 			read -r email_var
 			email_var=${email_var:-$CF_EMAIL}
 
