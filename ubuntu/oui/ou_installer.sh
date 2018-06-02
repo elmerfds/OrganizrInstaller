@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v6.2.0
+version=v7.0.3
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -19,26 +19,27 @@ SED=`which sed`
 CURRENT_DIR=`dirname $0`
 tmp='/tmp/Organizr'
 dlvar=0
+cred_folder='/etc/letsencrypt/.secrets/certbot'
 LE_WEB='/var/www/letsencrypt/.well-known/acme-challenge'
 
 #Modules
 #Organizr Requirement Module
-orgreq_mod() { 
-                echo
-                echo -e "\e[1;36m> Updating apt repositories...\e[0m"
+orgreq_mod() 
+	{ 
+        echo
+        echo -e "\e[1;36m> Updating apt repositories...\e[0m"
 		echo
 		apt-get update	    
-                echo
+        echo
 		for ((i=0; i < "${#orgreqname[@]}"; i++)) 
 		do
 		    echo -e "\e[1;36m> Installing ${orgreqname[$i]}...\e[0m"
 		    echo
 		    apt-get -y install ${orgreq[$i]}
 		    echo
-		
 		done
 		echo
-                }
+    }
 #Domain validation 
 domainval_mod()
 	{
@@ -65,7 +66,7 @@ domainval_mod()
 #Nginx vhost creation module
 vhostcreate_mod()        
        {
-        	echo
+        echo
 		#domainval_mod
 		# Copy the virtual host template
 		CONFIG=$NGINX_SITES/$DOMAIN.conf
@@ -130,16 +131,27 @@ LEvhostcreate_mod()
 		echo -e "\e[1;36m> LE Cert type?:\e[0m"
 		echo
 		echo -e "\e[1;36m[S] \e[0mSingle Domain Cert"
-		echo -e "\e[1;36m[W] \e[0mWildcard [non DNS plugin]"
+		echo -e "\e[1;36m[W] \e[0mWildcard"
 		echo
 		printf '\e[1;36m- \e[0m'
 		read -r LEcert_type
 		LEcert_type=${LEcert_type:-W}
 
-		#Apps folder
-		mkdir -p $NGINX_APPS
-		cp -a $CURRENT_DIR/config/apps/. $NGINX_APPS
-		cp -a $CURRENT_DIR/config/le/. $NGINX_LOC/config
+		if [ "$LEcert_type" == "W" ] || [ "$LEcert_type" == "w" ];
+		then
+		echo
+		echo -e "\e[1;36m> Is your domain on Cloudflare? [y/n] .\e[0m"
+		echo  "- Going ahead with the above will automate the DNS challenges for you."
+		echo  "- To do that, these packages will be installed: python3-pip & certbot-dns-cloudflare pip3 package"
+		printf '\e[1;36m- [y/n]: \e[0m'
+		read -r dns_plugin
+		dns_plugin=${dns_plugin:-n}
+		echo		
+		fi
+		
+		mkdir -p $NGINX_APPS 								#Apps folder
+		cp -a $CURRENT_DIR/config/apps/. $NGINX_APPS  		#Apps conf files
+		cp -a $CURRENT_DIR/config/le/. $NGINX_LOC/config 	#LE conf file
 
 		if [ "$org_v" == "1" ] && [ "$vhost_template" == "LE" ]
 		then
@@ -216,17 +228,51 @@ LEcertbot_mod()
 			apt-get install software-properties-common -y
 			add-apt-repository ppa:certbot/certbot -y
 			apt-get update
+
+			if [ "$dns_plugin" == "Y" ] || [ "$dns_plugin" == "y" ]
+			then
+			echo
+			echo -e "\e[1;36m> Enter your Cloudflare email.\e[0m"
+			read -r CF_EMAIL
+			echo
+			echo -e "\e[1;36m> Enter your Cloudflare API.\e[0m" 
+			echo "- You can get your Cloudflare API from here: https://dash.cloudflare.com/profile" 
+			read -r CF_API
+			echo
+
+			apt-get install certbot python3-pip -y
+			sudo -u "$(logname)" pip3 install certbot-dns-cloudflare
+
+			mkdir -p $cred_folder #create secret folder to store Certbot CF plugin creds
+			cp -a $CURRENT_DIR/config/le-dnsplugins/cf/. $cred_folder #copy CF credentials file
+			#Update CF plugin file
+			$SED -i "s/CF_EMAIL/$CF_EMAIL/g" $cred_folder/cloudflare.ini
+			$SED -i "s/CF_API/$CF_API/g" $cred_folder/cloudflare.ini
+			chmod -R 600 $cred_folder #debug
+
+			elif [ "$dns_plugin" == "N" ] || [ "$dns_plugin" == "n" ]
+			then
 			apt-get install certbot -y
+			fi
 
 			## Get wildcard certificate, acme v2
 			echo
 			echo -e "\e[1;36m> Enter an email address, which will be used to generate the SSL certs?.\e[0m"
+			echo -e "> Press Enter to use this \e[1;36m$CF_EMAIL\e[0m or enter a different one"
 			read -r email_var
+			email_var=${email_var:-$CF_EMAIL}
 
 
 			if [ "$LEcert_type" == "W" ] || [ "$LEcert_type" == "w" ]
 			then
-			certbot certonly --agree-tos --no-eff-email --email $email_var --server https://acme-v02.api.letsencrypt.org/directory --manual -d *.$DOMAIN -d $DOMAIN
+				if [ "$dns_plugin" == "Y" ] || [ "$dns_plugin" == "y" ]
+				then
+				certbot certonly --dns-cloudflare --dns-cloudflare-credentials $cred_folder/cloudflare.ini --server https://acme-v02.api.letsencrypt.org/directory --email $email_var --agree-tos --no-eff-email -d *.$DOMAIN -d $DOMAIN
+				
+				elif [ "$dns_plugin" == "N" ] || [ "$dns_plugin" == "n" ]
+				then
+				certbot certonly --agree-tos --no-eff-email --email $email_var --server https://acme-v02.api.letsencrypt.org/directory --manual -d *.$DOMAIN -d $DOMAIN
+				fi
 			
 			elif [ "$LEcert_type" == "S" ] || [ "$LEcert_type" == "s" ]
 			then
@@ -437,33 +483,33 @@ orginstinfo_mod()
 #OUI script Updater
 oui_updater_mod()
 	{
-			echo
-			echo "Which branch of OUI, do you want to install?"
-			echo "- [1] = Master [2] = Dev [3] = Experimental"
-			read -r oui_branch_no
-			echo
+		echo
+		echo "Which branch of OUI, do you want to install?"
+		echo "- [1] = Master [2] = Dev [3] = Experimental"
+		read -r oui_branch_no
+		echo
 
-			if [ $oui_branch_no = "1" ]
-			then 
-			oui_branch_name=master
-				
-			elif [ $oui_branch_no = "2" ]
-			then 
-			oui_branch_name=dev
+		if [ $oui_branch_no = "1" ]
+		then 
+		oui_branch_name=master
+			
+		elif [ $oui_branch_no = "2" ]
+		then 
+		oui_branch_name=dev
 	
-			elif [ $oui_branch_no = "3" ]
-			then 
-			oui_branch_name=experimental
-			fi
+		elif [ $oui_branch_no = "3" ]
+		then 
+		oui_branch_name=experimental
+		fi
 
-		    	git fetch --all
-			git reset --hard origin/$oui_branch_name
-			git pull origin $oui_branch_name
-			echo
-                	echo -e "\e[1;36mScript updated, reloading now...\e[0m"
-			sleep 3s
-			chmod +x $BASH_SOURCE
-			exec ./ou_installer.sh
+		git fetch --all
+		git reset --hard origin/$oui_branch_name
+		git pull origin $oui_branch_name
+		echo
+        echo -e "\e[1;36mScript updated, reloading now...\e[0m"
+		sleep 3s
+		chmod +x $BASH_SOURCE
+		exec ./ou_installer.sh
 	}
 #Utilities sub-menu
 uti_menus() 
@@ -567,7 +613,7 @@ read_options(){
 			addsite_to_hosts_mod
 			orginstinfo_mod
 			unset DOMAIN
-                	echo -e "\e[1;36m> \e[0mPress any key to return to menu..."
+            echo -e "\e[1;36m> \e[0mPress any key to return to menu..."
 			read
 		;;
 
@@ -578,20 +624,20 @@ read_options(){
 			#echo "- Next if you haven't done already, configure your Nginx conf to point to the Org installation directoy"
 			echo
 			unset DOMAIN
-                	echo -e "\e[1;36m> \e[0mPress any key to return to menu..."
+            echo -e "\e[1;36m> \e[0mPress any key to return to menu..."
 			read
 		;; 
 
 	 	"3")
 			echo "- Your choice 3: Install Organzir Requirements"
 			orgreq_mod
-                	echo -e "\e[1;36m> \e[0mPress any key to return to menu..."
+            echo -e "\e[1;36m> \e[0mPress any key to return to menu..."
 			read
 		;;
         
 	 	"4")
 			echo "- Your choice 4: Organizr Complete Install (Org + Requirements) "
-	        	orgreq_mod
+	        orgreq_mod
 			echo -e "\e[1;36m> \e[0mPress any key to continue with Organizr + Nginx site config"
 			read
 			orgdl_mod
@@ -600,7 +646,7 @@ read_options(){
 			addsite_to_hosts_mod
 			orginstinfo_mod
 			unset DOMAIN
-                	echo -e "\e[1;36m> \e[0mPress any key to return to menu..."
+            echo -e "\e[1;36m> \e[0mPress any key to return to menu..."
 			read
 		;;
 
