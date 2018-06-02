@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v6.1.8
+version=v6.1.9
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -139,33 +139,43 @@ LEvhostcreate_mod()
 		#Apps folder
 		mkdir -p $NGINX_APPS
 		cp -a $CURRENT_DIR/config/app/. $NGINX_APPS
+		cp -a $CURRENT_DIR/config/le/. $NGINX_LOC/config
 
 		if [ "$org_v" == "1" ] && [ "$vhost_template" == "LE" ]
 		then
-		cp -a $CURRENT_DIR/config/le/. $NGINX_LOC/config
 		LEcertbot_mod
+		cp $CURRENT_DIR/templates/le/orgv1_le.template $CONFIG
 			if [ "$LEcert_type" == "W" ] || [ "$LEcert_type" == "w" ]
 			then
-				cp $CURRENT_DIR/templates/le/orgv1_le-w.template $CONFIG
+				subd='www'
+				subd_doma="$DOMAIN" 
+				serv_name="$subd.$DOMAIN $DOMAIN"  		
 			
 			elif [ "$LEcert_type" == "S" ] || [ "$LEcert_type" == "s" ]
 			then
-				cp $CURRENT_DIR/templates/le/orgv1_le-s.template $CONFIG
+				subd='www'
+				subd_doma="$subd.$DOMAIN"
+				serv_name="$subd.$DOMAIN $DOMAIN"   
+				
 				#Create LE Certbot renewal cron job
 				{ crontab -l 2>/dev/null; echo "20 3 * * * certbot renew --noninteractive --renew-hook "/etc/init.d/nginx reload""; } | crontab -
 			fi
 		
 		elif [ "$org_v" == "2" ] && [ "$vhost_template" == "LE" ]
 		then
-		cp -a $CURRENT_DIR/config/le/. $NGINX_LOC/config
 		LEcertbot_mod
+		cp $CURRENT_DIR/templates/le/orgv2_le.template $CONFIG
 			if [ "$LEcert_type" == "W" ] || [ "$LEcert_type" == "w" ]
 			then
-				cp $CURRENT_DIR/templates/le/orgv2_le-w.template $CONFIG
-			
+				subd='www'
+				subd_doma="$DOMAIN" 
+				serv_name="$subd.$DOMAIN $DOMAIN"  				
+							
 			elif [ "$LEcert_type" == "S" ] || [ "$LEcert_type" == "s" ]
 			then
-				cp $CURRENT_DIR/templates/le/orgv2_le-s.template $CONFIG
+				subd='www'
+				subd_doma="$subd.$DOMAIN"
+				serv_name="$subd.$DOMAIN $DOMAIN"  			
 				#Create LE Certbot renewal cron job
 				{ crontab -l 2>/dev/null; echo "20 3 * * * certbot renew --noninteractive --renew-hook "/etc/init.d/nginx reload""; } | crontab -
 			fi
@@ -363,6 +373,8 @@ vhostconfig_mod()
 		SITE_DIR=`echo $instvar`
 		$SED -i "s/DOMAIN/$DOMAIN/g" $CONFIG
 		$SED -i "s!ROOT!$SITE_DIR!g" $CONFIG
+		$SED -i "s/SERV_NAME/$serv_name/g" $CONFIG
+		$SED -i "s/SUBD_DOMA/$subd_doma/g" $CONFIG
 		if [ "$vhost_template" == "CF" ]
 		then $SED -i "s/DOMAIN/$DOMAIN/g" $CONFIG_DOMAIN
 		fi
