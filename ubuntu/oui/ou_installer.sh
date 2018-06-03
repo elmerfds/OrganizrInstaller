@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v7.1.6
+version=v7.1.7
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -121,82 +121,87 @@ LEvhostcreate_mod()
        {
 		echo
 		if [ "$vhost_template" == "LE" ] || [ "$vhost_template" == "le" ]; 
-		then		
-		echo -e "\e[1;36m> Please note, since you've selected the Let's Encrypt Option, will start by preparing your system to generte LE SSL certs.\e[0m" 
-		echo -e "\e[1;36m> Please make sure, you've configured your domain with the correct DNS records.\e[0m"
-		echo -e "\e[1;36m> If you're using CloudFlare (CF) as your DNS, then this is supported by this option.\e[0m"
-		echo -e "\e[1;36m> If you haven't preparared your setup to carry out the above, then please terminate this script.\e[0m"
-		echo 
-		echo -e "\e[1;36m> Or press any key to continue...\e[0m"		 
-		read 
-		echo 
-		echo -e "\e[1;36m> LE Cert type?:\e[0m"
-		echo
-		echo -e "\e[1;36m[S] \e[0mSingle Domain Cert"
-		echo -e "\e[1;36m[W] \e[0mWildcard"
-		echo
-		printf '\e[1;36m- \e[0m'
-		read -r LEcert_type
-		LEcert_type=${LEcert_type:-W}
-		fi
-
-		if [ "$LEcert_type" == "W" ] || [ "$LEcert_type" == "w" ];
 		then
-		echo
-		echo -e "\e[1;36m> Is your domain on Cloudflare? [y/n] .\e[0m"
-		echo  "- Going ahead with the above will automate the DNS challenges for you."
-		echo  "- To do that, python3-pip & certbot-dns-cloudflare pip3 package wll be installed"
-		printf '\e[1;36m- [y/n]: \e[0m'
-		read -r dns_plugin
-		dns_plugin=${dns_plugin:-n}
-		echo		
-		fi
-		
-		mkdir -p $NGINX_APPS 								#Apps folder
-		cp -a $CURRENT_DIR/config/apps/. $NGINX_APPS  		#Apps conf files
-		cp -a $CURRENT_DIR/config/le/. $NGINX_LOC/config 	#LE conf file
-
-		if [ "$org_v" == "1" ] && [ "$vhost_template" == "LE" ]
-		then
-		LEcertbot_mod
-		cp $CURRENT_DIR/templates/le/orgv1_le.template $CONFIG
-			if [ "$LEcert_type" == "W" ] || [ "$LEcert_type" == "w" ]
+			echo -e "\e[1;36m> Do you want to generate Let's Encrypt SSL certs as well?.\e[0m"
+			read -r LEcert_create
+			LEcert_create=${LEcert_create:-Y}
+			if [ "$LEcert_create" == "Y" ] || [ "$LEcert_create" == "y" ]
 			then
-				subd='www'
-				subd_doma="$DOMAIN" 
-				serv_name="$subd.$DOMAIN $DOMAIN"  		
+				echo -e "\e[1;36m> Please note, since you've selected the Let's Encrypt Option, will start by preparing your system to generte LE SSL certs.\e[0m" 
+		    	echo -e "\e[1;36m> Please make sure, you've configured your domain with the correct DNS records.\e[0m"
+				echo -e "\e[1;36m> If you're using CloudFlare (CF) as your DNS, then this is supported by this option.\e[0m"
+				echo -e "\e[1;36m> If you haven't preparared your setup to carry out the above, then please terminate this script.\e[0m"
+				echo 
+				echo -e "\e[1;36m> Or press any key to continue...\e[0m"		 
+				read 
+				echo 
+				echo -e "\e[1;36m> LE Cert type?:\e[0m"
+				echo
+				echo -e "\e[1;36m[S] \e[0mSingle Domain Cert"
+				echo -e "\e[1;36m[W] \e[0mWildcard"
+				echo
+				printf '\e[1;36m- \e[0m'
+				read -r LEcert_type
+				LEcert_type=${LEcert_type:-W}
 			
-			elif [ "$LEcert_type" == "S" ] || [ "$LEcert_type" == "s" ]
-			then
-				subd='www'
-				subd_doma="$subd.$DOMAIN"
-				serv_name="$subd.$DOMAIN $DOMAIN"   
+				if [ "$LEcert_type" == "W" ] || [ "$LEcert_type" == "w" ];
+				then
+				echo
+				echo -e "\e[1;36m> Is your domain on Cloudflare? [y/n] .\e[0m"
+				echo  "- Going ahead with the above will automate the DNS challenges for you."
+				echo  "- To do that, python3-pip & certbot-dns-cloudflare pip3 package wll be installed"
+				printf '\e[1;36m- [y/n]: \e[0m'
+				read -r dns_plugin
+				dns_plugin=${dns_plugin:-n}
+				echo		
+				fi
+			
+				mkdir -p $NGINX_APPS 								#Apps folder
+				cp -a $CURRENT_DIR/config/apps/. $NGINX_APPS  		#Apps conf files
+				cp -a $CURRENT_DIR/config/le/. $NGINX_LOC/config 	#LE conf file
+
+				if [ "$org_v" == "1" ] && [ "$vhost_template" == "LE" ]
+				then
+				LEcertbot_mod
+				cp $CURRENT_DIR/templates/le/orgv1_le.template $CONFIG
+					if [ "$LEcert_type" == "W" ] || [ "$LEcert_type" == "w" ]
+					then
+						subd='www'
+						subd_doma="$DOMAIN" 
+						serv_name="$subd.$DOMAIN $DOMAIN"  		
+			
+					elif [ "$LEcert_type" == "S" ] || [ "$LEcert_type" == "s" ]
+					then
+						subd='www'
+						subd_doma="$subd.$DOMAIN"
+						serv_name="$subd.$DOMAIN $DOMAIN"   
 				
-				#Create LE Certbot renewal cron job
-				{ crontab -l 2>/dev/null; echo "20 3 * * * certbot renew --noninteractive --renew-hook "'"/etc/init.d/nginx reload"'""; } | crontab -
-			fi
+						#Create LE Certbot renewal cron job
+						{ crontab -l 2>/dev/null; echo "20 3 * * * certbot renew --noninteractive --renew-hook "'"/etc/init.d/nginx reload"'""; } | crontab -
+					fi
 		
-		elif [ "$org_v" == "2" ] && [ "$vhost_template" == "LE" ]
-		then
-		LEcertbot_mod
-		cp $CURRENT_DIR/templates/le/orgv2_le.template $CONFIG
-			if [ "$LEcert_type" == "W" ] || [ "$LEcert_type" == "w" ]
-			then
-				subd='www'
-				subd_doma="$DOMAIN" 
-				serv_name="$subd.$DOMAIN $DOMAIN"  				
+				elif [ "$org_v" == "2" ] && [ "$vhost_template" == "LE" ]
+				then
+				LEcertbot_mod
+				cp $CURRENT_DIR/templates/le/orgv2_le.template $CONFIG
+					if [ "$LEcert_type" == "W" ] || [ "$LEcert_type" == "w" ]
+					then
+						subd='www'
+						subd_doma="$DOMAIN" 
+						serv_name="$subd.$DOMAIN $DOMAIN"  				
 							
-			elif [ "$LEcert_type" == "S" ] || [ "$LEcert_type" == "s" ]
-			then
-				subd='www'
-				subd_doma="$subd.$DOMAIN"
-				serv_name="$subd.$DOMAIN $DOMAIN"  			
-				#Create LE Certbot renewal cron job
-				{ crontab -l 2>/dev/null; echo "20 3 * * * certbot renew --noninteractive --renew-hook "'"/etc/init.d/nginx reload"'""; } | crontab -
-			fi
+					elif [ "$LEcert_type" == "S" ] || [ "$LEcert_type" == "s" ]
+					then
+						subd='www'
+						subd_doma="$subd.$DOMAIN"
+						serv_name="$subd.$DOMAIN $DOMAIN"  			
+						#Create LE Certbot renewal cron job
+						{ crontab -l 2>/dev/null; echo "20 3 * * * certbot renew --noninteractive --renew-hook "'"/etc/init.d/nginx reload"'""; } | crontab -
+					fi
 
+				fi
+			fi	
 		fi
-
 	}
 
 LEcertbot_mod() 
