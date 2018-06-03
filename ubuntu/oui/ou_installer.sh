@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v7.1.4
+version=v7.1.5
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -544,7 +544,7 @@ uti_menus()
 		echo "| 2.| Let's Encrypt: Test Single Domain Cert Renewal	  " 
 		echo "| 3.| Let's Encrypt: Single Domain Cert Renewal 	  " 
 		echo "| 4.| Let's Encrypt: Wilcard Cert Renewal	  " 
-		echo "| 5.| Your choice 5: Let's Encrypt: Wilcard Cert Renewal [Cloudflare DNS Plugin] 					  "
+		echo "| 5.| Let's Encrypt: Wilcard Cert Renewal [Cloudflare DNS Plugin] 					  "
 		echo "| 6.| Back 					  "
 		echo
 		echo
