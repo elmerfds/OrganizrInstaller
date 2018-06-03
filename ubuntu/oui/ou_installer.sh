@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v7.0.4
+version=v7.1.0
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -125,7 +125,7 @@ LEvhostcreate_mod()
 		echo -e "\e[1;36m> If you're using CloudFlare (CF) as your DNS, then this is supported by this option.\e[0m"
 		echo -e "\e[1;36m> If you haven't preparared your setup to carry out the above, then please terminate this script.\e[0m"
 		echo 
-		echo -e "\e[1;36m> Or press any key to continue.\e[0m"		 
+		echo -e "\e[1;36m> Or press any key to continue...\e[0m"		 
 		read 
 		echo 
 		echo -e "\e[1;36m> LE Cert type?:\e[0m"
@@ -142,7 +142,7 @@ LEvhostcreate_mod()
 		echo
 		echo -e "\e[1;36m> Is your domain on Cloudflare? [y/n] .\e[0m"
 		echo  "- Going ahead with the above will automate the DNS challenges for you."
-		echo  "- To do that, these packages will be installed: python3-pip & certbot-dns-cloudflare pip3 package"
+		echo  "- To do that, python3-pip & certbot-dns-cloudflare pip3 package wll be installed"
 		printf '\e[1;36m- [y/n]: \e[0m'
 		read -r dns_plugin
 		dns_plugin=${dns_plugin:-n}
@@ -170,7 +170,7 @@ LEvhostcreate_mod()
 				serv_name="$subd.$DOMAIN $DOMAIN"   
 				
 				#Create LE Certbot renewal cron job
-				{ crontab -l 2>/dev/null; echo "20 3 * * * certbot renew --noninteractive --renew-hook "/etc/init.d/nginx reload""; } | crontab -
+				{ crontab -l 2>/dev/null; echo "20 3 * * * certbot renew --noninteractive --renew-hook "'"/etc/init.d/nginx reload"'""; } | crontab -
 			fi
 		
 		elif [ "$org_v" == "2" ] && [ "$vhost_template" == "LE" ]
@@ -189,7 +189,7 @@ LEvhostcreate_mod()
 				subd_doma="$subd.$DOMAIN"
 				serv_name="$subd.$DOMAIN $DOMAIN"  			
 				#Create LE Certbot renewal cron job
-				{ crontab -l 2>/dev/null; echo "20 3 * * * certbot renew --noninteractive --renew-hook "/etc/init.d/nginx reload""; } | crontab -
+				{ crontab -l 2>/dev/null; echo "20 3 * * * certbot renew --noninteractive --renew-hook "'"/etc/init.d/nginx reload"'""; } | crontab -
 			fi
 
 		fi
@@ -260,7 +260,7 @@ LEcertbot_mod()
 			## Get wildcard certificate, acme v2
 			echo
 			echo -e "\e[1;36m> Enter an email address, which will be used to generate the SSL certs?.\e[0m"
-			echo -e "> Press Enter to use \e[1;36m$CF_EMAIL\e[0m or enter a different one"
+			echo -e "- Press Enter to use \e[1;36m$CF_EMAIL\e[0m or enter a different one"
 			read -r email_var
 			email_var=${email_var:-$CF_EMAIL}
 
@@ -270,6 +270,9 @@ LEcertbot_mod()
 				if [ "$dns_plugin" == "Y" ] || [ "$dns_plugin" == "y" ]
 				then
 				certbot certonly --dns-cloudflare --dns-cloudflare-credentials $cred_folder/cloudflare.ini --server https://acme-v02.api.letsencrypt.org/directory --email $email_var --agree-tos --no-eff-email -d *.$DOMAIN -d $DOMAIN
+				
+				#Adding wildcar cert auto renewal using CF DNS plugin, untested, let me know if anyone does.
+				{ crontab -l 2>/dev/null; echo "20 3 * * * certbot renew --noninteractive --dns-cloudflare --renew-hook "'"/etc/init.d/nginx reload"'""; } | crontab -
 				
 				elif [ "$dns_plugin" == "N" ] || [ "$dns_plugin" == "n" ]
 				then
@@ -317,6 +320,23 @@ LEcertbot-wildcard-renew_mod()
 				fi
 			done	
 			certbot certonly --manual -d *.$DOMAIN -d $DOMAIN --preferred-challenges dns-01 --server https://acme-v02.api.letsencrypt.org/directory
+		}
+
+LEcertbot-wc-cf-dns-renew_mod()
+		{
+			echo
+			echo "1. Check renewal status/soft-run"
+			echo "2. Force renewal"
+			read -r cfdns_renew
+
+			if [ "$cfdns_renew" == "1" ]
+			then
+			certbot renew --dns-cloudflare
+
+			elif [ "$cfdns_renew" == "2" ]
+			then
+			certbot renew --dns-cloudflare --force-renewal
+			fi
 		}
 
 #Organizr download module
@@ -572,9 +592,19 @@ uti_options(){
 			echo			
                 	echo -e "\e[1;36m> \e[0mPress any key to return to menu..."
 			read
-		;;				
+		;;
 
 			"5")
+			echo "- Your choice 5: Let's Encrypt: Wilcard Cert Renewal [Cloudflare DNS Plugin]"
+			#LE Wildcard cert renewal
+			LEcertbot-wc-cf-dns-renew_mod
+			unset DOMAIN
+			echo			
+                	echo -e "\e[1;36m> \e[0mPress any key to return to menu..."
+			read
+		;;							
+
+			"6")
 			while true 
 			do
 			clear
