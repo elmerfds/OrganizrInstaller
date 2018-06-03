@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v7.1.8-3
+version=v7.1.8-4
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -165,53 +165,61 @@ LEvhostcreate_mod()
 
 			if [ "$org_v" == "1" ] && [ "$vhost_template" == "LE" ]
 			then
-			LEcertbot_mod
-			cp $CURRENT_DIR/templates/le/orgv1_le.template $CONFIG
-				if [ "$LEcert_type" == "W" ] || [ "$LEcert_type" == "w" ]
+				LEcertbot_mod
+				cp $CURRENT_DIR/templates/le/orgv1_le.template $CONFIG
+				if [ "$LEcert_create" == "Y" ] || [ "$LEcert_create" == "y" ]
 				then
-					subd='www'
-					subd_doma="$DOMAIN" 
-					serv_name="$subd.$DOMAIN $DOMAIN"  		
-			
-				elif [ "$LEcert_type" == "S" ] || [ "$LEcert_type" == "s" ]
-				then
-					subd='www'
-					subd_doma="$subd.$DOMAIN"
-					serv_name="$subd.$DOMAIN $DOMAIN"   
-				
-					if [ "$LEcert_create" == "Y" ] || [ "$LEcert_create" == "y" ];
+					if [ "$LEcert_type" == "W" ] || [ "$LEcert_type" == "w" ]
 					then
-					#Create LE Certbot renewal cron job
-					{ crontab -l 2>/dev/null; echo "20 3 * * * certbot renew --noninteractive --renew-hook "'"/etc/init.d/nginx reload"'""; } | crontab -
+						subd='www'
+						subd_doma="$DOMAIN" 
+						serv_name="$subd.$DOMAIN $DOMAIN"  		
+			
+					elif [ "$LEcert_type" == "S" ] || [ "$LEcert_type" == "s" ]
+					then
+						subd='www'
+						subd_doma="$subd.$DOMAIN"
+						serv_name="$subd.$DOMAIN $DOMAIN"   
+						#Create LE Certbot renewal cron job
+						{ crontab -l 2>/dev/null; echo "20 3 * * * certbot renew --noninteractive --renew-hook "'"/etc/init.d/nginx reload"'""; } | crontab -
 					fi
-				fi
+
+				elif [ "$LEcert_create" == "N" ] || [ "$LEcert_create" == "n" ]
+				then
+						subd='www'
+						subd_doma="$subd.$DOMAIN"
+						serv_name="$subd.$DOMAIN $DOMAIN"   
+				fi	
 					
 			elif [ "$org_v" == "2" ] && [ "$vhost_template" == "LE" ]
 			then
 				LEcertbot_mod
 				cp $CURRENT_DIR/templates/le/orgv2_le.template $CONFIG
-
-				if [ "$LEcert_type" == "W" ] || [ "$LEcert_type" == "w" ]
-				then
-					subd='www'
-					subd_doma="$DOMAIN" 
-					serv_name="$subd.$DOMAIN $DOMAIN"  				
+				if [ "$LEcert_create" == "Y" ] || [ "$LEcert_create" == "y" ]
+				then				
+					if [ "$LEcert_type" == "W" ] || [ "$LEcert_type" == "w" ]
+					then
+						subd='www'
+						subd_doma="$DOMAIN" 
+						serv_name="$subd.$DOMAIN $DOMAIN"  				
 							
-				elif [ "$LEcert_type" == "S" ] || [ "$LEcert_type" == "s" ]
-				then
-					subd='www'
-					subd_doma="$subd.$DOMAIN"
-					serv_name="$subd.$DOMAIN $DOMAIN" 
-
-					if [ "$LEcert_create" == "Y" ] || [ "$LEcert_create" == "y" ];
-					then 			
+					elif [ "$LEcert_type" == "S" ] || [ "$LEcert_type" == "s" ]
+					then
+						subd='www'
+						subd_doma="$subd.$DOMAIN"
+						serv_name="$subd.$DOMAIN $DOMAIN" 
 						#Create LE Certbot renewal cron job
 						{ crontab -l 2>/dev/null; echo "20 3 * * * certbot renew --noninteractive --renew-hook "'"/etc/init.d/nginx reload"'""; } | crontab -
-					fi	
-				fi
+					fi
 
+				elif [ "$LEcert_create" == "N" ] || [ "$LEcert_create" == "n" ]
+				then
+						subd='www'
+						subd_doma="$subd.$DOMAIN"
+						serv_name="$subd.$DOMAIN $DOMAIN"   				
+				fi		
 			fi
-		fi
+		fi	
 		}
 
 LEcertbot_mod() 
