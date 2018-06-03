@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v7.1.8-4
+version=v7.1.8-5
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -166,9 +166,9 @@ LEvhostcreate_mod()
 			if [ "$org_v" == "1" ] && [ "$vhost_template" == "LE" ]
 			then
 				LEcertbot_mod
-				cp $CURRENT_DIR/templates/le/orgv1_le.template $CONFIG
 				if [ "$LEcert_create" == "Y" ] || [ "$LEcert_create" == "y" ]
 				then
+					cp $CURRENT_DIR/templates/le/orgv1_le.template $CONFIG
 					if [ "$LEcert_type" == "W" ] || [ "$LEcert_type" == "w" ]
 					then
 						subd='www'
@@ -186,6 +186,7 @@ LEvhostcreate_mod()
 
 				elif [ "$LEcert_create" == "N" ] || [ "$LEcert_create" == "n" ]
 				then
+						cp $CURRENT_DIR/templates/le/orgv1_le_no_ssl.template $CONFIG
 						subd='www'
 						subd_doma="$subd.$DOMAIN"
 						serv_name="$subd.$DOMAIN $DOMAIN"   
@@ -194,9 +195,9 @@ LEvhostcreate_mod()
 			elif [ "$org_v" == "2" ] && [ "$vhost_template" == "LE" ]
 			then
 				LEcertbot_mod
-				cp $CURRENT_DIR/templates/le/orgv2_le.template $CONFIG
 				if [ "$LEcert_create" == "Y" ] || [ "$LEcert_create" == "y" ]
-				then				
+				then
+					cp $CURRENT_DIR/templates/le/orgv2_le.template $CONFIG				
 					if [ "$LEcert_type" == "W" ] || [ "$LEcert_type" == "w" ]
 					then
 						subd='www'
@@ -214,6 +215,7 @@ LEvhostcreate_mod()
 
 				elif [ "$LEcert_create" == "N" ] || [ "$LEcert_create" == "n" ]
 				then
+						cp $CURRENT_DIR/templates/le/orgv2_le_no_ssl.template $CONFIG
 						subd='www'
 						subd_doma="$subd.$DOMAIN"
 						serv_name="$subd.$DOMAIN $DOMAIN"   				
