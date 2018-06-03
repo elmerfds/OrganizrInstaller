@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v7.1.0
+version=v7.1.2
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -536,15 +536,15 @@ oui_updater_mod()
 #Utilities sub-menu
 uti_menus() 
 	{
-		echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+		echo
 		echo -e " 	  \e[1;36mOUI: $version : Utilities  \e[0m"
-		echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+		echo
 		echo " 1. Debian 8.x PHP7 fix	  " 
 		echo " 2. Let's Encrypt: Test Single Domain Cert Renewal	  " 
 		echo " 3. Let's Encrypt: Single Domain Cert Renewal 	  " 
 		echo " 4. Let's Encrypt: Wilcard Cert Renewal	  " 
-		echo " 5. Back 					  "
-		echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+		echo " 5. Your choice 5: Let's Encrypt: Wilcard Cert Renewal [Cloudflare DNS Plugin] 					  "
+		echo " 6. Back 					  "
 		echo
 		printf "\e[1;36m> Enter your choice: \e[0m"
 	}
