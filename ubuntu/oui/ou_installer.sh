@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v7.1.7
+version=v7.1.8
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -159,25 +159,25 @@ LEvhostcreate_mod()
 				fi
 			fi	
 		
-		mkdir -p $NGINX_APPS 								#Apps folder
-		cp -a $CURRENT_DIR/config/apps/. $NGINX_APPS  		#Apps conf files
-		cp -a $CURRENT_DIR/config/le/. $NGINX_LOC/config 	#LE conf file
+			mkdir -p $NGINX_APPS 								#Apps folder
+			cp -a $CURRENT_DIR/config/apps/. $NGINX_APPS  		#Apps conf files
+			cp -a $CURRENT_DIR/config/le/. $NGINX_LOC/config 	#LE conf file
 
-		if [ "$org_v" == "1" ] && [ "$vhost_template" == "LE" ]
-		then
-		LEcertbot_mod
-		cp $CURRENT_DIR/templates/le/orgv1_le.template $CONFIG
-			if [ "$LEcert_type" == "W" ] || [ "$LEcert_type" == "w" ]
+			if [ "$org_v" == "1" ] && [ "$vhost_template" == "LE" ]
 			then
-				subd='www'
-				subd_doma="$DOMAIN" 
-				serv_name="$subd.$DOMAIN $DOMAIN"  		
+			LEcertbot_mod
+			cp $CURRENT_DIR/templates/le/orgv1_le.template $CONFIG
+				if [ "$LEcert_type" == "W" ] || [ "$LEcert_type" == "w" ]
+				then
+					subd='www'
+					subd_doma="$DOMAIN" 
+					serv_name="$subd.$DOMAIN $DOMAIN"  		
 			
-			elif [ "$LEcert_type" == "S" ] || [ "$LEcert_type" == "s" ]
-			then
-				subd='www'
-				subd_doma="$subd.$DOMAIN"
-				serv_name="$subd.$DOMAIN $DOMAIN"   
+				elif [ "$LEcert_type" == "S" ] || [ "$LEcert_type" == "s" ]
+				then
+					subd='www'
+					subd_doma="$subd.$DOMAIN"
+					serv_name="$subd.$DOMAIN $DOMAIN"   
 				
 				if [ "$LEcert_create" == "Y" ] || [ "$LEcert_create" == "y" ];
 				then
@@ -186,31 +186,32 @@ LEvhostcreate_mod()
 				fi
 			fi
 		
-		elif [ "$org_v" == "2" ] && [ "$vhost_template" == "LE" ]
-		then
-		LEcertbot_mod
-		cp $CURRENT_DIR/templates/le/orgv2_le.template $CONFIG
-			if [ "$LEcert_type" == "W" ] || [ "$LEcert_type" == "w" ]
+			elif [ "$org_v" == "2" ] && [ "$vhost_template" == "LE" ]
 			then
-				subd='www'
-				subd_doma="$DOMAIN" 
-				serv_name="$subd.$DOMAIN $DOMAIN"  				
+				LEcertbot_mod
+				cp $CURRENT_DIR/templates/le/orgv2_le.template $CONFIG
+
+				if [ "$LEcert_type" == "W" ] || [ "$LEcert_type" == "w" ]
+				then
+					subd='www'
+					subd_doma="$DOMAIN" 
+					serv_name="$subd.$DOMAIN $DOMAIN"  				
 							
-			elif [ "$LEcert_type" == "S" ] || [ "$LEcert_type" == "s" ]
-			then
-				subd='www'
-				subd_doma="$subd.$DOMAIN"
-				serv_name="$subd.$DOMAIN $DOMAIN" 
+				elif [ "$LEcert_type" == "S" ] || [ "$LEcert_type" == "s" ]
+				then
+					subd='www'
+					subd_doma="$subd.$DOMAIN"
+					serv_name="$subd.$DOMAIN $DOMAIN" 
 
-				if [ "$LEcert_create" == "Y" ] || [ "$LEcert_create" == "y" ];
-				then 			
-					#Create LE Certbot renewal cron job
-					{ crontab -l 2>/dev/null; echo "20 3 * * * certbot renew --noninteractive --renew-hook "'"/etc/init.d/nginx reload"'""; } | crontab -
-				fi	
+					if [ "$LEcert_create" == "Y" ] || [ "$LEcert_create" == "y" ];
+					then 			
+						#Create LE Certbot renewal cron job
+						{ crontab -l 2>/dev/null; echo "20 3 * * * certbot renew --noninteractive --renew-hook "'"/etc/init.d/nginx reload"'""; } | crontab -
+					fi	
+				fi
+
 			fi
-
 		fi
-
 	}
 
 LEcertbot_mod() 
