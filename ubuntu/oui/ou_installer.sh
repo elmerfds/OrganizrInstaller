@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v7.1.8-5
+version=v7.1.8-4
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -705,7 +705,7 @@ read_options(){
 	 	"4")
 			echo "- Your choice 4: Organizr Complete Install (Org + Requirements) "
 	        orgreq_mod
-			echo -e "\e[1;36m> \e[0mPress any key to continue with Organizr + Nginx site config"
+			echo -e "\e[1;36m> Press any key to continue with Organizr + Nginx site config\e[0m"
 			read
 			orgdl_mod
 	        vhostcreate_mod
