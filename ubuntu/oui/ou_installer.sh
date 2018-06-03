@@ -538,7 +538,7 @@ oui_updater_mod()
 uti_menus() 
 	{
 		echo
-		echo -e " 	  \e[1;36mOUI: $version : Utilities  \e[0m"
+		echo -e " 	  \e[1;36m|OUI: $version : Utilities|  \e[0m"
 		echo
 		echo "| 1.| Debian 8.x PHP7 fix	  " 
 		echo "| 2.| Let's Encrypt: Test Single Domain Cert Renewal	  " 
@@ -622,7 +622,7 @@ uti_options(){
 show_menus() 
 	{
 		echo
-		echo -e " 	  \e[1;36mORGANIZR UBUNTU - INSTALLER $version  \e[0m"
+		echo -e " 	  \e[1;36m|ORGANIZR UBUNTU - INSTALLER $version|  \e[0m"
 		echo
 		echo "| 1.| Organizr + Nginx site Install		  " 
 		echo "| 2.| Organizr Web Folder Only Install		 "
