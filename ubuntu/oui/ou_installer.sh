@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v7.1.8-4
+version=v7.2.0
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -657,10 +657,10 @@ show_menus()
 		echo
 		echo -e " 	  \e[1;36m|ORGANIZR UBUNTU - INSTALLER $version|  \e[0m"
 		echo
-		echo "| 1.| Organizr + Nginx site Install		  " 
-		echo "| 2.| Organizr Web Folder Only Install		 "
+		echo "| 1.| Organizr + Nginx site Install [Add a site to existing setup]  " 
+		echo "| 2.| Organizr Download [Only Org download]		 "
 		echo "| 3.| Organizr Requirements Install		  "
-		echo "| 4.| Organizr Complete Install (Org + Requirements) "
+		echo "| 4.| Organizr Full Install [Nginx/PHP/Organizr/LE SSL] "
 		echo "| 5.| OUI Auto Updater				  "
 		echo "| 6.| Utilities				  "
 		echo "| 7.| Quit 					  "
