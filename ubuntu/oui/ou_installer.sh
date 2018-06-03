@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v7.1.9
+version=v7.2.0
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -155,13 +155,13 @@ LEvhostcreate_mod()
 				dns_plugin=${dns_plugin:-n}
 				echo		
 				fi
+			fi	
 			
-
-				cp -a $CURRENT_DIR/config/le/. $NGINX_LOC/config 	#LE conf file
 
 				if [ "$org_v" == "1" ] && [ "$vhost_template" == "LE" ]
 				then
 				LEcertbot_mod
+				cp $CURRENT_DIR/templates/le/orgv1_le.template $CONFIG 
 					if [ "$LEcert_type" == "W" ] || [ "$LEcert_type" == "w" ]
 					then
 						subd='www'
@@ -198,9 +198,9 @@ LEvhostcreate_mod()
 					fi
 
 				fi
-			fi	
+				cp -a $CURRENT_DIR/config/le/. $NGINX_LOC/config 	#LE conf file
+				
 				mkdir -p $NGINX_APPS 
-				cp $CURRENT_DIR/templates/le/orgv1_le.template $CONFIG 
 				cp -a $CURRENT_DIR/config/apps/. $NGINX_APPS  		#Apps conf files
 		fi
 	}
