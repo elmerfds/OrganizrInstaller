@@ -329,7 +329,7 @@ LEcertbot-wc-cf-dns-renew_mod()
 			echo "2. Force renewal"
 			printf '\e[1;36m- \e[0m'
 			read -r cfdns_renew
-
+			echo
 			if [ "$cfdns_renew" == "1" ]
 			then
 			certbot renew --dns-cloudflare
