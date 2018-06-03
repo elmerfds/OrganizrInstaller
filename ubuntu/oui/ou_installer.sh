@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v7.1.2
+version=v7.1.3
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -327,6 +327,7 @@ LEcertbot-wc-cf-dns-renew_mod()
 			echo
 			echo "1. Check renewal status/soft-run"
 			echo "2. Force renewal"
+			printf '\e[1;36m- \e[0m'
 			read -r cfdns_renew
 
 			if [ "$cfdns_renew" == "1" ]
