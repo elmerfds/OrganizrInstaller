@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v7.1.8
+version=v7.1.8-1
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -179,10 +179,11 @@ LEvhostcreate_mod()
 					subd_doma="$subd.$DOMAIN"
 					serv_name="$subd.$DOMAIN $DOMAIN"   
 				
-				if [ "$LEcert_create" == "Y" ] || [ "$LEcert_create" == "y" ];
-				then
+					if [ "$LEcert_create" == "Y" ] || [ "$LEcert_create" == "y" ];
+					then
 					#Create LE Certbot renewal cron job
 					{ crontab -l 2>/dev/null; echo "20 3 * * * certbot renew --noninteractive --renew-hook "'"/etc/init.d/nginx reload"'""; } | crontab -
+					fi
 				fi
 			fi
 		
@@ -212,7 +213,7 @@ LEvhostcreate_mod()
 
 			fi
 		fi
-	}
+		}
 
 LEcertbot_mod() 
 		{
