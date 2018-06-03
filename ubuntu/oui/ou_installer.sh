@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v7.1.8-1
+version=v7.1.8-2
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -185,8 +185,7 @@ LEvhostcreate_mod()
 					{ crontab -l 2>/dev/null; echo "20 3 * * * certbot renew --noninteractive --renew-hook "'"/etc/init.d/nginx reload"'""; } | crontab -
 					fi
 				fi
-			fi
-		
+					
 			elif [ "$org_v" == "2" ] && [ "$vhost_template" == "LE" ]
 			then
 				LEcertbot_mod
