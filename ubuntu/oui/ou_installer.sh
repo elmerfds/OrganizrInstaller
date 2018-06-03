@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v7.1.7
+version=v7.1.8
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -156,8 +156,7 @@ LEvhostcreate_mod()
 				echo		
 				fi
 			
-				mkdir -p $NGINX_APPS 								#Apps folder
-				cp -a $CURRENT_DIR/config/apps/. $NGINX_APPS  		#Apps conf files
+
 				cp -a $CURRENT_DIR/config/le/. $NGINX_LOC/config 	#LE conf file
 
 				if [ "$org_v" == "1" ] && [ "$vhost_template" == "LE" ]
@@ -201,6 +200,8 @@ LEvhostcreate_mod()
 
 				fi
 			fi	
+				mkdir -p $NGINX_APPS 								#Apps folder
+				cp -a $CURRENT_DIR/config/apps/. $NGINX_APPS  		#Apps conf files
 		fi
 	}
 
