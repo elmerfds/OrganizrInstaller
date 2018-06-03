@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v7.2.1
+version=v7.2.2
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -155,7 +155,8 @@ LEvhostcreate_mod()
 				dns_plugin=${dns_plugin:-n}
 				echo		
 				fi
-			else
+			elif [ "$LEcert_create" == "N" ] || [ "$LEcert_create" == "n" ]
+			then
 				subd='www'
 				subd_doma="$DOMAIN" 
 				serv_name="$subd.$DOMAIN $DOMAIN"  	
