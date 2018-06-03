@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v7.1.8-2
+version=v7.1.8-3
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -239,13 +239,16 @@ LEcertbot_mod()
 			# create symlink to enable site
 			ln -s $CONFIG $NGINX_SITES_ENABLED/$DOMAIN.conf
 
-			# reload Nginx to pull in new config
-			/etc/init.d/nginx reload
+			if [ "$LEcert_create" == "Y" ] || [ "$LEcert_create" == "y" ];
+			then 
+				# reload Nginx to pull in new config
+				/etc/init.d/nginx reload
 
-			##Install certbot packages
-			apt-get install software-properties-common -y
-			add-apt-repository ppa:certbot/certbot -y
-			apt-get update
+				##Install certbot packages
+				apt-get install software-properties-common -y
+				add-apt-repository ppa:certbot/certbot -y
+				apt-get update
+			fi
 
 			if [ "$dns_plugin" == "Y" ] || [ "$dns_plugin" == "y" ]
 			then
