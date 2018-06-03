@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v7.1.5
+version=v7.1.6
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -120,6 +120,8 @@ CFvhostcreate_mod()
 LEvhostcreate_mod()        
        {
 		echo
+		if [ "$vhost_template" == "LE" ] || [ "$vhost_template" == "le" ]; 
+		then		
 		echo -e "\e[1;36m> Please note, since you've selected the Let's Encrypt Option, will start by preparing your system to generte LE SSL certs.\e[0m" 
 		echo -e "\e[1;36m> Please make sure, you've configured your domain with the correct DNS records.\e[0m"
 		echo -e "\e[1;36m> If you're using CloudFlare (CF) as your DNS, then this is supported by this option.\e[0m"
@@ -136,6 +138,7 @@ LEvhostcreate_mod()
 		printf '\e[1;36m- \e[0m'
 		read -r LEcert_type
 		LEcert_type=${LEcert_type:-W}
+		fi
 
 		if [ "$LEcert_type" == "W" ] || [ "$LEcert_type" == "w" ];
 		then
