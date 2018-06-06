@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v7.4.0
+version=v7.4.0-2
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -523,13 +523,14 @@ addsite_to_hosts_mod()
 uninstall_oui_mod()
         {
 		echo
-		echo -e "\e[1;36m> This will uninstall the following packages and uninstall all config files\e[0m"
+		echo -e "\e[1;36m> This will uninstall the following packages and remove all config files\e[0m"
+		echo -e "Nginx|PHP|Certbot|Certbot Cloudflare DNS plugin|Web folder|Letsencrypt folder"
 		echo
 		echo -e "\e[1;36m> Uninstalling Nginx\e[0m"
-		apt-get purge nginx nginx-common
+		apt-get purge nginx nginx-common -y
 		echo
 		echo -e "\e[1;36m> Uninstalling PHP\e[0m"
-		sudo apt-get purge php*.*-common
+		sudo apt-get purge php*.*-common -y
 		echo
 		echo -e "\e[1;36m> Uninstalling Certbot\e[0m"
 		pip3 uninstall certbot --yes
