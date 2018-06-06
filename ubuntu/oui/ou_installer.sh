@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v7.4.2-1
+version=v7.4.2-2
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -537,11 +537,13 @@ uninstall_oui_mod()
 			echo -e "\e[1;36m> Uninstalling PHP\e[0m"
 			sudo apt-get purge php*.*-common -y
 			echo
-			echo -e "\e[1;36m> Uninstalling Certbot\e[0m"
-			pip3 uninstall certbot --yes
-			echo
-			echo -e "\e[1;36m> Uninstalling Certbot Cloudflare DNS plugin\e[0m"
-			pip3 uninstall certbot-dns-cloudflare --yes
+			echo -e "\e[1;36m> Uninstalling Certbot & Certbot Cloudflare DNS plugin\e[0m"
+			if [ "$debian_detect" == "Debian" ] || [ "$debian_detect" == "Raspbian" ];
+			then
+				sudo pip3 uninstall certbot --yes && sudo pip3 uninstall certbot-dns-cloudflare --yes
+			else
+				pip3 uninstall certbot --yes && pip3 uninstall certbot-dns-cloudflare --yes	
+			fi
 			echo
 			rm -rf /var/www
 			rm -rf /etc/letsencrypt 
