@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v7.3.7-2
+version=v7.3.8
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -311,7 +311,10 @@ LEcertbot_mod()
 				## Get wildcard certificate, Let's Encrypt
 				echo
 				echo -e "\e[1;36m> Enter an email address, which will be used to generate the SSL certs?.\e[0m"
-				echo -e "- Press Enter to use \e[1;36m$CF_EMAIL\e[0m or enter a different one"
+				if [ "$dns_plugin" == "Y" ] || [ "$dns_plugin" == "y" ];
+				then
+					echo -e "- Press Enter to use \e[1;36m$CF_EMAIL\e[0m or enter a different one"
+				fi
 				read -r email_var
 				email_var=${email_var:-$CF_EMAIL}
 			fi	
