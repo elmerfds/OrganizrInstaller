@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v7.3.7-1
+version=v7.3.7-2
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -281,12 +281,13 @@ LEcertbot_mod()
 
 				if [ "$debian_detect" == "Debian" ];
 				then
-					echo "pip3 already installed -y"
+					echo "pip3 already installed"
+					sudo pip3 install certbot-dns-cloudflare
 					echo
 				else
 					apt-get install certbot python3-pip -y
+					sudo -u "$(logname)" pip3 install certbot-dns-cloudflare
 				fi	
-				sudo -u "$(logname)" pip3 install certbot-dns-cloudflare
 
 			mkdir -p $cred_folder #create secret folder to store Certbot CF plugin creds
 			cp -a $CURRENT_DIR/config/le-dnsplugins/cf/. $cred_folder #copy CF credentials file
