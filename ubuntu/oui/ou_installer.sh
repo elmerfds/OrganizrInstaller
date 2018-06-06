@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v7.4.0-4
+version=v7.4.1
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -707,7 +707,8 @@ show_menus()
 		echo "| 4.| Organizr Full Install [Nginx/PHP/Organizr/LE SSL] "
 		echo "| 5.| OUI Auto Updater				  "
 		echo "| 6.| Utilities				  "
-		echo "| 7.| Quit 					  "
+		echo "| 7.| Uninstall 					  "
+		echo "| 8.| Quit 					  "
 		echo
 		echo
 		printf "\e[1;36m> Enter your choice: \e[0m"
@@ -775,11 +776,11 @@ read_options(){
 		;;
 
 		"7")
-			exit 0
+			uninstall_oui_mod	
 		;;
 
 		"8")
-			uninstall_oui_mod
+			exit 0
 		;;
 
 
