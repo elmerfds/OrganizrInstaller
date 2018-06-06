@@ -524,7 +524,7 @@ uninstall_oui_mod()
         {
 		echo
 		echo -e "\e[1;36m>NOTE! This will uninstall the following packages and remove all config files\e[0m"
-		echo -e "Nginx|PHP|Certbot|Certbot Cloudflare DNS plugin|Web folder|Letsencrypt folder"
+		echo -e "Nginx|PHP|PHP Plugins|Certbot|Certbot Cloudflare DNS Plugin|Web folder|Letsencrypt folder"
 		echo
 		printf '\e[1;36m- [y/n]: \e[0m'
 		read -r o_uninstaller
