@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v7.3.9-1
+version=v7.4.0
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -516,9 +516,31 @@ vhostconfig_mod()
 
 #Add site to hosts for local access
 addsite_to_hosts_mod()
-        {
+       {
 		sudo echo "127.0.0.1 $DOMAIN"  >> /etc/hosts
-	}
+	   }
+
+uninstall_oui_mod()
+        {
+		echo
+		echo -e "\e[1;36m> This will uninstall the following packages and uninstall all config files\e[0m"
+		echo
+		echo -e "\e[1;36m> Uninstalling Nginx\e[0m"
+		apt-get purge nginx nginx-common
+		echo
+		echo -e "\e[1;36m> Uninstalling PHP\e[0m"
+		sudo apt-get purge php*.*-common
+		echo
+		echo -e "\e[1;36m> Uninstalling Certbot\e[0m"
+		pip3 uninstall certbot --yes
+		pip3 uninstall certbot-dns-cloudflare --yes
+		echo
+		echo -e "\e[1;36m> Uninstalling Certbot\e[0m"
+		rm -rf /var/www
+		rm -rf /etc/letsencrypt 
+		echo
+		echo -e "\e[1;36m> Uninstall complete\e[0m"
+	    }	
 
 #Org Install info
 orginstinfo_mod()
@@ -751,6 +773,10 @@ read_options(){
 
 		"7")
 			exit 0
+		;;
+
+		"8")
+			uninstall_oui_mod
 		;;
 
 
