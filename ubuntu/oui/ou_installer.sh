@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v7.3.9
+version=v7.4.2-2
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -230,7 +230,7 @@ LEcertbot_mod()
 			
 			#Configuring permissions on LE web folder
 			chmod -R 775 $LE_WEB
-			chown -R www-data:$(logname) $LE_WEB
+			chown -R www-data:$SUDO_USER $LE_WEB
 
 			#Copy LE TEMP conf file so that LE can connect to server and continue to generate the certs
 			cp $CURRENT_DIR/templates/le/le_temp.template $CONFIG
@@ -251,7 +251,7 @@ LEcertbot_mod()
 			then 
 				# reload Nginx to pull in new config
 				/etc/init.d/nginx reload
-				if [ "$debian_detect" == "Debian" ];
+				if [ "$debian_detect" == "Debian" ] || [ "$debian_detect" == "Raspbian" ];
 				then
 					apt-get install python3-pip -y
 					sudo pip3 install certbot
@@ -276,7 +276,7 @@ LEcertbot_mod()
 				read -r CF_API
 				echo
 
-				if [ "$debian_detect" == "Debian" ];
+				if [ "$debian_detect" == "Debian" ] || [ "$debian_detect" == "Raspbian" ];
 				then
 					echo "pip3 already installed"
 					sudo pip3 install certbot-dns-cloudflare
@@ -295,7 +295,7 @@ LEcertbot_mod()
 
 			elif [ "$dns_plugin" == "N" ] || [ "$dns_plugin" == "n" ]
 			then
-				if [ "$debian_detect" == "Debian" ];
+				if [ "$debian_detect" == "Debian" ] || [ "$debian_detect" == "Raspbian" ];
 				then
 					sudo pip3 install certbot
 				else
@@ -485,7 +485,7 @@ orgdl_mod()
 		fi
 		#Configuring permissions on web folder
 		chmod -R 775 $instvar
-		chown -R www-data:$(logname) $instvar
+		chown -R www-data:$SUDO_USER $instvar
         }
 #Nginx vhost config
 vhostconfig_mod()
@@ -516,9 +516,45 @@ vhostconfig_mod()
 
 #Add site to hosts for local access
 addsite_to_hosts_mod()
-        {
+       {
 		sudo echo "127.0.0.1 $DOMAIN"  >> /etc/hosts
-	}
+	   }
+
+uninstall_oui_mod()
+        {
+		echo
+		echo -e "\e[1;36m>NOTE! This will uninstall the following packages and remove all config files\e[0m"
+		echo -e "Nginx|PHP|PHP Plugins|Certbot|Certbot Cloudflare DNS Plugin|Web folder|Letsencrypt folder"
+		echo
+		printf '\e[1;36m- [y/n]: \e[0m'
+		read -r o_uninstaller
+		if [ "$o_uninstaller" == "Y" ] || [ "$o_uninstaller" == "y" ]
+		then
+			echo
+			echo -e "\e[1;36m> Uninstalling Nginx\e[0m"
+			apt-get purge nginx nginx-common -y
+			echo
+			echo -e "\e[1;36m> Uninstalling PHP\e[0m"
+			sudo apt-get purge php*.*-common -y
+			echo
+			echo -e "\e[1;36m> Uninstalling Certbot & Certbot Cloudflare DNS plugin\e[0m"
+			if [ "$debian_detect" == "Debian" ] || [ "$debian_detect" == "Raspbian" ];
+			then
+				sudo pip3 uninstall certbot --yes && sudo pip3 uninstall certbot-dns-cloudflare --yes
+			else
+				pip3 uninstall certbot --yes && pip3 uninstall certbot-dns-cloudflare --yes	
+			fi
+			echo
+			rm -rf /var/www
+			rm -rf /etc/letsencrypt 
+			echo
+			echo -e "\e[1;36m> Uninstall complete, Press any key to return to menu...\e[0m"
+			read
+		elif [ "$o_uninstaller" == "N" ] || [ "$o_uninstaller" == "n" ]
+		then
+			show_menus
+		fi	
+	    }	
 
 #Org Install info
 orginstinfo_mod()
@@ -682,7 +718,8 @@ show_menus()
 		echo "| 4.| Organizr Full Install [Nginx/PHP/Organizr/LE SSL] "
 		echo "| 5.| OUI Auto Updater				  "
 		echo "| 6.| Utilities				  "
-		echo "| 7.| Quit 					  "
+		echo "| 7.| Uninstall 					  "
+		echo "| 8.| Quit 					  "
 		echo
 		echo
 		printf "\e[1;36m> Enter your choice: \e[0m"
@@ -750,6 +787,10 @@ read_options(){
 		;;
 
 		"7")
+			uninstall_oui_mod	
+		;;
+
+		"8")
 			exit 0
 		;;
 
