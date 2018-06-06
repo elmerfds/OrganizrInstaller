@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v7.3.0
+version=v7.3.9
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -21,6 +21,7 @@ tmp='/tmp/Organizr'
 dlvar=0
 cred_folder='/etc/letsencrypt/.secrets/certbot'
 LE_WEB='/var/www/letsencrypt/.well-known/acme-challenge'
+debian_detect=$(cut -d: -f2 < <(lsb_release -i)| xargs)
 
 #Modules
 #Organizr Requirement Module
@@ -150,7 +151,7 @@ LEvhostcreate_mod()
 				then
 					echo
 					echo -e "\e[1;36m> Is your domain on Cloudflare? [y/n] .\e[0m"
-					echo  "- Going ahead with the above will automate the DNS challenges for you."
+					echo  "- Going ahead with the above will automate the DNS / dns-01 challenges for you."
 					echo  "- To do that, python3-pip & certbot-dns-cloudflare pip3 package wll be installed"
 					printf '\e[1;36m- [y/n]: \e[0m'
 					read -r dns_plugin
@@ -181,7 +182,6 @@ LEvhostcreate_mod()
 						subd_doma="$subd.$DOMAIN"
 						serv_name="$subd.$DOMAIN $DOMAIN"   
 						#Create LE Certbot renewal cron job
-						{ crontab -l 2>/dev/null; echo "20 3 * * * certbot renew --noninteractive --renew-hook "'"/etc/init.d/nginx reload"'""; } | crontab -
 					fi
 
 				elif [ "$LEcert_create" == "N" ] || [ "$LEcert_create" == "n" ]
@@ -209,8 +209,6 @@ LEvhostcreate_mod()
 						subd='www'
 						subd_doma="$subd.$DOMAIN"
 						serv_name="$subd.$DOMAIN $DOMAIN" 
-						#Create LE Certbot renewal cron job
-						{ crontab -l 2>/dev/null; echo "20 3 * * * certbot renew --noninteractive --renew-hook "'"/etc/init.d/nginx reload"'""; } | crontab -
 					fi
 
 				elif [ "$LEcert_create" == "N" ] || [ "$LEcert_create" == "n" ]
@@ -253,28 +251,40 @@ LEcertbot_mod()
 			then 
 				# reload Nginx to pull in new config
 				/etc/init.d/nginx reload
-
-				##Install certbot packages
-				apt-get install software-properties-common -y
-				add-apt-repository ppa:certbot/certbot -y
-				apt-get update
+				if [ "$debian_detect" == "Debian" ];
+				then
+					apt-get install python3-pip -y
+					sudo pip3 install certbot
+				else
+					##Install certbot packages
+					apt-get install software-properties-common -y
+					add-apt-repository ppa:certbot/certbot -y
+					apt-get update
+				fi
 			fi
 
 			if [ "$dns_plugin" == "Y" ] || [ "$dns_plugin" == "y" ]
 			then
-			echo
-			echo -e "\e[1;36m> Enter your Cloudflare email.\e[0m"
-			printf '\e[1;36m- \e[0m' 
-			read -r CF_EMAIL
-			echo
-			echo -e "\e[1;36m> Enter your Cloudflare API.\e[0m" 
-			echo "- You can get your Cloudflare API from here: https://dash.cloudflare.com/profile"
-			printf '\e[1;36m- \e[0m' 
-			read -r CF_API
-			echo
+				echo
+				echo -e "\e[1;36m> Enter your Cloudflare email.\e[0m"
+				printf '\e[1;36m- \e[0m' 
+				read -r CF_EMAIL
+				echo
+				echo -e "\e[1;36m> Enter your Cloudflare API.\e[0m" 
+				echo "- You can get your Cloudflare API from here: https://dash.cloudflare.com/profile"
+				printf '\e[1;36m- \e[0m' 
+				read -r CF_API
+				echo
 
-			apt-get install certbot python3-pip -y
-			sudo -u "$(logname)" pip3 install certbot-dns-cloudflare
+				if [ "$debian_detect" == "Debian" ];
+				then
+					echo "pip3 already installed"
+					sudo pip3 install certbot-dns-cloudflare
+					echo
+				else
+					apt-get install certbot python3-pip -y
+					sudo -u "$(logname)" pip3 install certbot-dns-cloudflare
+				fi	
 
 			mkdir -p $cred_folder #create secret folder to store Certbot CF plugin creds
 			cp -a $CURRENT_DIR/config/le-dnsplugins/cf/. $cred_folder #copy CF credentials file
@@ -285,7 +295,12 @@ LEcertbot_mod()
 
 			elif [ "$dns_plugin" == "N" ] || [ "$dns_plugin" == "n" ]
 			then
-			apt-get install certbot -y
+				if [ "$debian_detect" == "Debian" ];
+				then
+					sudo pip3 install certbot
+				else
+					apt-get install certbot -y
+				fi	
 			fi
 
 			if [ "$LEcert_create" == "Y" ] || [ "$LEcert_create" == "y" ];
@@ -293,7 +308,10 @@ LEcertbot_mod()
 				## Get wildcard certificate, Let's Encrypt
 				echo
 				echo -e "\e[1;36m> Enter an email address, which will be used to generate the SSL certs?.\e[0m"
-				echo -e "- Press Enter to use \e[1;36m$CF_EMAIL\e[0m or enter a different one"
+				if [ "$dns_plugin" == "Y" ] || [ "$dns_plugin" == "y" ];
+				then
+					echo -e "- Press Enter to use \e[1;36m$CF_EMAIL\e[0m or enter a different one"
+				fi
 				read -r email_var
 				email_var=${email_var:-$CF_EMAIL}
 			fi	
@@ -302,19 +320,20 @@ LEcertbot_mod()
 			then
 				if [ "$dns_plugin" == "Y" ] || [ "$dns_plugin" == "y" ]
 				then
-				certbot certonly --dns-cloudflare --dns-cloudflare-credentials $cred_folder/cloudflare.ini --server https://acme-v02.api.letsencrypt.org/directory --email $email_var --agree-tos --no-eff-email -d *.$DOMAIN -d $DOMAIN
-				
-				#Adding wildcar cert auto renewal using CF DNS plugin, untested, let me know if anyone does.
-				{ crontab -l 2>/dev/null; echo "20 3 * * * certbot renew --noninteractive --dns-cloudflare --renew-hook "'"/etc/init.d/nginx reload"'""; } | crontab -
+					certbot certonly --dns-cloudflare --dns-cloudflare-credentials $cred_folder/cloudflare.ini --server https://acme-v02.api.letsencrypt.org/directory --email $email_var --agree-tos --no-eff-email -d *.$DOMAIN -d $DOMAIN
+					#Adding wildcar cert auto renewal using CF DNS plugin, untested, let me know if anyone does.
+					{ crontab -l 2>/dev/null; echo "20 3 * * * certbot renew --noninteractive --dns-cloudflare --renew-hook "'"/etc/init.d/nginx reload"'""; } | crontab -
 				
 				elif [ "$dns_plugin" == "N" ] || [ "$dns_plugin" == "n" ]
 				then
-				certbot certonly --agree-tos --no-eff-email --email $email_var --server https://acme-v02.api.letsencrypt.org/directory --manual -d *.$DOMAIN -d $DOMAIN
+					certbot certonly --agree-tos --no-eff-email --email $email_var --server https://acme-v02.api.letsencrypt.org/directory --manual -d *.$DOMAIN -d $DOMAIN
 				fi
 			
 			elif [ "$LEcert_type" == "S" ] || [ "$LEcert_type" == "s" ]
 			then
-			certbot certonly --webroot --agree-tos --no-eff-email --email $email_var -w /var/www/letsencrypt -d www.$DOMAIN -d $DOMAIN
+				certbot certonly --webroot --agree-tos --no-eff-email --email $email_var -w /var/www/letsencrypt -d www.$DOMAIN -d $DOMAIN
+				#Create LE Certbot renewal cron job
+				{ crontab -l 2>/dev/null; echo "20 3 * * * certbot renew --noninteractive --renew-hook "'"/etc/init.d/nginx reload"'""; } | crontab -
 			fi
 
 			## Once Cert has been generated, delete the created conf file.
