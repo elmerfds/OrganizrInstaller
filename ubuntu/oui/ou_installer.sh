@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v7.4.2
+version=v7.4.2-1
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -551,6 +551,7 @@ uninstall_oui_mod()
 		elif [ "$o_uninstaller" == "N" ] || [ "$o_uninstaller" == "n" ]
 		then
 			show_menus
+		fi	
 	    }	
 
 #Org Install info
