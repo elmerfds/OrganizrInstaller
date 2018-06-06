@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v7.4.0-2
+version=v7.4.0-3
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -540,7 +540,8 @@ uninstall_oui_mod()
 		rm -rf /var/www
 		rm -rf /etc/letsencrypt 
 		echo
-		echo -e "\e[1;36m> Uninstall complete\e[0m"
+		echo -e "\e[1;36m> Uninstall complete, Press any key to return to menu...\e[0m"
+		read
 	    }	
 
 #Org Install info
