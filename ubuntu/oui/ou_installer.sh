@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v7.3.8
+version=v7.3.9
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -182,7 +182,6 @@ LEvhostcreate_mod()
 						subd_doma="$subd.$DOMAIN"
 						serv_name="$subd.$DOMAIN $DOMAIN"   
 						#Create LE Certbot renewal cron job
-						{ crontab -l 2>/dev/null; echo "20 3 * * * certbot renew --noninteractive --renew-hook "'"/etc/init.d/nginx reload"'""; } | crontab -
 					fi
 
 				elif [ "$LEcert_create" == "N" ] || [ "$LEcert_create" == "n" ]
@@ -210,8 +209,6 @@ LEvhostcreate_mod()
 						subd='www'
 						subd_doma="$subd.$DOMAIN"
 						serv_name="$subd.$DOMAIN $DOMAIN" 
-						#Create LE Certbot renewal cron job
-						{ crontab -l 2>/dev/null; echo "20 3 * * * certbot renew --noninteractive --renew-hook "'"/etc/init.d/nginx reload"'""; } | crontab -
 					fi
 
 				elif [ "$LEcert_create" == "N" ] || [ "$LEcert_create" == "n" ]
@@ -300,7 +297,7 @@ LEcertbot_mod()
 			then
 				if [ "$debian_detect" == "Debian" ];
 				then
-					pip3 install certbot
+					sudo pip3 install certbot
 				else
 					apt-get install certbot -y
 				fi	
@@ -323,19 +320,20 @@ LEcertbot_mod()
 			then
 				if [ "$dns_plugin" == "Y" ] || [ "$dns_plugin" == "y" ]
 				then
-				certbot certonly --dns-cloudflare --dns-cloudflare-credentials $cred_folder/cloudflare.ini --server https://acme-v02.api.letsencrypt.org/directory --email $email_var --agree-tos --no-eff-email -d *.$DOMAIN -d $DOMAIN
-				
-				#Adding wildcar cert auto renewal using CF DNS plugin, untested, let me know if anyone does.
-				{ crontab -l 2>/dev/null; echo "20 3 * * * certbot renew --noninteractive --dns-cloudflare --renew-hook "'"/etc/init.d/nginx reload"'""; } | crontab -
+					certbot certonly --dns-cloudflare --dns-cloudflare-credentials $cred_folder/cloudflare.ini --server https://acme-v02.api.letsencrypt.org/directory --email $email_var --agree-tos --no-eff-email -d *.$DOMAIN -d $DOMAIN
+					#Adding wildcar cert auto renewal using CF DNS plugin, untested, let me know if anyone does.
+					{ crontab -l 2>/dev/null; echo "20 3 * * * certbot renew --noninteractive --dns-cloudflare --renew-hook "'"/etc/init.d/nginx reload"'""; } | crontab -
 				
 				elif [ "$dns_plugin" == "N" ] || [ "$dns_plugin" == "n" ]
 				then
-				certbot certonly --agree-tos --no-eff-email --email $email_var --server https://acme-v02.api.letsencrypt.org/directory --manual -d *.$DOMAIN -d $DOMAIN
+					certbot certonly --agree-tos --no-eff-email --email $email_var --server https://acme-v02.api.letsencrypt.org/directory --manual -d *.$DOMAIN -d $DOMAIN
 				fi
 			
 			elif [ "$LEcert_type" == "S" ] || [ "$LEcert_type" == "s" ]
 			then
-			certbot certonly --webroot --agree-tos --no-eff-email --email $email_var -w /var/www/letsencrypt -d www.$DOMAIN -d $DOMAIN
+				certbot certonly --webroot --agree-tos --no-eff-email --email $email_var -w /var/www/letsencrypt -d www.$DOMAIN -d $DOMAIN
+				#Create LE Certbot renewal cron job
+				{ crontab -l 2>/dev/null; echo "20 3 * * * certbot renew --noninteractive --renew-hook "'"/etc/init.d/nginx reload"'""; } | crontab -
 			fi
 
 			## Once Cert has been generated, delete the created conf file.
