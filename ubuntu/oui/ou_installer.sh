@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v7.3.9
+version=v7.3.9-1
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -230,7 +230,7 @@ LEcertbot_mod()
 			
 			#Configuring permissions on LE web folder
 			chmod -R 775 $LE_WEB
-			chown -R www-data:$(logname) $LE_WEB
+			chown -R www-data:$SUDO_USER $LE_WEB
 
 			#Copy LE TEMP conf file so that LE can connect to server and continue to generate the certs
 			cp $CURRENT_DIR/templates/le/le_temp.template $CONFIG
@@ -251,7 +251,7 @@ LEcertbot_mod()
 			then 
 				# reload Nginx to pull in new config
 				/etc/init.d/nginx reload
-				if [ "$debian_detect" == "Debian" ];
+				if [ "$debian_detect" == "Debian" ] || [ "$debian_detect" == "Raspbian" ];
 				then
 					apt-get install python3-pip -y
 					sudo pip3 install certbot
@@ -276,7 +276,7 @@ LEcertbot_mod()
 				read -r CF_API
 				echo
 
-				if [ "$debian_detect" == "Debian" ];
+				if [ "$debian_detect" == "Debian" ] || [ "$debian_detect" == "Raspbian" ];
 				then
 					echo "pip3 already installed"
 					sudo pip3 install certbot-dns-cloudflare
@@ -295,7 +295,7 @@ LEcertbot_mod()
 
 			elif [ "$dns_plugin" == "N" ] || [ "$dns_plugin" == "n" ]
 			then
-				if [ "$debian_detect" == "Debian" ];
+				if [ "$debian_detect" == "Debian" ] || [ "$debian_detect" == "Raspbian" ];
 				then
 					sudo pip3 install certbot
 				else
@@ -485,7 +485,7 @@ orgdl_mod()
 		fi
 		#Configuring permissions on web folder
 		chmod -R 775 $instvar
-		chown -R www-data:$(logname) $instvar
+		chown -R www-data:$SUDO_USER $instvar
         }
 #Nginx vhost config
 vhostconfig_mod()
