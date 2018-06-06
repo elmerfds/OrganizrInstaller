@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v7.4.1
+version=v7.4.2
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -523,26 +523,34 @@ addsite_to_hosts_mod()
 uninstall_oui_mod()
         {
 		echo
-		echo -e "\e[1;36m> This will uninstall the following packages and remove all config files\e[0m"
+		echo -e "\e[1;36m>NOTE! This will uninstall the following packages and remove all config files\e[0m"
 		echo -e "Nginx|PHP|Certbot|Certbot Cloudflare DNS plugin|Web folder|Letsencrypt folder"
 		echo
-		echo -e "\e[1;36m> Uninstalling Nginx\e[0m"
-		apt-get purge nginx nginx-common -y
-		echo
-		echo -e "\e[1;36m> Uninstalling PHP\e[0m"
-		sudo apt-get purge php*.*-common -y
-		echo
-		echo -e "\e[1;36m> Uninstalling Certbot\e[0m"
-		pip3 uninstall certbot --yes
-		echo
-		echo -e "\e[1;36m> Uninstalling Certbot Cloudflare DNS plugin\e[0m"
-		pip3 uninstall certbot-dns-cloudflare --yes
-		echo
-		rm -rf /var/www
-		rm -rf /etc/letsencrypt 
-		echo
-		echo -e "\e[1;36m> Uninstall complete, Press any key to return to menu...\e[0m"
-		read
+		printf '\e[1;36m- [y/n]: \e[0m'
+		read -r o_uninstaller
+		if [ "$o_uninstaller" == "Y" ] || [ "$o_uninstaller" == "y" ]
+		then
+			echo
+			echo -e "\e[1;36m> Uninstalling Nginx\e[0m"
+			apt-get purge nginx nginx-common -y
+			echo
+			echo -e "\e[1;36m> Uninstalling PHP\e[0m"
+			sudo apt-get purge php*.*-common -y
+			echo
+			echo -e "\e[1;36m> Uninstalling Certbot\e[0m"
+			pip3 uninstall certbot --yes
+			echo
+			echo -e "\e[1;36m> Uninstalling Certbot Cloudflare DNS plugin\e[0m"
+			pip3 uninstall certbot-dns-cloudflare --yes
+			echo
+			rm -rf /var/www
+			rm -rf /etc/letsencrypt 
+			echo
+			echo -e "\e[1;36m> Uninstall complete, Press any key to return to menu...\e[0m"
+			read
+		elif [ "$o_uninstaller" == "N" ] || [ "$o_uninstaller" == "n" ]
+		then
+			show_menus
 	    }	
 
 #Org Install info
