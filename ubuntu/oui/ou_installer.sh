@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v7.3.7
+version=v7.3.7-1
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -257,7 +257,7 @@ LEcertbot_mod()
 				if [ "$debian_detect" == "Debian" ];
 				then
 					apt-get install python3-pip -y
-					pip3 install certbot
+					sudo pip3 install certbot
 				else
 					##Install certbot packages
 					apt-get install software-properties-common -y
