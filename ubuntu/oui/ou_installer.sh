@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v7.4.0-3
+version=v7.4.0-4
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -534,9 +534,10 @@ uninstall_oui_mod()
 		echo
 		echo -e "\e[1;36m> Uninstalling Certbot\e[0m"
 		pip3 uninstall certbot --yes
+		echo
+		echo -e "\e[1;36m> Uninstalling Certbot Cloudflare DNS plugin\e[0m"
 		pip3 uninstall certbot-dns-cloudflare --yes
 		echo
-		echo -e "\e[1;36m> Uninstalling Certbot\e[0m"
 		rm -rf /var/www
 		rm -rf /etc/letsencrypt 
 		echo
