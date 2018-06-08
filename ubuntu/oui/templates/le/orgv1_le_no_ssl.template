@@ -8,11 +8,11 @@
 #Temp vhost conf until you're ready to enable LE SSL
 #Please delete the below block and uncomment the next 2 server blocks, when you're ready to do so.
 server {
-        server_name SERV_NAME;
         listen 80;
         listen [::]:80;
         listen 443 ssl http2;
         listen [::]:443 ssl http2;
+        server_name SERV_NAME;
         root ROOT/html;
         index index.php index.html index.htm index.nginx-debian.html;
 		location /auth-admin { rewrite ^ /auth.php?admin&ban=someone,thisperson; } #Org Auth
