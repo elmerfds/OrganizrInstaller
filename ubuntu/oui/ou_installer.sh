@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v7.4.2-2
+version=v7.4.2-6
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -98,22 +98,24 @@ CFvhostcreate_mod()
 		if [ "$org_v" == "1" ] && [ "$vhost_template" == "CF" ]
 		then
 		cp $CURRENT_DIR/templates/cf/orgv1_cf.template $CONFIG
-		cp -a $CURRENT_DIR/config/cf/. $NGINX_LOC/config
-		mv $NGINX_LOC/config/domain.com.conf $NGINX_LOC/config/$DOMAIN.conf
-		mv $NGINX_LOC/config/domain.com_ssl.conf $NGINX_LOC/config/${DOMAIN}_ssl.conf
-		CONFIG_DOMAIN=$NGINX_CONFIG/$DOMAIN.conf
-		mkdir -p $NGINX_CONFIG/ssl/$DOMAIN
-		chmod -R 755 $NGINX_CONFIG/ssl/$DOMAIN
+		mkdir -p $NGINX_CONFIG/$DOMAIN
+		cp -a $CURRENT_DIR/config/cf/. $NGINX_CONFIG/$DOMAIN
+		mv $NGINX_CONFIG/$DOMAIN/domain.com.conf $NGINX_CONFIG/$DOMAIN/$DOMAIN.conf
+		mv $NGINX_CONFIG/$DOMAIN/domain.com_ssl.conf $NGINX_CONFIG/$DOMAIN/${DOMAIN}_ssl.conf
+		CONFIG_DOMAIN=$NGINX_CONFIG/$DOMAIN/$DOMAIN.conf
+		mkdir -p $NGINX_CONFIG/$DOMAIN/ssl/$DOMAIN
+		chmod -R 755 $NGINX_CONFIG/$DOMAIN/ssl/$DOMAIN
 
 		elif [ "$org_v" == "2" ] && [ "$vhost_template" == "CF" ]
 		then
 		cp $CURRENT_DIR/templates/cf/orgv2_cf.template $CONFIG
-		cp -a $CURRENT_DIR/config/cf/. $NGINX_LOC/config
-		mv $NGINX_LOC/config/domain.com.conf $NGINX_LOC/config/$DOMAIN.conf
-		mv $NGINX_LOC/config/domain.com_ssl.conf $NGINX_LOC/config/${DOMAIN}_ssl.conf
-		CONFIG_DOMAIN=$NGINX_CONFIG/$DOMAIN.conf
-		mkdir -p $NGINX_CONFIG/ssl/$DOMAIN
-		chmod -R 755 $NGINX_CONFIG/ssl/$DOMAIN
+		mkdir -p $NGINX_CONFIG/$DOMAIN
+		cp -a $CURRENT_DIR/config/cf/. $NGINX_CONFIG/$DOMAIN
+		mv $NGINX_CONFIG/$DOMAIN/domain.com.conf $NGINX_CONFIG/$DOMAIN.conf
+		mv $NGINX_CONFIG/$DOMAIN/domain.com_ssl.conf $NGINX_CONFIG/$DOMAIN/${DOMAIN}_ssl.conf
+		CONFIG_DOMAIN=$NGINX_CONFIG/$DOMAIN/$DOMAIN.conf
+		mkdir -p $NGINX_CONFIG/$DOMAIN/ssl/$DOMAIN
+		chmod -R 755 $NGINX_CONFIG/$DOMAIN/ssl/$DOMAIN
 		fi
 
 	}
@@ -161,8 +163,9 @@ LEvhostcreate_mod()
 			fi	
 		
 			mkdir -p $NGINX_APPS 								#Apps folder
+			mkdir -p $NGINX_CONFIG/$DOMAIN
 			cp -a $CURRENT_DIR/config/apps/. $NGINX_APPS  		#Apps conf files
-			cp -a $CURRENT_DIR/config/le/. $NGINX_LOC/config 	#LE conf file
+			cp -a $CURRENT_DIR/config/le/. $NGINX_CONFIG/$DOMAIN 	#LE conf file
 
 			if [ "$org_v" == "1" ] && [ "$vhost_template" == "LE" ]
 			then
@@ -260,6 +263,7 @@ LEcertbot_mod()
 					apt-get install software-properties-common -y
 					add-apt-repository ppa:certbot/certbot -y
 					apt-get update
+					apt-get install certbot -y
 				fi
 			fi
 
@@ -499,8 +503,11 @@ vhostconfig_mod()
 		if [ "$vhost_template" == "CF" ]
 		then $SED -i "s/DOMAIN/$DOMAIN/g" $CONFIG_DOMAIN
 		fi
+		if [ "$vhost_template" == "LE" ]
+		then $SED -i "s/DOMAIN/$DOMAIN/g" $NGINX_CONFIG/$DOMAIN/http_server.conf
+		fi
 		phpv=$(ls -t /etc/php | head -1)
-		$SED -i "s/VER/$phpv/g" $NGINX_CONFIG/phpblock.conf
+		$SED -i "s/VER/$phpv/g" $NGINX_CONFIG/$DOMAIN/phpblock.conf
 
 		#Delete default.conf nginx site
 		mkdir -p $tmp/bk/nginx_default_site
