@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v7.4.2-5
+version=v7.4.2-6
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -263,6 +263,7 @@ LEcertbot_mod()
 					apt-get install software-properties-common -y
 					add-apt-repository ppa:certbot/certbot -y
 					apt-get update
+					sudo apt-get install certbot
 				fi
 			fi
 
