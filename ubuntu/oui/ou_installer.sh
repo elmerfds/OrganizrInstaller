@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v7.4.3-3
+version=v7.4.3-4
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -762,7 +762,7 @@ uti_options(){
 			read
 		;;											
 
-			"6")
+			"7")
 			while true 
 			do
 			clear
