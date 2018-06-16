@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v7.4.2-3
+version=v7.4.2-4
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -503,7 +503,7 @@ vhostconfig_mod()
 		then $SED -i "s/DOMAIN/$DOMAIN/g" $CONFIG_DOMAIN
 		fi
 		phpv=$(ls -t /etc/php | head -1)
-		$SED -i "s/VER/$phpv/g" $NGINX_CONFIG/phpblock.conf
+		$SED -i "s/VER/$phpv/g" $NGINX_CONFIG/$DOMAIN/phpblock.conf
 
 		#Delete default.conf nginx site
 		mkdir -p $tmp/bk/nginx_default_site
