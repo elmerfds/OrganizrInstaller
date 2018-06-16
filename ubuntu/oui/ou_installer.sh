@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v7.4.3-0
+version=v7.4.3-1
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -634,8 +634,8 @@ uti_menus()
 	}
 #Utilities sub-menu-options
 uti_options(){
-		read -r options
-		case $options in
+		read -r uti_options
+		case $uti_options in
 	 	"1")
 			echo "- Your choice 1: Debian 8.x PHP7 fix"
 			echo
