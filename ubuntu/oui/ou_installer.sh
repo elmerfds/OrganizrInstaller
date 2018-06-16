@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v7.4.2-4
+version=v7.4.2-5
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -501,6 +501,9 @@ vhostconfig_mod()
 		$SED -i "s/SUBD_DOMA/$subd_doma/g" $CONFIG
 		if [ "$vhost_template" == "CF" ]
 		then $SED -i "s/DOMAIN/$DOMAIN/g" $CONFIG_DOMAIN
+		fi
+		if [ "$vhost_template" == "LE" ]
+		then $SED -i "s/DOMAIN/$DOMAIN/g" $NGINX_CONFIG/$DOMAIN/http_server.conf
 		fi
 		phpv=$(ls -t /etc/php | head -1)
 		$SED -i "s/VER/$phpv/g" $NGINX_CONFIG/$DOMAIN/phpblock.conf
