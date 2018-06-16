@@ -1,5 +1,5 @@
 ##Orgv2 Cloud Flare tempalte
-##vhost_template_v: v1.1.0
+##vhost_template_v: v1.1.1
 ##author: elmerfdz
 
 
@@ -7,37 +7,37 @@
 ## Replace the IP with your services IP if it's not installed on this machine
 ## Remove '#' to enable the services you want
 
-#upstream organizr-upstream		{ server 127.0.0.1;       }
-#upstream plex-upstream 		{ server 127.0.0.1:32400; }
-#upstream plexpy-upstream 		{ server 127.0.0.1:8181;  }
-#upstream ombi-upstream 		{ server 127.0.0.1:5000;  } 
-#upstream sabnzbd-upstream 		{ server 127.0.0.1:8080;  }
-#upstream nzbget-upstream		{ server 127.0.0.1:6789;  }
-#upstream radarr-upstream 		{ server 127.0.0.1:7878;  }
-#upstream sonarr-upstream 		{ server 127.0.0.1:8989;  }
-#upstream mylar-upstream		{ server 127.0.0.1:8090;  }
+#upstream organizr-upstream			{ server 127.0.0.1;       }
+#upstream plex-upstream 			{ server 127.0.0.1:32400; }
+#upstream plexpy-upstream 			{ server 127.0.0.1:8181;  }
+#upstream ombi-upstream 			{ server 127.0.0.1:5000;  } 
+#upstream sabnzbd-upstream 			{ server 127.0.0.1:8080;  }
+#upstream nzbget-upstream			{ server 127.0.0.1:6789;  }
+#upstream radarr-upstream 			{ server 127.0.0.1:7878;  }
+#upstream sonarr-upstream 			{ server 127.0.0.1:8989;  }
+#upstream mylar-upstream			{ server 127.0.0.1:8090;  }
 #upstream headphones-upstream		{ server 127.0.0.1:8182;  }
-#upstream lazyl-upstream		{ server 127.0.0.1:5299;  }
-#upstream nzbhydra-upstream		{ server 127.0.0.1:5075;  }
-#upstream comics-upstream		{ server 127.0.0.1:2202;  }
+#upstream lazyl-upstream			{ server 127.0.0.1:5299;  }
+#upstream nzbhydra-upstream			{ server 127.0.0.1:5075;  }
+#upstream comics-upstream			{ server 127.0.0.1:2202;  }
 #upstream ubooquityadmin-upstream	{ server 127.0.0.1:2203;  }
-#upstream unifi-upstream		{ server 127.0.0.1:8443;  }
-#upstream hasse-upstream		{ server 127.0.0.1:8123;  }
-#upstream jackett-upstream		{ server 127.0.0.1:9117;  }
+#upstream unifi-upstream			{ server 127.0.0.1:8443;  }
+#upstream hasse-upstream			{ server 127.0.0.1:8123;  }
+#upstream jackett-upstream			{ server 127.0.0.1:9117;  }
 #upstream mattermost-upstream		{ server 127.0.0.1:8065;  }
-#upstream deluge-upstream		{ server 127.0.0.1:8112;  }
-#upstream netdata-upstream		{ server 127.0.0.1:19999; }
-#upstream cockpit-upstream		{ server 127.0.0.1:9090;  }
-#upstream websocket			{ server 127.0.0.1:9090;  } #cockpit app requirement
-#upstream ptweb-upstream		{ server 127.0.0.1:8088;  }
-#upstream ptserver-upstream		{ server 127.0.0.1:8089;  }
-#upstream cloudcmd-upstream		{ server 127.0.0.1:8000;  }
+#upstream deluge-upstream			{ server 127.0.0.1:8112;  }
+#upstream netdata-upstream			{ server 127.0.0.1:19999; }
+#upstream cockpit-upstream			{ server 127.0.0.1:9090;  }
+#upstream websocket			    	{ server 127.0.0.1:9090;  } #cockpit app requirement
+#upstream ptweb-upstream			{ server 127.0.0.1:8088;  }
+#upstream ptserver-upstream			{ server 127.0.0.1:8089;  }
+#upstream cloudcmd-upstream			{ server 127.0.0.1:8000;  }
 
 ##SSL SERVER KEYS
 ## CF SSL ORIGIN CERTS
 ##Rename & Place your keys in the below location/REMOVE '#' from the next 2 lines to enable SSL
-#ssl_certificate       /etc/nginx/config/DOMAIN/ssl/DOMAIN/DOMAIN.pem;		#For CF SSL Orgin certs
-#ssl_certificate_key   /etc/nginx/config/DOMAIN/ssl/DOMAIN/DOMAIN.com.key;  #For CF SSL Orgin certs 
+#ssl_certificate       /etc/nginx/config/DOMAIN/ssl/DOMAIN.pem;		#For CF SSL Orgin certs
+#ssl_certificate_key   /etc/nginx/config/DOMAIN/ssl/DOMAIN.com.key;  #For CF SSL Orgin certs 
 
 ## LET'S ENCRYPT SSL CERTS
 ##Rename '#' from the next 3 lines to enable SSL

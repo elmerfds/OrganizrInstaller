@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v7.4.2-8
+version=v7.4.2-9
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -103,8 +103,8 @@ CFvhostcreate_mod()
 		mv $NGINX_CONFIG/$DOMAIN/domain.com.conf $NGINX_CONFIG/$DOMAIN/$DOMAIN.conf
 		mv $NGINX_CONFIG/$DOMAIN/domain.com_ssl.conf $NGINX_CONFIG/$DOMAIN/${DOMAIN}_ssl.conf
 		CONFIG_DOMAIN=$NGINX_CONFIG/$DOMAIN/$DOMAIN.conf
-		mkdir -p $NGINX_CONFIG/$DOMAIN/ssl/$DOMAIN
-		chmod -R 755 $NGINX_CONFIG/$DOMAIN/ssl/$DOMAIN
+		mkdir -p $NGINX_CONFIG/$DOMAIN/ssl
+		chmod -R 755 $NGINX_CONFIG/$DOMAIN/ssl
 
 		elif [ "$org_v" == "2" ] && [ "$vhost_template" == "CF" ]
 		then
@@ -114,8 +114,8 @@ CFvhostcreate_mod()
 		mv $NGINX_CONFIG/$DOMAIN/domain.com.conf $NGINX_CONFIG/$DOMAIN/$DOMAIN.conf
 		mv $NGINX_CONFIG/$DOMAIN/domain.com_ssl.conf $NGINX_CONFIG/$DOMAIN/${DOMAIN}_ssl.conf
 		CONFIG_DOMAIN=$NGINX_CONFIG/$DOMAIN/$DOMAIN.conf
-		mkdir -p $NGINX_CONFIG/$DOMAIN/ssl/$DOMAIN
-		chmod -R 755 $NGINX_CONFIG/$DOMAIN/ssl/$DOMAIN
+		mkdir -p $NGINX_CONFIG/$DOMAIN/ssl
+		chmod -R 755 $NGINX_CONFIG/$DOMAIN/ssl
 		fi
 
 	}
