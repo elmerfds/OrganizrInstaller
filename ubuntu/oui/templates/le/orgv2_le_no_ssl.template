@@ -16,7 +16,7 @@ server {
         location ~ /auth-(.*) { rewrite ^/auth-(.*) /api/?v1/auth&group=$1; } #Org Auth
         error_page 400 401 403 404 405 408 500 502 503 504  /?error=$status;  #error page
         location / {try_files $uri $uri/ =404;}
-        include config/phpblock.conf;  #PHP Block
+        include config/DOMAIN/phpblock.conf;  #PHP Block
         include conf.d/apps/*.conf;  #apps
 }
 
@@ -25,7 +25,7 @@ server {
 #	listen 80;
 #	listen [::]:80;
 #	server_name SERV_NAME;
-#	include /etc/nginx/config/letsencrypt.conf;
+#	include /etc/nginx/config/DOMAIN/letsencrypt.conf;
 #	location / {return 301 https://$host$request_uri;}
 #}
 
@@ -37,13 +37,13 @@ server {
 #	ssl_certificate /etc/letsencrypt/live/SUBD_DOMA/fullchain.pem;
 #	ssl_certificate_key /etc/letsencrypt/live/SUBD_DOMA/privkey.pem;
 #	ssl_trusted_certificate /etc/letsencrypt/live/SUBD_DOMA/fullchain.pem;
-#	include /etc/nginx/config/ssl.conf;
+#	include /etc/nginx/config/DOMAIN/ssl.conf;
 #	root ROOT/html;
 #	index index.php index.html index.htm index.nginx-debian.html;
 #	location ~ /auth-(.*) { rewrite ^/auth-(.*) /api/?v1/auth&group=$1; } #Org Auth
 #	error_page 400 401 403 404 405 408 500 502 503 504  /?error=$status;  #error page
 #	location / {try_files $uri $uri/ =404;}
-#	include config/phpblock.conf;  #PHP Block
+#	include config/DOMAIN/phpblock.conf;  #PHP Block
 #	include conf.d/apps/*.conf;  #apps
 #}
 
