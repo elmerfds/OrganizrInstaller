@@ -1,5 +1,5 @@
 ##Orgv2 Let's encrypt vhost 
-##vhost_template_v: v1.6.0
+##vhost_template_v: v1.6.1
 ##author: elmerfdz
 
 ##SSL 
@@ -21,5 +21,5 @@ server {
 	error_page 400 401 403 404 405 408 500 502 503 504  /?error=$status;  #error page
 	location / {try_files $uri $uri/ =404;}
 	include config/DOMAIN/phpblock.conf;  #PHP Block
-	include conf.d/apps/*.conf;  #apps
+	#include conf.d/apps/*.conf;  #apps #Uncomment to enable apps
 }

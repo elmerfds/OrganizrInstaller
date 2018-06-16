@@ -263,7 +263,7 @@ LEcertbot_mod()
 					apt-get install software-properties-common -y
 					add-apt-repository ppa:certbot/certbot -y
 					apt-get update
-					sudo apt-get install certbot
+					apt-get install certbot -y
 				fi
 			fi
 

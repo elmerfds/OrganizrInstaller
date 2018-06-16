@@ -1,6 +1,6 @@
 ##Orgv1 Let's encrypt vhost   - Non SSL 
 ##Cert_type: Wildcard SSL Cert
-##vhost_template_v: v1.0.1
+##vhost_template_v: v1.0.2
 ##author: elmerfdz
 
 
@@ -23,23 +23,18 @@ server {
         include conf.d/apps/*.conf;  #apps
 }
 
+##SSL 
+#ssl_certificate /etc/letsencrypt/live/SUBD_DOMA/fullchain.pem;
+#ssl_certificate_key /etc/letsencrypt/live/SUBD_DOMA/privkey.pem;
+#ssl_trusted_certificate /etc/letsencrypt/live/SUBD_DOMA/chain.pem;
+
 ## http://DOMAIN redirects to https://DOMAIN
-#server {
-#	listen 80;
-#	listen [::]:80;
-#	server_name SERV_NAME;
-#	include /etc/nginx/config/DOMAIN/letsencrypt.conf;
-#	location / {return 301 https://$host$request_uri;}
-#}
+#	include config/DOMAIN/http_server.conf; 
 
 ## Serves https://www.DOMAIN
 #server {
+#	listen 443 ssl http2; listen [::]:443 ssl http2;
 #	server_name SERV_NAME;
-#	listen 443 ssl http2;
-#	listen [::]:443 ssl http2;
-#	#ssl_certificate /etc/letsencrypt/live/SUBD_DOMA/fullchain.pem;
-#	#ssl_certificate_key /etc/letsencrypt/live/SUBD_DOMA/privkey.pem;
-#	#ssl_trusted_certificate /etc/letsencrypt/live/SUBD_DOMA/chain.pem;
 #	include /etc/nginx/config/DOMAIN/ssl.conf;
 #	root ROOT/html;
 #	index index.php index.html index.htm index.nginx-debian.html;
