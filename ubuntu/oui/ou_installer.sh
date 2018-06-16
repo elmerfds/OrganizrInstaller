@@ -690,7 +690,8 @@ uti_menus()
 		echo "| 3.| Let's Encrypt: Single Domain Cert Renewal 	  " 
 		echo "| 4.| Let's Encrypt: Wilcard Cert Renewal	  " 
 		echo "| 5.| Let's Encrypt: Wilcard Cert Renewal [Cloudflare DNS Plugin] 					  "
-		echo "| 6.| Back 					  "
+		echo "| 6.| Let's Encrypt: Wilcard Cert Create [Supports Cloudflare DNS Plugin] 					  "
+		echo "| 7.| Back 					  "
 		echo
 		echo
 		printf "\e[1;36m> Enter your choice: \e[0m"
@@ -749,7 +750,17 @@ uti_options(){
 			echo			
                 	echo -e "\e[1;36m> \e[0mPress any key to return to menu..."
 			read
-		;;							
+		;;
+
+			"6")
+			echo "- Your choice 6: Let's Encrypt: Wilcard Cert Create [Supports Cloudflare DNS Plugin]"
+			#LE Wildcard cert renewal
+			certbot__manual_install_mod
+			unset DOMAIN
+			echo			
+                	echo -e "\e[1;36m> \e[0mPress any key to return to menu..."
+			read
+		;;											
 
 			"6")
 			while true 
