@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v7.4.3-1
+version=v7.4.3-2
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -43,7 +43,8 @@ orgreq_mod()
     }
 #Domain validation 
 domainval_mod()
-	{
+	{	
+		echo
 		while true
 		do
 			if [ "$options" == "1" ] || [ "$options" == "2" ] || [ "$options" == "4" ]  
@@ -380,6 +381,67 @@ LEcertbot-wc-cf-dns-renew_mod()
 			then
 			certbot renew --dns-cloudflare --force-renewal
 			fi
+		}
+
+certbot__manual_install_mod()		
+		{
+			echo
+		    echo -e "\e[1;36m> This option only installs certbot and generate wildcard certificates .\e[0m" 
+			if [ "$debian_detect" == "Debian" ] || [ "$debian_detect" == "Raspbian" ];
+			then
+				apt-get install python3-pip -y
+				sudo pip3 install certbot
+			else
+				##Install certbot packages
+				apt-get install software-properties-common -y
+				add-apt-repository ppa:certbot/certbot -y
+				apt-get update
+				apt-get install certbot -y
+			fi
+
+			echo
+			echo -e "\e[1;36m> Is your domain on Cloudflare? [y/n] .\e[0m"
+			echo  "- Going ahead with the above will automate the DNS / dns-01 challenges for you."
+			echo  "- To do that, python3-pip & certbot-dns-cloudflare pip3 package wll be installed"
+			printf '\e[1;36m- [y/n]: \e[0m'
+			read -r dns_plugin
+			dns_plugin=${dns_plugin:-n}
+			echo				
+
+
+			if [ "$dns_plugin" == "Y" ] || [ "$dns_plugin" == "y" ]
+			then
+				mkdir -p $cred_folder #create secret folder to store Certbot CF plugin creds
+				cp -R -u -p $CURRENT_DIR/config/le-dnsplugins/cf/. $cred_folder #copy CF credentials file
+				if [ ! -f $cred_folder/cloudflare.ini ] 
+					then 
+						echo
+						echo -e "\e[1;36m> Enter your Cloudflare email.\e[0m"
+						printf '\e[1;36m- \e[0m' 
+						read -r CF_EMAIL
+						echo
+						echo -e "\e[1;36m> Enter your Cloudflare API.\e[0m" 
+						echo "- You can get your Cloudflare API from here: https://dash.cloudflare.com/profile"
+						printf '\e[1;36m- \e[0m' 
+						read -r CF_API
+						echo
+
+						#Update CF plugin file
+						$SED -i "s/CF_EMAIL/$CF_EMAIL/g" $cred_folder/cloudflare.ini
+						$SED -i "s/CF_API/$CF_API/g" $cred_folder/cloudflare.ini
+						chmod -R 600 $cred_folder #debug
+				fi	
+	
+				if [ "$debian_detect" == "Debian" ] || [ "$debian_detect" == "Raspbian" ];
+				then
+					echo "pip3 already installed"
+					sudo pip3 install certbot-dns-cloudflare
+					echo
+				else
+					apt-get install certbot python3-pip -y
+					sudo -u "$(logname)" pip3 install certbot-dns-cloudflare
+				fi	
+
 		}
 
 
