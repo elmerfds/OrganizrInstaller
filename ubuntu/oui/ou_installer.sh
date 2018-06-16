@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v7.4.3-2
+version=v7.4.3-3
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -413,7 +413,7 @@ certbot__manual_install_mod()
 			then
 				mkdir -p $cred_folder #create secret folder to store Certbot CF plugin creds
 				cp -R -u -p $CURRENT_DIR/config/le-dnsplugins/cf/. $cred_folder #copy CF credentials file
-				if [ ! -f $cred_folder/cloudflare.ini ] 
+				if [ ! -e "$cred_folder/cloudflare.ini" ] 
 					then 
 						echo
 						echo -e "\e[1;36m> Enter your Cloudflare email.\e[0m"
@@ -430,7 +430,7 @@ certbot__manual_install_mod()
 						$SED -i "s/CF_EMAIL/$CF_EMAIL/g" $cred_folder/cloudflare.ini
 						$SED -i "s/CF_API/$CF_API/g" $cred_folder/cloudflare.ini
 						chmod -R 600 $cred_folder #debug
-				fi	
+				fi				
 	
 				if [ "$debian_detect" == "Debian" ] || [ "$debian_detect" == "Raspbian" ];
 				then
@@ -440,7 +440,8 @@ certbot__manual_install_mod()
 				else
 					apt-get install certbot python3-pip -y
 					sudo -u "$(logname)" pip3 install certbot-dns-cloudflare
-				fi	
+				fi
+			fi		
 
 		}
 
