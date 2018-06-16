@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v7.4.2-9
+version=v7.4.3-0
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -46,8 +46,13 @@ domainval_mod()
 	{
 		while true
 		do
-			echo -e "\e[1;36m> Enter a domain or a folder name for your install:\e[0m" 
-			echo -e "\e[1;36m> E.g domain.com / organizr.local / $(hostname).local / anything.local] \e[0m" 
+			if [ "$options" == "1" ] || [ "$options" == "2" ] || [ "$options" == "4" ]  
+			then
+				echo -e "\e[1;36m> Enter a domain or a folder name for your install:\e[0m" 
+				echo -e "\e[1;36m> E.g domain.com / organizr.local / $(hostname).local / anything.local] \e[0m" 
+			else
+				echo -e "\e[1;36m> Enter your domain name e.g. domain.com:\e[0m" 
+			fi	
 			printf '\e[1;36m- \e[0m'
 			read -r dname
 			DOMAIN=$dname
@@ -355,26 +360,7 @@ LEcertbot-dryrun_mod()
 
 LEcertbot-wildcard-renew_mod()
 		{
-			echo
-			while true
-				do
-				echo -e "\e[1;36m> Enter your domain name:\e[0m" 
-				echo -e "\e[1;36m> E.g domain.com / organizr.local] \e[0m" 
-				printf '\e[1;36m- \e[0m'
-				read -r dname
-				DOMAIN=$dname
-	
-				# check the domain is roughly valid!
-				PATTERN="^([[:alnum:]]([[:alnum:]\-]{0,61}[[:alnum:]])?\.)+[[:alpha:]]{2,10}$"
-				if [[ "$DOMAIN" =~ $PATTERN ]]; then
-				DOMAIN=`echo $DOMAIN | tr '[A-Z]' '[a-z]'`
-				echo -e "\e[1;36m> \e[0mCreating vhost file for:" $DOMAIN
-				break
-				else
-				echo "> invalid domain name"
-				echo
-				fi
-			done	
+			domainval_mod	
 			certbot certonly --manual -d *.$DOMAIN -d $DOMAIN --preferred-challenges dns-01 --server https://acme-v02.api.letsencrypt.org/directory
 		}
 
@@ -395,6 +381,7 @@ LEcertbot-wc-cf-dns-renew_mod()
 			certbot renew --dns-cloudflare --force-renewal
 			fi
 		}
+
 
 #Organizr download module
 orgdl_mod()
