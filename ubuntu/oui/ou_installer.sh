@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v7.4.2-6
+version=v7.4.2-7
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -111,7 +111,7 @@ CFvhostcreate_mod()
 		cp $CURRENT_DIR/templates/cf/orgv2_cf.template $CONFIG
 		mkdir -p $NGINX_CONFIG/$DOMAIN
 		cp -a $CURRENT_DIR/config/cf/. $NGINX_CONFIG/$DOMAIN
-		mv $NGINX_CONFIG/$DOMAIN/domain.com.conf $NGINX_CONFIG/$DOMAIN.conf
+		mv $NGINX_CONFIG/$DOMAIN/domain.com.conf $NGINX_CONFIG/$DOMAIN/$DOMAIN.conf
 		mv $NGINX_CONFIG/$DOMAIN/domain.com_ssl.conf $NGINX_CONFIG/$DOMAIN/${DOMAIN}_ssl.conf
 		CONFIG_DOMAIN=$NGINX_CONFIG/$DOMAIN/$DOMAIN.conf
 		mkdir -p $NGINX_CONFIG/$DOMAIN/ssl/$DOMAIN
