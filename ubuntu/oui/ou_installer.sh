@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v7.4.2-8
+version=v7.4.3-4
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -43,11 +43,17 @@ orgreq_mod()
     }
 #Domain validation 
 domainval_mod()
-	{
+	{	
+		echo
 		while true
 		do
-			echo -e "\e[1;36m> Enter a domain or a folder name for your install:\e[0m" 
-			echo -e "\e[1;36m> E.g domain.com / organizr.local / $(hostname).local / anything.local] \e[0m" 
+			if [ "$options" == "1" ] || [ "$options" == "2" ] || [ "$options" == "4" ]  
+			then
+				echo -e "\e[1;36m> Enter a domain or a folder name for your install:\e[0m" 
+				echo -e "\e[1;36m> E.g domain.com / organizr.local / $(hostname).local / anything.local] \e[0m" 
+			else
+				echo -e "\e[1;36m> Enter your domain name e.g. domain.com:\e[0m" 
+			fi	
 			printf '\e[1;36m- \e[0m'
 			read -r dname
 			DOMAIN=$dname
@@ -103,8 +109,8 @@ CFvhostcreate_mod()
 		mv $NGINX_CONFIG/$DOMAIN/domain.com.conf $NGINX_CONFIG/$DOMAIN/$DOMAIN.conf
 		mv $NGINX_CONFIG/$DOMAIN/domain.com_ssl.conf $NGINX_CONFIG/$DOMAIN/${DOMAIN}_ssl.conf
 		CONFIG_DOMAIN=$NGINX_CONFIG/$DOMAIN/$DOMAIN.conf
-		mkdir -p $NGINX_CONFIG/$DOMAIN/ssl/$DOMAIN
-		chmod -R 755 $NGINX_CONFIG/$DOMAIN/ssl/$DOMAIN
+		mkdir -p $NGINX_CONFIG/$DOMAIN/ssl
+		chmod -R 755 $NGINX_CONFIG/$DOMAIN/ssl
 
 		elif [ "$org_v" == "2" ] && [ "$vhost_template" == "CF" ]
 		then
@@ -114,8 +120,8 @@ CFvhostcreate_mod()
 		mv $NGINX_CONFIG/$DOMAIN/domain.com.conf $NGINX_CONFIG/$DOMAIN/$DOMAIN.conf
 		mv $NGINX_CONFIG/$DOMAIN/domain.com_ssl.conf $NGINX_CONFIG/$DOMAIN/${DOMAIN}_ssl.conf
 		CONFIG_DOMAIN=$NGINX_CONFIG/$DOMAIN/$DOMAIN.conf
-		mkdir -p $NGINX_CONFIG/$DOMAIN/ssl/$DOMAIN
-		chmod -R 755 $NGINX_CONFIG/$DOMAIN/ssl/$DOMAIN
+		mkdir -p $NGINX_CONFIG/$DOMAIN/ssl
+		chmod -R 755 $NGINX_CONFIG/$DOMAIN/ssl
 		fi
 
 	}
@@ -287,7 +293,7 @@ LEcertbot_mod()
 					echo
 				else
 					apt-get install certbot python3-pip -y
-					sudo -u "$(logname)" pip3 install certbot-dns-cloudflare
+					pip3 install certbot-dns-cloudflare
 				fi	
 
 			mkdir -p $cred_folder #create secret folder to store Certbot CF plugin creds
@@ -355,26 +361,7 @@ LEcertbot-dryrun_mod()
 
 LEcertbot-wildcard-renew_mod()
 		{
-			echo
-			while true
-				do
-				echo -e "\e[1;36m> Enter your domain name:\e[0m" 
-				echo -e "\e[1;36m> E.g domain.com / organizr.local] \e[0m" 
-				printf '\e[1;36m- \e[0m'
-				read -r dname
-				DOMAIN=$dname
-	
-				# check the domain is roughly valid!
-				PATTERN="^([[:alnum:]]([[:alnum:]\-]{0,61}[[:alnum:]])?\.)+[[:alpha:]]{2,10}$"
-				if [[ "$DOMAIN" =~ $PATTERN ]]; then
-				DOMAIN=`echo $DOMAIN | tr '[A-Z]' '[a-z]'`
-				echo -e "\e[1;36m> \e[0mCreating vhost file for:" $DOMAIN
-				break
-				else
-				echo "> invalid domain name"
-				echo
-				fi
-			done	
+			domainval_mod	
 			certbot certonly --manual -d *.$DOMAIN -d $DOMAIN --preferred-challenges dns-01 --server https://acme-v02.api.letsencrypt.org/directory
 		}
 
@@ -395,7 +382,7 @@ LEcertbot-wc-cf-dns-renew_mod()
 			certbot renew --dns-cloudflare --force-renewal
 			fi
 		}
-
+		
 #Organizr download module
 orgdl_mod()
         {
@@ -499,12 +486,15 @@ vhostconfig_mod()
 		$SED -i "s/DOMAIN/$DOMAIN/g" $CONFIG
 		$SED -i "s!ROOT!$SITE_DIR!g" $CONFIG
 		$SED -i "s/SERV_NAME/$serv_name/g" $CONFIG
-		$SED -i "s/SUBD_DOMA/$subd_doma/g" $CONFIG
 		if [ "$vhost_template" == "CF" ]
-		then $SED -i "s/DOMAIN/$DOMAIN/g" $CONFIG_DOMAIN
+		then 
+			$SED -i "s/DOMAIN/$DOMAIN/g" $CONFIG_DOMAIN
+			$SED -i "s/SUBD_DOMA/$subd_doma/g" $CONFIG
 		fi
 		if [ "$vhost_template" == "LE" ]
-		then $SED -i "s/DOMAIN/$DOMAIN/g" $NGINX_CONFIG/$DOMAIN/http_server.conf
+		then 
+			$SED -i "s/DOMAIN/$DOMAIN/g" $NGINX_CONFIG/$DOMAIN/http_server.conf
+			$SED -i "s/SUBD_DOMA/$subd_doma/g" $NGINX_CONFIG/$DOMAIN/ssl.conf
 		fi
 		phpv=$(ls -t /etc/php | head -1)
 		$SED -i "s/VER/$phpv/g" $NGINX_CONFIG/$DOMAIN/phpblock.conf
@@ -647,8 +637,8 @@ uti_menus()
 	}
 #Utilities sub-menu-options
 uti_options(){
-		read -r options
-		case $options in
+		read -r uti_options
+		case $uti_options in
 	 	"1")
 			echo "- Your choice 1: Debian 8.x PHP7 fix"
 			echo
