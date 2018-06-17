@@ -1,11 +1,6 @@
 ##Orgv1 Let's encrypt vhost 
-##vhost_template_v: v1.0.2
+##vhost_template_v: v1.0.3
 ##author: elmerfdz
-
-##SSL 
-ssl_certificate /etc/letsencrypt/live/SUBD_DOMA/fullchain.pem;
-ssl_certificate_key /etc/letsencrypt/live/SUBD_DOMA/privkey.pem;
-ssl_trusted_certificate /etc/letsencrypt/live/SUBD_DOMA/chain.pem;
 
 ## http://DOMAIN redirects to https://DOMAIN
 	include config/DOMAIN/http_server.conf; 

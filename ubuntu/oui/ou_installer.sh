@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v7.4.3-2
+version=v7.4.3-3
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -293,7 +293,7 @@ LEcertbot_mod()
 					echo
 				else
 					apt-get install certbot python3-pip -y
-					sudo -u $SUDO_USER pip3 install certbot-dns-cloudflare
+					pip3 install certbot-dns-cloudflare
 				fi	
 
 			mkdir -p $cred_folder #create secret folder to store Certbot CF plugin creds
@@ -486,7 +486,7 @@ vhostconfig_mod()
 		$SED -i "s/DOMAIN/$DOMAIN/g" $CONFIG
 		$SED -i "s!ROOT!$SITE_DIR!g" $CONFIG
 		$SED -i "s/SERV_NAME/$serv_name/g" $CONFIG
-		$SED -i "s/SUBD_DOMA/$subd_doma/g" $CONFIG
+		$SED -i "s/SUBD_DOMA/$subd_doma/g" $NGINX_CONFIG/$DOMAIN/ssl.conf
 		if [ "$vhost_template" == "CF" ]
 		then $SED -i "s/DOMAIN/$DOMAIN/g" $CONFIG_DOMAIN
 		fi
