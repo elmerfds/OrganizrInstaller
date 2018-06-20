@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v7.4.3-5
+version=v7.4.3-6
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -560,7 +560,7 @@ orginstinfo_mod()
 		echo
 		printf '######################################################'
 		echo
-		echo -e "     	 \e[1;32mOrganizr $q Installion Complete  \e[0m"
+		echo -e "     	 \e[1;32mOrganizr $q Install Complete  \e[0m"
 		printf '######################################################'
 		echo
 		echo
