@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v7.4.3-8
+version=v7.4.3-9
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -486,12 +486,12 @@ vhostconfig_mod()
 		$SED -i "s/DOMAIN/$DOMAIN/g" $CONFIG
 		$SED -i "s!ROOT!$SITE_DIR!g" $CONFIG
 		$SED -i "s/SERV_NAME/$serv_name/g" $CONFIG
-		if [ "$vhost_template" == "CF" ]
+		if [ "$vhost_template" == "CF" ] || [ "$vhost_template" == "cf" ]
 		then 
 			$SED -i "s/DOMAIN/$DOMAIN/g" $CONFIG_DOMAIN
 			$SED -i "s/SUBD_DOMA/$subd_doma/g" $CONFIG
 		fi
-		if [ "$vhost_template" == "LE" ]
+		if [ "$vhost_template" == "LE" ] || [ "$vhost_template" == "le" ]
 		then 
 			$SED -i "s/DOMAIN/$DOMAIN/g" $NGINX_CONFIG/$DOMAIN/http_server.conf
 			$SED -i "s/SUBD_DOMA/$subd_doma/g" $NGINX_CONFIG/$DOMAIN/ssl.conf
