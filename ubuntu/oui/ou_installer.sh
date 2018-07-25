@@ -101,7 +101,7 @@ vhostcreate_mod()
        }
 CFvhostcreate_mod()        
        {
-		if [[ $org_v == 1 ]] && [[ $vhost_template == @(CF|cf) ]]
+		if [ "$org_v" == "1" ] && [ "$vhost_template" == "CF" ] || [ "$vhost_template" == "cf" ]
 		then
 		cp $CURRENT_DIR/templates/cf/orgv1_cf.template $CONFIG
 		mkdir -p $NGINX_CONFIG/$DOMAIN
@@ -112,7 +112,7 @@ CFvhostcreate_mod()
 		mkdir -p $NGINX_CONFIG/$DOMAIN/ssl
 		chmod -R 755 $NGINX_CONFIG/$DOMAIN/ssl
 
-		elif [[ $org_v == 2 ]] && [[ $vhost_template == @(CF|cf) ]]
+		elif [ "$org_v" == "2" ] && [ "$vhost_template" == "CF" ] || [ "$vhost_template" == "cf" ]
 		then
 		cp $CURRENT_DIR/templates/cf/orgv2_cf.template $CONFIG
 		mkdir -p $NGINX_CONFIG/$DOMAIN
