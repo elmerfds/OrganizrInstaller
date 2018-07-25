@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v7.4.3-6
+version=v7.4.3-7
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
@@ -101,7 +101,7 @@ vhostcreate_mod()
        }
 CFvhostcreate_mod()        
        {
-		if [ "$org_v" == "1" ] && [ "$vhost_template" == "CF" ]
+		if [ "$org_v" == "1" ] && [ "$vhost_template" == "CF" ] || [ "$vhost_template" == "cf" ]
 		then
 		cp $CURRENT_DIR/templates/cf/orgv1_cf.template $CONFIG
 		mkdir -p $NGINX_CONFIG/$DOMAIN
@@ -112,7 +112,7 @@ CFvhostcreate_mod()
 		mkdir -p $NGINX_CONFIG/$DOMAIN/ssl
 		chmod -R 755 $NGINX_CONFIG/$DOMAIN/ssl
 
-		elif [ "$org_v" == "2" ] && [ "$vhost_template" == "CF" ]
+		elif [ "$org_v" == "2" ] && [ "$vhost_template" == "CF" ] || [ "$vhost_template" == "cf" ]
 		then
 		cp $CURRENT_DIR/templates/cf/orgv2_cf.template $CONFIG
 		mkdir -p $NGINX_CONFIG/$DOMAIN
@@ -173,7 +173,7 @@ LEvhostcreate_mod()
 			cp -a $CURRENT_DIR/config/apps/. $NGINX_APPS  		#Apps conf files
 			cp -a $CURRENT_DIR/config/le/. $NGINX_CONFIG/$DOMAIN 	#LE conf file
 
-			if [ "$org_v" == "1" ] && [ "$vhost_template" == "LE" ]
+			if [ "$org_v" == "1" ] && [ "$vhost_template" == "LE" ] || [ "$vhost_template" == "le" ]
 			then
 				LEcertbot_mod
 				if [ "$LEcert_create" == "Y" ] || [ "$LEcert_create" == "y" ]
@@ -201,7 +201,7 @@ LEvhostcreate_mod()
 						serv_name="$subd.$DOMAIN $DOMAIN"   
 				fi	
 					
-			elif [ "$org_v" == "2" ] && [ "$vhost_template" == "LE" ]
+			elif [ "$org_v" == "2" ] && [ "$vhost_template" == "LE" ] || [ "$vhost_template" == "le" ]
 			then
 				LEcertbot_mod
 				if [ "$LEcert_create" == "Y" ] || [ "$LEcert_create" == "y" ]
