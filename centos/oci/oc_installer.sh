@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr CentOS Installer
 #author: elmerfdz
-version=v1.0.0
+version=v1.0.0-1
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
 orgreq=('unzip' 'nginx' 'php-fpm' 'php-zip' 'php-sqlite3' 'php-curl' 'php-xml')
@@ -28,7 +28,7 @@ orgreq_mod() {
 		echo
 
                 echo -e "\e[1;36m> Disabling Apache if installed...\e[0m"	    
-		service hhtpd stop
+		service httpd stop
 		systemctl disable httpd
                 echo
 
