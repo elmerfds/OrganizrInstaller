@@ -1,5 +1,5 @@
 # OrganizrInstaller
-Automated install script for Organizr (github.com/causefx/Organizr). Only Ubuntu/Debian supported right now! 
+Automated install script for Organizr (github.com/causefx/Organizr). Only Ubuntu/Debian/CentOS and Windows supported right now! 
 
 ## OUI (Organizr Ubuntu Installer)
 
@@ -40,3 +40,23 @@ Automated install script for Organizr (github.com/causefx/Organizr). Only Ubuntu
 
 ### OS Architecture
 - Currently x64 bit OS only.
+
+### Powered by
+- [WNPSI](https://github.com/elmerfdz/WNPSI)
+
+## OCI (Organizr CentOS Installer) BETA
+
+![menu](https://i.imgur.com/7nSnAXl.png)
+
+### How do I run it?
+1. `sudo yum install git`
+2. `sudo git clone https://github.com/elmerfdz/OrganizrInstaller /opt/OrganizrInstaller`
+3. `cd /opt/OrganizrInstaller/centos/oci`
+4. `sudo bash oc_installer.sh`
+
+**Note:** Please make sure to run as sudo.
+
+### FAQ
+
+### Tested on version?
+- CentOS 7
