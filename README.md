@@ -34,6 +34,8 @@ Automated install script for Organizr (github.com/causefx/Organizr). Only Ubuntu
 4. Installer will ask you for the nginx install location, type in the full path as per the e.g. c:\nginx
 5. The installer will ask you to provide the password of the current user during installation, the nginx service requires that you run it under a user account instead of the 'Local System' account, if you don't then you won't be able to save and reload your nginx config.
 
+**Note:** Move the installer files to desktop and run it from there.
+
 ### Tested on?
 - Windows 10 Pro (Fall creators update)
 - Windows Server 2012 R2
