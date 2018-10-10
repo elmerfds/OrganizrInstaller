@@ -1,5 +1,5 @@
 @ECHO off
-SET owi_v=v0.9.2 Beta
+SET owi_v=v0.9.3 Beta
 title Oraganizr v2 Windows Installer %owi_v%
 COLOR 03
 ECHO      ___           ___                  
