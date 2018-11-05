@@ -4,6 +4,8 @@ owi = Organizr v1 installer (fresh install of Nginx + PHP + Org v1 only)
 
 o2wi = Organizr v2 Beta installer (fresh install of Nginx + PHP + Org v2 only)
 
+o2wi-ssl = Organizr v2 Beta installer with SSL [LE certs] (fresh install of Nginx + PHP + Org v2 only)
+
 Scripts will be merged later before v2 release.
 
 ## OWI (Organizr Windows Installer) BETA
