@@ -123,7 +123,6 @@ ECHO ####################################
 ECHO Moving WIN-ACME to destination
 ECHO ####################################
 ECHO.
-MOVE %~dp0nginx-* winacme >nul 2>&1
 ROBOCOPY %~dp0winacme %nginx_loc%\winacme /E /MOVE /NFL /NDL /NJH /nc /ns /np
 
 
@@ -183,6 +182,7 @@ ECHO Updating Nginx and PHP config
 ECHO ####################################
 ECHO.
 COPY %~dp0config\nginx.conf %nginx_loc%\conf\nginx.conf
+COPY %~dp0config\ssl.conf %nginx_loc%\conf\ssl.conf
 powershell -command "(Get-Content c:\nginx\conf\nginx.conf).replace('[domain_name]', '%domain_name%') | Set-Content c:\nginx\conf\nginx.conf"
 mkdir %nginx_loc%\www\organizr\db
 CD /d %~dp0
