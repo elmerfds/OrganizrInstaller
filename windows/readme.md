@@ -1,9 +1,10 @@
 Note: Run scripts as admin
 
-owi = Organizr v1 installer (fresh install of Nginx + PHP + Org v1 only)
+owi = Organizr v1 installer (Nginx + PHP + Org v1 only)
 
 o2wi = Organizr v2 Beta installer 
-       - fresh install of Nginx 
+
+       - Nginx 
 
        - PHP
 
