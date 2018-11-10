@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v7.4.4-0
+version=v7.5.0-0
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML' 'PHP XMLrpc')
@@ -187,18 +187,16 @@ LEvhostcreate_mod()
 			
 					elif [ "$LEcert_type" == "S" ] || [ "$LEcert_type" == "s" ]
 					then
-						subd='www'
-						subd_doma="$subd.$DOMAIN"
-						serv_name="$subd.$DOMAIN $DOMAIN"   
+						subd_doma="$DOMAIN"
+						serv_name="$DOMAIN"   
 						#Create LE Certbot renewal cron job
 					fi
 
 				elif [ "$LEcert_create" == "N" ] || [ "$LEcert_create" == "n" ]
 				then
 						cp $CURRENT_DIR/templates/le/orgv1_le_no_ssl.template $CONFIG
-						subd='www'
-						subd_doma="$subd.$DOMAIN"
-						serv_name="$subd.$DOMAIN $DOMAIN"   
+						subd_doma="$DOMAIN"
+						serv_name="$DOMAIN"   
 				fi	
 					
 			elif [ "$org_v" == "2" ] && [ "$vhost_template" == "LE" ] || [ "$vhost_template" == "le" ]
@@ -215,17 +213,15 @@ LEvhostcreate_mod()
 							
 					elif [ "$LEcert_type" == "S" ] || [ "$LEcert_type" == "s" ]
 					then
-						subd='www'
-						subd_doma="$subd.$DOMAIN"
-						serv_name="$subd.$DOMAIN $DOMAIN" 
+						subd_doma="$DOMAIN"
+						serv_name="$DOMAIN" 
 					fi
 
 				elif [ "$LEcert_create" == "N" ] || [ "$LEcert_create" == "n" ]
 				then
 						cp $CURRENT_DIR/templates/le/orgv2_le_no_ssl.template $CONFIG
-						subd='www'
-						subd_doma="$subd.$DOMAIN"
-						serv_name="$subd.$DOMAIN $DOMAIN"   				
+						subd_doma="$DOMAIN"
+						serv_name="$DOMAIN"   				
 				fi		
 			fi
 		fi	
@@ -263,7 +259,7 @@ LEcertbot_mod()
 				if [ "$debian_detect" == "Debian" ] || [ "$debian_detect" == "Raspbian" ];
 				then
 					apt-get install python3-pip -y
-					sudo pip3 install certbot
+					apt-get install python-certbot-nginx -t stretch-backports -y
 				else
 					##Install certbot packages
 					apt-get install software-properties-common -y
@@ -341,7 +337,7 @@ LEcertbot_mod()
 			
 			elif [ "$LEcert_type" == "S" ] || [ "$LEcert_type" == "s" ]
 			then
-				certbot certonly --webroot --agree-tos --no-eff-email --email $email_var -w /var/www/letsencrypt -d www.$DOMAIN -d $DOMAIN
+				certbot certonly --webroot --agree-tos --no-eff-email --email $email_var -w /var/www/letsencrypt -d $DOMAIN -d $DOMAIN
 				#Create LE Certbot renewal cron job
 				{ crontab -l 2>/dev/null; echo "20 3 * * * certbot renew --noninteractive --renew-hook "'"/etc/init.d/nginx reload"'""; } | crontab -
 			fi
