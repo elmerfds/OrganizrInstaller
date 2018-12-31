@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr CentOS Installer
 #author: elmerfdz
-version=v1.0.0-2
+version=v1.0.0-3
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML' 'PHP XMLrpc')
 orgreq=('unzip' 'nginx' 'php-fpm' 'php-zip' 'php-sqlite3' 'php-curl' 'php-xml' 'php-xmlrpc')
@@ -35,6 +35,10 @@ orgreq_mod() {
                 echo -e "\e[1;36m> Adding CentOS EPEL package...\e[0m"
 		yum -y install epel-release
 		echo
+
+                echo -e "\e[1;36m> Adding WGET package...\e[0m"
+		yum -y install wget
+		echo		
 
                 echo -e "\e[1;36m> Adding Nginx source repo...\e[0m"
 		cp $CURRENT_DIR/config/nginx/nginx.repo /etc/yum.repos.d/nginx.repo
