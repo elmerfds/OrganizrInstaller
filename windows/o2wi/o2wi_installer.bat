@@ -267,7 +267,7 @@ NSSM restart PHP
 
 ECHO.
 ECHO ####################################
-ECHO Downloading Organizr v2 BETA
+ECHO Downloading Organizr v2 
 ECHO ####################################
 ECHO.
 cscript dl_config\5_orgdl.vbs //Nologo
