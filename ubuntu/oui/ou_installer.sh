@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v7.5.1-0
+version=v7.5.1-1
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML' 'PHP XMLrpc')
@@ -395,7 +395,7 @@ orgdl_mod()
 		echo
 		echo -e "\e[1;36m> which version of Organizr do you want to install?.\e[0m" 
 		echo -e "\e[1;36m[1] \e[0mOrganizr v1"
-		echo -e "\e[1;36m[2] \e[0mOrganizr v2 [BETA]" 
+		echo -e "\e[1;36m[2] \e[0mOrganizr v2" 
 		echo 
 		printf '\e[1;36m> \e[0m'
 		read -r org_v
@@ -410,8 +410,8 @@ orgdl_mod()
 		
 		elif [ $org_v = "2" ]
 		then 
-		echo -e "\e[1;36m[2a] \e[0mMaster [Coming Soon]"
-		echo -e "\e[1;36m[2b] \e[0mDev [BETA here]"
+		echo -e "\e[1;36m[2a] \e[0mMaster"
+		echo -e "\e[1;36m[2b] \e[0mDev"
 		fi
 
 		echo
