@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v7.5.0-0
+version=v7.5.1-0
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML' 'PHP XMLrpc')
@@ -22,8 +22,8 @@ dlvar=0
 cred_folder='/etc/letsencrypt/.secrets/certbot'
 LE_WEB='/var/www/letsencrypt/.well-known/acme-challenge'
 debian_detect=$(cut -d: -f2 < <(lsb_release -i)| xargs)
+debian_codename_detect=$(cut -d: -f2 < <(lsb_release -c)| xargs)
 
-#Modules
 #Organizr Requirement Module
 orgreq_mod() 
 	{ 
@@ -258,8 +258,18 @@ LEcertbot_mod()
 				/etc/init.d/nginx reload
 				if [ "$debian_detect" == "Debian" ] || [ "$debian_detect" == "Raspbian" ];
 				then
-					apt-get install python3-pip -y
-					apt-get install python-certbot-nginx -t stretch-backports -y
+					if [ "$debian_codename_detect" == "stretch" ];
+					then
+						deb http://ftp.debian.org/debian stretch-backports main
+						apt-get update					 
+						apt-get install python3-pip -y
+						apt-get install python-certbot-nginx -t stretch-backports -y
+					elif [ "$debian_codename_detect" == "jessie" ];	
+					then
+						deb http://ftp.debian.org/debian jessie-backports main
+						apt-get update
+						wget https://dl.eff.org/certbot-auto -P /opt
+						chmod a+x /opt/certbot-auto
 				else
 					##Install certbot packages
 					apt-get install software-properties-common -y
@@ -441,13 +451,13 @@ orgdl_mod()
 
 		elif [ $dlvar = "2a" ]
 		then
-		dlbranch=Orgv2-Dev
-		zipbranch=v2-develop.zip
-		zipextfname=Organizr-2-develop
+		dlbranch=v2-master
+		zipbranch=v2-master.zip
+		zipextfname=Organizr-2-master
 
 		elif [ $dlvar = "2b" ]
 		then
-		dlbranch=Orgv2-Dev
+		dlbranch=v2-develop
 		zipbranch=v2-develop.zip
 		zipextfname=Organizr-2-develop
 		fi
