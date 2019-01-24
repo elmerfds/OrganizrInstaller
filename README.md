@@ -28,6 +28,7 @@ Automated install script for Organizr (github.com/causefx/Organizr). Only Ubuntu
 ![menu](https://i.imgur.com/N6u9X7d.png)
 
 ### How do I run it?
+
 1. Clone/Download the repo and extract the zip file to your **Desktop**.
 2. Navigate to \OrganizrInstaller\windows\o2wi OR \OrganizrInstaller\windows\owi (for OrganizrV1) . 
 3. Right-click on 'owi_installer.bat' and click on 'Run as administrator'
