@@ -1,7 +1,8 @@
 #!/bin/bash -e
 #Organizr CentOS Installer
 #author: elmerfdz
-version=v1.0.0-3
+version=v1.0.0-4
+
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML' 'PHP XMLrpc')
 orgreq=('unzip' 'nginx' 'php-fpm' 'php-zip' 'php-sqlite3' 'php-curl' 'php-xml' 'php-xmlrpc')
@@ -204,7 +205,7 @@ orgdl_mod()
 		echo
 		echo -e "\e[1;36m> which version of Organizr do you want to install?.\e[0m" 
 		echo -e "\e[1;36m[1] \e[0mOrganizr v1"
-		echo -e "\e[1;36m[2] \e[0mOrganizr v2 [BETA]" 
+		echo -e "\e[1;36m[2] \e[0mOrganizr v2" 
 		echo 
 		printf '\e[1;36m> \e[0m'
 		read -r org_v
@@ -219,8 +220,8 @@ orgdl_mod()
 		
 		elif [ $org_v = "2" ]
 		then 
-		echo -e "\e[1;36m[2a] \e[0mMaster [Coming Soon]"
-		echo -e "\e[1;36m[2b] \e[0mDev [BETA here]"
+		echo -e "\e[1;36m[2a] \e[0mMaster"
+		echo -e "\e[1;36m[2b] \e[0mDev"
 		fi
 
 		echo
@@ -260,13 +261,13 @@ orgdl_mod()
 
 		elif [ $dlvar = "2a" ]
 		then
-		dlbranch=Orgv2-Dev
-		zipbranch=v2-develop.zip
-		zipextfname=Organizr-2-develop
+		dlbranch=v2-master
+		zipbranch=v2-master.zip
+		zipextfname=Organizr-2-master
 
 		elif [ $dlvar = "2b" ]
 		then
-		dlbranch=Orgv2-Dev
+		dlbranch=v2-develop
 		zipbranch=v2-develop.zip
 		zipextfname=Organizr-2-develop
 		fi
