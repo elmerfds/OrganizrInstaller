@@ -1,5 +1,5 @@
 @ECHO off
-SET owi_v=v1.6.0
+SET owi_v=v1.6.1
 title Oraganizr v2 Windows Installer %owi_v% w/ WIN-ACME support (LE CERTS GEN) 
 COLOR 03
 ECHO      ___           ___                  
@@ -26,8 +26,8 @@ ECHO.
 pause
 ECHO.
 
-SET nginx_v=1.14.0
-SET php_v=7.2.9
+SET nginx_v=1.14.2
+SET php_v=7.3.0
 SET nssm_v=2.24-101
 SET vcr_v=2017
 SET win-acme_v=1.9.12.1
@@ -271,9 +271,9 @@ ECHO Downloading Organizr v2
 ECHO ####################################
 ECHO.
 cscript dl_config\5_orgdl.vbs //Nologo
-powershell.exe -nologo -noprofile -command "& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::ExtractToDirectory('Organizr-2-develop.zip', '.'); }"
-MOVE %~dp0Organizr-2-develop organizr >nul 2>&1
-DEL /s /q %~dp0Organizr-2-develop.zip
+powershell.exe -nologo -noprofile -command "& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::ExtractToDirectory('Organizr-2-master.zip', '.'); }"
+MOVE %~dp0Organizr-2-master organizr >nul 2>&1
+DEL /s /q %~dp0Organizr-2-master.zip
 ROBOCOPY organizr %nginx_loc%\www\organizr\html /E /MOVE /NFL /NDL /NJH /nc /ns /np
 REM RMDIR /s /q organizr
 
