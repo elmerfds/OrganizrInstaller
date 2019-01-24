@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr CentOS Installer
 #author: elmerfdz
-version=v1.0.0-2
+version=v1.0.1-0
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML' 'PHP XMLrpc')
 orgreq=('unzip' 'nginx' 'php-fpm' 'php-zip' 'php-sqlite3' 'php-curl' 'php-xml' 'php-xmlrpc')
@@ -256,13 +256,13 @@ orgdl_mod()
 
 		elif [ $dlvar = "2a" ]
 		then
-		dlbranch=Orgv2-Dev
-		zipbranch=v2-develop.zip
-		zipextfname=Organizr-2-develop
+		dlbranch=v2-master
+		zipbranch=v2-master.zip
+		zipextfname=Organizr-2-master
 
 		elif [ $dlvar = "2b" ]
 		then
-		dlbranch=Orgv2-Dev
+		dlbranch=v2-develop
 		zipbranch=v2-develop.zip
 		zipextfname=Organizr-2-develop
 		fi
