@@ -41,7 +41,7 @@ Note: Move the installer files to desktop and run it from there.
 - Windows 10 recommended but it should work on Windows 7 if you have the latest version of PowerShell
 
 ### Tested on?
-- Windows 10 Pro (Fall creators update)
+- Windows 10 Pro
 - Windows Server 2012 R2
 
 ### OS Architecture

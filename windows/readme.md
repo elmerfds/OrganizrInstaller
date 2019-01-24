@@ -2,7 +2,7 @@ Note: Run scripts as admin
 
 owi = Organizr v1 installer (Nginx + PHP + Org v1 only)
 
-o2wi = Organizr v2 Beta installer 
+o2wi = Organizr v2 installer
 
        - Nginx 
 
@@ -12,7 +12,7 @@ o2wi = Organizr v2 Beta installer
 
        - Optional: create SSL nginx site and generate LE SSL certs
 
-## OWI (Organizr Windows Installer) BETA
+## OWI (Organizr Windows Installer)
 
 
 ![menu](https://i.imgur.com/N6u9X7d.png)
@@ -27,11 +27,11 @@ o2wi = Organizr v2 Beta installer
 Note: Move the installer files to desktop and run it from there.
 
 ### Requirements
-- Latest version of PowerShell, if you're on Windows 7/Win Server 2008 [https://social.technet.microsoft.com/wiki/contents/articles/21016.how-to-install-windows-powershell-4-0.aspx]
-- Windows 10 recommended but it should work on Windows 7 if you have latest version of PowerShell
+- Latest version of PowerShell, if you're on Windows 7/Win Server 2008 [download](https://social.technet.microsoft.com/wiki/contents/articles/21016.how-to-install-windows-powershell-4-0.aspx)
+- Windows 10 recommended but it should work on Windows 7 if you have the latest version of PowerShell
 
 ### Tested on?
-- Windows 10 Pro (Fall creators update)
+- Windows 10 Pro
 - Windows Server 2012 R2
 
 ### OS Architecture
