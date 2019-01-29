@@ -545,7 +545,7 @@ vhostconfig_mod()
 			$SED -i "s/DOMAIN/$DOMAIN/g" $NGINX_CONFIG/$DOMAIN/http_server.conf
 			$SED -i "s/SUBD_DOMA/$subd_doma/g" $NGINX_CONFIG/$DOMAIN/ssl.conf
 		fi
-		phpv=$(ls -t /etc/php | head -1)
+		#phpv=$(ls -t /etc/php-fpm.d | head -1)
 		$SED -i "s/VER/$phpv/g" $NGINX_CONFIG/$DOMAIN/phpblock.conf
 
 		#Delete default.conf nginx site
@@ -557,7 +557,7 @@ vhostconfig_mod()
 		rm -r -f $NGINX_SITES_ENABLED/default
 			
 		# reload Nginx to pull in new config
-		/etc/init.d/nginx reload
+		nginx -s reload
         }
 
 #Add site to hosts for local access
