@@ -297,7 +297,7 @@ LEcertbot_mod()
 			
 			#Configuring permissions on LE web folder
 			chmod -R 775 $LE_WEB
-			chown -R www-data:$SUDO_USER $LE_WEB
+			chown -R nginx:$(logname) $LE_WEB
 
 			#Copy LE TEMP conf file so that LE can connect to server and continue to generate the certs
 			cp $CURRENT_DIR/templates/le/le_temp.template $CONFIG
@@ -525,7 +525,7 @@ orgdl_mod()
 		fi
 		#Configuring permissions on web folder
 		chmod -R 775 $instvar
-		chown -R www-data:$SUDO_USER $instvar
+		chown -R nginx:$(logname) $instvar
         }
 #Nginx vhost config
 vhostconfig_mod()
