@@ -84,7 +84,7 @@ vhostcreate_mod()
 		echo
 		printf '\e[1;36m- \e[0m'
 		read -r vhost_template
-		vhost_template=${vhost_template:-CF}
+		vhost_template=${vhost_template:-LE}
 		
 		CFvhostcreate_mod
 		LEvhostcreate_mod

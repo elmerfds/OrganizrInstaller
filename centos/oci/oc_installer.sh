@@ -533,20 +533,10 @@ vhostconfig_mod()
 		#Add in your domain name to your site nginx conf files
 		SITE_DIR=`echo $instvar`
 		$SED -i "s/DOMAIN/$DOMAIN/g" $CONFIG
-		$SED -i "s!ROOT!$SITE_DIR!g" $CONFIG
-		$SED -i "s/SERV_NAME/$serv_name/g" $CONFIG
-		if [ "$vhost_template" == "CF" ] || [ "$vhost_template" == "cf" ]
-		then 
-			$SED -i "s/DOMAIN/$DOMAIN/g" $CONFIG_DOMAIN
-			$SED -i "s/SUBD_DOMA/$subd_doma/g" $CONFIG
-		fi
-		if [ "$vhost_template" == "LE" ] || [ "$vhost_template" == "le" ]
-		then 
-			$SED -i "s/DOMAIN/$DOMAIN/g" $NGINX_CONFIG/$DOMAIN/http_server.conf
-			$SED -i "s/SUBD_DOMA/$subd_doma/g" $NGINX_CONFIG/$DOMAIN/ssl.conf
-		fi
-		#phpv=$(ls -t /etc/php-fpm.d | head -1)
-		#$SED -i "s/VER/$phpv/g" $NGINX_CONFIG/$DOMAIN/phpblock.conf
+		$SED -i "s/ROOT/$SITE_DIR/g" $CONFIG
+		$SED -i "s/DOMAIN/$DOMAIN/g" $CONFIG_DOMAIN
+		#phpv=$(ls -t /etc/php | head -1)
+		$SED -i "s/VER/$phpv/g" $NGINX_CONFIG/phpblock.conf
 
 		#Delete default.conf nginx site
 		mkdir -p $tmp/bk/nginx_default_site
