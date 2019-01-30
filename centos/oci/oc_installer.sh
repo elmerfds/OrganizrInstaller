@@ -300,7 +300,7 @@ vhostconfig_mod()
 		#Add in your domain name to your site nginx conf files
 		SITE_DIR=`echo $instvar`
 		$SED -i "s/DOMAIN/$DOMAIN/g" $CONFIG
-		$SED -i "s/ROOT/$SITE_DIR/g" $CONFIG
+		$SED -i "s!ROOT!$SITE_DIR!g" $CONFIG
 		$SED -i "s/DOMAIN/$DOMAIN/g" $CONFIG_DOMAIN
 		#phpv=$(ls -t /etc/php | head -1)
 		$SED -i "s/VER/$phpv/g" $NGINX_CONFIG/phpblock.conf
