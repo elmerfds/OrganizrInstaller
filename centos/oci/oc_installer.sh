@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr CentOS Installer
 #author: elmerfdz
-version=v1.0.0-4
+version=v1.0.0-5
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML' 'PHP XMLrpc')
@@ -300,18 +300,18 @@ vhostconfig_mod()
 		#Add in your domain name to your site nginx conf files
 		SITE_DIR=`echo $instvar`
 		$SED -i "s/DOMAIN/$DOMAIN/g" $CONFIG
-		$SED -i "s/ROOT/$SITE_DIR/g" $CONFIG
+		$SED -i "s!ROOT!$SITE_DIR!g" $CONFIG
 		$SED -i "s/DOMAIN/$DOMAIN/g" $CONFIG_DOMAIN
 		#phpv=$(ls -t /etc/php | head -1)
 		$SED -i "s/VER/$phpv/g" $NGINX_CONFIG/phpblock.conf
 
 		#Delete default.conf nginx site
 		mkdir -p $tmp/bk/nginx_default_site
- 		if [ -e $NGINX_SITES/default ] 
-		then cp -a $NGINX_SITES/default $tmp/bk/nginx_default_site
+ 		if [ -e $NGINX_LOC/conf.d/default.conf ] 
+		then cp -a $NGINX_LOC/conf.d/default.conf $tmp/bk/nginx_default_site
 		fi			
-		rm -r -f $NGINX_SITES/default
-		rm -r -f $NGINX_SITES_ENABLED/default
+		rm -r -f $NGINX_LOC/conf.d/default.conf
+		#rm -r -f $NGINX_SITES_ENABLED/conf.d/default.conf
 			
 		# reload Nginx to pull in new config
 		nginx -s reload
