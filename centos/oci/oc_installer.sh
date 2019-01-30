@@ -28,10 +28,10 @@ orgreq_mod() {
 		yum update
 		echo
 
-                echo -e "\e[1;36m> Disabling Apache if installed...\e[0m"	    
-		service httpd stop
-		systemctl disable httpd
-                echo
+        #        echo -e "\e[1;36m> Disabling Apache if installed...\e[0m"	    
+		#service httpd stop
+		#systemctl disable httpd
+        #        echo
 
                 echo -e "\e[1;36m> Adding CentOS EPEL package...\e[0m"
 		yum -y install epel-release
@@ -300,7 +300,7 @@ vhostconfig_mod()
 		#Add in your domain name to your site nginx conf files
 		SITE_DIR=`echo $instvar`
 		$SED -i "s/DOMAIN/$DOMAIN/g" $CONFIG
-		$SED -i "s/ROOT/$SITE_DIR/g" $CONFIG
+		$SED -i 's/ROOT/$SITE_DIR/g' $CONFIG
 		$SED -i "s/DOMAIN/$DOMAIN/g" $CONFIG_DOMAIN
 		#phpv=$(ls -t /etc/php | head -1)
 		$SED -i "s/VER/$phpv/g" $NGINX_CONFIG/phpblock.conf
