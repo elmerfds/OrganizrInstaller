@@ -401,7 +401,7 @@ oui_updater_mod()
                 	echo -e "\e[1;36mScript updated, reloading now...\e[0m"
 			sleep 3s
 			chmod +x $BASH_SOURCE
-			exec ./ou_installer.sh
+			exec ./oc_installer.sh
 	}
 #Utilities sub-menu
 uti_menus() 
