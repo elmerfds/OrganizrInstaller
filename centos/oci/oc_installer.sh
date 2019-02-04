@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr CentOS Installer
 #author: elmerfdz
-version=v1.3.0-0-super_exp
+version=v1.3.0-1-super_exp
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML' 'PHP XMLrpc')
@@ -239,8 +239,8 @@ LEvhostcreate_mod()
 				fi
 			fi	
 		
-			mkdir -p $NGINX_APPS 								#Apps folder
-			mkdir -p $NGINX_CONFIG/$DOMAIN
+			mkdir -p "$NGINX_APPS" 								#Apps folder
+			mkdir -p "$NGINX_CONFIG/$DOMAIN"
 			cp -a $CURRENT_DIR/config/apps/. $NGINX_APPS  		#Apps conf files
 			cp -a $CURRENT_DIR/config/le/. $NGINX_CONFIG/$DOMAIN 	#LE conf file
 
