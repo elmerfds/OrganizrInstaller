@@ -1,11 +1,11 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v7.4.3-9
+version=v7.5.1-2
 
 #Org Requirements
-orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
-orgreq=('unzip' 'nginx' 'php-fpm' 'php-zip' 'php-sqlite3' 'php-curl' 'php-xml')
+orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML' 'PHP XMLrpc')
+orgreq=('unzip' 'nginx' 'php-fpm' 'php-zip' 'php-sqlite3' 'php-curl' 'php-xml' 'php-xmlrpc')
 
 
 #Nginx config variables
@@ -22,8 +22,8 @@ dlvar=0
 cred_folder='/etc/letsencrypt/.secrets/certbot'
 LE_WEB='/var/www/letsencrypt/.well-known/acme-challenge'
 debian_detect=$(cut -d: -f2 < <(lsb_release -i)| xargs)
+debian_codename_detect=$(cut -d: -f2 < <(lsb_release -c)| xargs)
 
-#Modules
 #Organizr Requirement Module
 orgreq_mod() 
 	{ 
@@ -84,7 +84,7 @@ vhostcreate_mod()
 		echo
 		printf '\e[1;36m- \e[0m'
 		read -r vhost_template
-		vhost_template=${vhost_template:-CF}
+		vhost_template=${vhost_template:-LE}
 		
 		CFvhostcreate_mod
 		LEvhostcreate_mod
@@ -187,18 +187,16 @@ LEvhostcreate_mod()
 			
 					elif [ "$LEcert_type" == "S" ] || [ "$LEcert_type" == "s" ]
 					then
-						subd='www'
-						subd_doma="$subd.$DOMAIN"
-						serv_name="$subd.$DOMAIN $DOMAIN"   
+						subd_doma="$DOMAIN"
+						serv_name="$DOMAIN"   
 						#Create LE Certbot renewal cron job
 					fi
 
 				elif [ "$LEcert_create" == "N" ] || [ "$LEcert_create" == "n" ]
 				then
 						cp $CURRENT_DIR/templates/le/orgv1_le_no_ssl.template $CONFIG
-						subd='www'
-						subd_doma="$subd.$DOMAIN"
-						serv_name="$subd.$DOMAIN $DOMAIN"   
+						subd_doma="$DOMAIN"
+						serv_name="$DOMAIN"   
 				fi	
 					
 			elif [ "$org_v" == "2" ] && [ "$vhost_template" == "LE" ] || [ "$vhost_template" == "le" ]
@@ -215,17 +213,15 @@ LEvhostcreate_mod()
 							
 					elif [ "$LEcert_type" == "S" ] || [ "$LEcert_type" == "s" ]
 					then
-						subd='www'
-						subd_doma="$subd.$DOMAIN"
-						serv_name="$subd.$DOMAIN $DOMAIN" 
+						subd_doma="$DOMAIN"
+						serv_name="$DOMAIN" 
 					fi
 
 				elif [ "$LEcert_create" == "N" ] || [ "$LEcert_create" == "n" ]
 				then
 						cp $CURRENT_DIR/templates/le/orgv2_le_no_ssl.template $CONFIG
-						subd='www'
-						subd_doma="$subd.$DOMAIN"
-						serv_name="$subd.$DOMAIN $DOMAIN"   				
+						subd_doma="$DOMAIN"
+						serv_name="$DOMAIN"   				
 				fi		
 			fi
 		fi	
@@ -262,8 +258,19 @@ LEcertbot_mod()
 				/etc/init.d/nginx reload
 				if [ "$debian_detect" == "Debian" ] || [ "$debian_detect" == "Raspbian" ];
 				then
-					apt-get install python3-pip -y
-					sudo pip3 install certbot
+					if [ "$debian_codename_detect" == "stretch" ];
+					then
+						deb http://ftp.debian.org/debian stretch-backports main
+						apt-get update					 
+						apt-get install python3-pip -y
+						apt-get install python-certbot-nginx -t stretch-backports -y
+					elif [ "$debian_codename_detect" == "jessie" ];	
+					then
+						deb http://ftp.debian.org/debian jessie-backports main
+						apt-get update
+						wget https://dl.eff.org/certbot-auto -P /opt
+						chmod a+x /opt/certbot-auto
+					fi	
 				else
 					##Install certbot packages
 					apt-get install software-properties-common -y
@@ -341,7 +348,7 @@ LEcertbot_mod()
 			
 			elif [ "$LEcert_type" == "S" ] || [ "$LEcert_type" == "s" ]
 			then
-				certbot certonly --webroot --agree-tos --no-eff-email --email $email_var -w /var/www/letsencrypt -d www.$DOMAIN -d $DOMAIN
+				certbot certonly --webroot --agree-tos --no-eff-email --email $email_var -w /var/www/letsencrypt -d $DOMAIN -d $DOMAIN
 				#Create LE Certbot renewal cron job
 				{ crontab -l 2>/dev/null; echo "20 3 * * * certbot renew --noninteractive --renew-hook "'"/etc/init.d/nginx reload"'""; } | crontab -
 			fi
@@ -389,7 +396,7 @@ orgdl_mod()
 		echo
 		echo -e "\e[1;36m> which version of Organizr do you want to install?.\e[0m" 
 		echo -e "\e[1;36m[1] \e[0mOrganizr v1"
-		echo -e "\e[1;36m[2] \e[0mOrganizr v2 [BETA]" 
+		echo -e "\e[1;36m[2] \e[0mOrganizr v2" 
 		echo 
 		printf '\e[1;36m> \e[0m'
 		read -r org_v
@@ -404,8 +411,8 @@ orgdl_mod()
 		
 		elif [ $org_v = "2" ]
 		then 
-		echo -e "\e[1;36m[2a] \e[0mMaster [Coming Soon]"
-		echo -e "\e[1;36m[2b] \e[0mDev [BETA here]"
+		echo -e "\e[1;36m[2a] \e[0mMaster"
+		echo -e "\e[1;36m[2b] \e[0mDev"
 		fi
 
 		echo
@@ -445,13 +452,13 @@ orgdl_mod()
 
 		elif [ $dlvar = "2a" ]
 		then
-		dlbranch=Orgv2-Dev
-		zipbranch=v2-develop.zip
-		zipextfname=Organizr-2-develop
+		dlbranch=v2-master
+		zipbranch=v2-master.zip
+		zipextfname=Organizr-2-master
 
 		elif [ $dlvar = "2b" ]
 		then
-		dlbranch=Orgv2-Dev
+		dlbranch=v2-develop
 		zipbranch=v2-develop.zip
 		zipextfname=Organizr-2-develop
 		fi
