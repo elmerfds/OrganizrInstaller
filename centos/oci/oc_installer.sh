@@ -96,9 +96,9 @@ selinux_mod() {
         echo -e "\e[1;36m> Configuring SELinux settings...\e[0m"
 		for run in {1..2}
 		do
-		-u root semanage fcontext -a -t httpd_sys_content_t '/var/www(/.*)?' >/dev/null 2>&1
-		-u root semanage fcontext -a -t httpd_sys_rw_content_t '/var/www(/.*)?'		
-		-u root restorecon -Rv /var/www >/dev/null
+		semanage fcontext -a -t httpd_sys_content_t '/var/www(/.*)?' >/dev/null 2>&1
+		semanage fcontext -a -t httpd_sys_rw_content_t '/var/www(/.*)?'		
+		restorecon -Rv /var/www >/dev/null
 		systemctl restart nginx
 		systemctl restart php-fpm
 		done
