@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr CentOS Installer
 #author: elmerfdz
-version=v1.0.0-7
+version=v1.1.0-0
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML' 'PHP XMLrpc')
@@ -22,30 +22,38 @@ dlvar=0
 #Modules
 #Organizr Requirement Module
 orgreq_mod() { 
-                echo
-                echo -e "\e[1;36m> Updating apt repositories...\e[0m"
+        echo
+        echo -e "\e[1;36m> Updating apt repositories...\e[0m"
 		echo
 		yum update
 		echo
 
-        #        echo -e "\e[1;36m> Disabling Apache if installed...\e[0m"	    
+        echo -e "\e[1;36m> Adding SEMANAGE (policycoreutils-python) package...\e[0m"
+		yum -y install policycoreutils-python
+		echo
+
+        echo -e "\e[1;36m> Adding WHICH  package...\e[0m"
+		yum -y install which
+		echo					
+
+        #echo -e "\e[1;36m> Disabling Apache if installed...\e[0m"	    
 		#service httpd stop
 		#systemctl disable httpd
         #        echo
 
-                echo -e "\e[1;36m> Adding CentOS EPEL package...\e[0m"
+        echo -e "\e[1;36m> Adding CentOS EPEL package...\e[0m"
 		yum -y install epel-release
 		echo
 
-                echo -e "\e[1;36m> Adding WGET package...\e[0m"
+        echo -e "\e[1;36m> Adding WGET package...\e[0m"
 		yum -y install wget
 		echo		
 
-                echo -e "\e[1;36m> Adding Nginx source repo...\e[0m"
+        echo -e "\e[1;36m> Adding Nginx source repo...\e[0m"
 		cp $CURRENT_DIR/config/nginx/nginx.repo /etc/yum.repos.d/nginx.repo
 		echo
 
-                echo -e "\e[1;36m> Adding PHP7+ repositories & Yum utils...\e[0m"
+        echo -e "\e[1;36m> Adding PHP7+ repositories & Yum utils...\e[0m"
 		yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 		yum -y install http://rpms.remirepo.net/enterprise/remi-release-7.rpm
 		yum -y install yum-utils
@@ -84,16 +92,22 @@ orgreq_mod() {
 
 #SELinux config
 selinux_mod() { 
-                echo
-                echo -e "\e[1;36m> Configuring SELinux settings...\e[0m"
+        echo
+        echo -e "\e[1;36m> Configuring SELinux settings...\e[0m"
 		for run in {1..2}
 		do
-		sudo -u root semanage fcontext -a -t httpd_sys_content_t '/var/www(/.*)?' >/dev/null 2>&1
-		sudo -u root semanage fcontext -a -t httpd_sys_rw_content_t '/var/www(/.*)?'		
-		sudo -u root restorecon -Rv /var/www >/dev/null
+		-u root semanage fcontext -a -t httpd_sys_content_t '/var/www(/.*)?' >/dev/null 2>&1
+		-u root semanage fcontext -a -t httpd_sys_rw_content_t '/var/www(/.*)?'		
+		-u root restorecon -Rv /var/www >/dev/null
 		systemctl restart nginx
 		systemctl restart php-fpm
 		done
+		echo
+        echo -e "\e[1;36m> Enabling site access over local network...\e[0m"
+		firewall-cmd --permanent --zone=public --add-service=http
+		firewall-cmd --permanent --zone=public --add-service=https
+		firewall-cmd --reload
+		echo
 		
                 }
 
@@ -300,7 +314,7 @@ vhostconfig_mod()
 		#Add in your domain name to your site nginx conf files
 		SITE_DIR=`echo $instvar`
 		$SED -i "s/DOMAIN/$DOMAIN/g" $CONFIG
-		$SED -i "s!ROOT!$SITE_DIR!g" $CONFIG
+		$SED -i "s|ROOT|$SITE_DIR|g" $CONFIG
 		$SED -i "s/DOMAIN/$DOMAIN/g" $CONFIG_DOMAIN
 		#phpv=$(ls -t /etc/php | head -1)
 		$SED -i "s/VER/$phpv/g" $NGINX_CONFIG/phpblock.conf
@@ -320,7 +334,7 @@ vhostconfig_mod()
 #Add site to hosts for local access
 addsite_to_hosts_mod()
         {
-		sudo echo "127.0.0.1 $DOMAIN" >> /etc/hosts
+		echo "127.0.0.1 $DOMAIN" >> /etc/hosts
 	}
 
 #Org Install info
