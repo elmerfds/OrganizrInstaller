@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr CentOS Installer
 #author: elmerfdz
-version=v1.3.0-3-super_exp
+version=v1.3.0-4-super_exp
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML' 'PHP XMLrpc')
