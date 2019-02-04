@@ -104,8 +104,11 @@ selinux_mod() {
 		done
 		echo
         echo -e "\e[1;36m> Enabling site access over local network...\e[0m"
+		echo -e "\e[1;36m> - Enabling  HTTP service\e[0m"
 		firewall-cmd --permanent --zone=public --add-service=http
+		echo -e "\e[1;36m> - Enabling  HTTPS service\e[0m"
 		firewall-cmd --permanent --zone=public --add-service=https
+		echo -e "\e[1;36m> - Reload firewall-cmd\e[0m"		
 		firewall-cmd --reload
 		echo
 		
