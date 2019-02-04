@@ -1,10 +1,11 @@
 #!/bin/bash -e
 #Organizr CentOS Installer
 #author: elmerfdz
-version=v1.0.0-1
+version=v1.1.0-0
+
 #Org Requirements
-orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML')
-orgreq=('unzip' 'nginx' 'php-fpm' 'php-zip' 'php-sqlite3' 'php-curl' 'php-xml')
+orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML' 'PHP XMLrpc')
+orgreq=('unzip' 'nginx' 'php-fpm' 'php-zip' 'php-sqlite3' 'php-curl' 'php-xml' 'php-xmlrpc')
 
 
 #Nginx config variables
@@ -21,26 +22,38 @@ dlvar=0
 #Modules
 #Organizr Requirement Module
 orgreq_mod() { 
-                echo
-                echo -e "\e[1;36m> Updating apt repositories...\e[0m"
+        echo
+        echo -e "\e[1;36m> Updating apt repositories...\e[0m"
 		echo
 		yum update
 		echo
 
-                echo -e "\e[1;36m> Disabling Apache if installed...\e[0m"	    
-		service httpd stop
-		systemctl disable httpd
-                echo
+        echo -e "\e[1;36m> Adding SEMANAGE (policycoreutils-python) package...\e[0m"
+		yum -y install policycoreutils-python
+		echo
 
-                echo -e "\e[1;36m> Adding CentOS EPEL package...\e[0m"
+        echo -e "\e[1;36m> Adding WHICH  package...\e[0m"
+		yum -y install which
+		echo					
+
+        #echo -e "\e[1;36m> Disabling Apache if installed...\e[0m"	    
+		#service httpd stop
+		#systemctl disable httpd
+        #        echo
+
+        echo -e "\e[1;36m> Adding CentOS EPEL package...\e[0m"
 		yum -y install epel-release
 		echo
 
-                echo -e "\e[1;36m> Adding Nginx source repo...\e[0m"
+        echo -e "\e[1;36m> Adding WGET package...\e[0m"
+		yum -y install wget
+		echo		
+
+        echo -e "\e[1;36m> Adding Nginx source repo...\e[0m"
 		cp $CURRENT_DIR/config/nginx/nginx.repo /etc/yum.repos.d/nginx.repo
 		echo
 
-                echo -e "\e[1;36m> Adding PHP7+ repositories & Yum utils...\e[0m"
+        echo -e "\e[1;36m> Adding PHP7+ repositories & Yum utils...\e[0m"
 		yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 		yum -y install http://rpms.remirepo.net/enterprise/remi-release-7.rpm
 		yum -y install yum-utils
@@ -79,16 +92,25 @@ orgreq_mod() {
 
 #SELinux config
 selinux_mod() { 
-                echo
-                echo -e "\e[1;36m> Configuring SELinux settings...\e[0m"
+        echo
+        echo -e "\e[1;36m> Configuring SELinux settings...\e[0m"
 		for run in {1..2}
 		do
-		sudo -u root semanage fcontext -a -t httpd_sys_content_t '/var/www(/.*)?' >/dev/null 2>&1
-		sudo -u root semanage fcontext -a -t httpd_sys_rw_content_t '/var/www(/.*)?'		
-		sudo -u root restorecon -Rv /var/www >/dev/null
+		semanage fcontext -a -t httpd_sys_content_t '/var/www(/.*)?' >/dev/null 2>&1
+		semanage fcontext -a -t httpd_sys_rw_content_t '/var/www(/.*)?'		
+		restorecon -Rv /var/www >/dev/null
 		systemctl restart nginx
 		systemctl restart php-fpm
 		done
+		echo
+        echo -e "\e[1;36m> Enabling site access over local network...\e[0m"
+		echo -e "\e[1;36m> - Enabling  HTTP service\e[0m"
+		firewall-cmd --permanent --zone=public --add-service=http
+		echo -e "\e[1;36m> - Enabling  HTTPS service\e[0m"
+		firewall-cmd --permanent --zone=public --add-service=https
+		echo -e "\e[1;36m> - Reload firewall-cmd\e[0m"		
+		firewall-cmd --reload
+		echo
 		
                 }
 
@@ -200,7 +222,7 @@ orgdl_mod()
 		echo
 		echo -e "\e[1;36m> which version of Organizr do you want to install?.\e[0m" 
 		echo -e "\e[1;36m[1] \e[0mOrganizr v1"
-		echo -e "\e[1;36m[2] \e[0mOrganizr v2 [BETA]" 
+		echo -e "\e[1;36m[2] \e[0mOrganizr v2" 
 		echo 
 		printf '\e[1;36m> \e[0m'
 		read -r org_v
@@ -215,8 +237,8 @@ orgdl_mod()
 		
 		elif [ $org_v = "2" ]
 		then 
-		echo -e "\e[1;36m[2a] \e[0mMaster [Coming Soon]"
-		echo -e "\e[1;36m[2b] \e[0mDev [BETA here]"
+		echo -e "\e[1;36m[2a] \e[0mMaster"
+		echo -e "\e[1;36m[2b] \e[0mDev"
 		fi
 
 		echo
@@ -256,13 +278,13 @@ orgdl_mod()
 
 		elif [ $dlvar = "2a" ]
 		then
-		dlbranch=Orgv2-Dev
-		zipbranch=v2-develop.zip
-		zipextfname=Organizr-2-develop
+		dlbranch=v2-master
+		zipbranch=v2-master.zip
+		zipextfname=Organizr-2-master
 
 		elif [ $dlvar = "2b" ]
 		then
-		dlbranch=Orgv2-Dev
+		dlbranch=v2-develop
 		zipbranch=v2-develop.zip
 		zipextfname=Organizr-2-develop
 		fi
@@ -295,18 +317,18 @@ vhostconfig_mod()
 		#Add in your domain name to your site nginx conf files
 		SITE_DIR=`echo $instvar`
 		$SED -i "s/DOMAIN/$DOMAIN/g" $CONFIG
-		$SED -i "s!ROOT!$SITE_DIR!g" $CONFIG
+		$SED -i "s|ROOT|$SITE_DIR|g" $CONFIG
 		$SED -i "s/DOMAIN/$DOMAIN/g" $CONFIG_DOMAIN
 		#phpv=$(ls -t /etc/php | head -1)
 		$SED -i "s/VER/$phpv/g" $NGINX_CONFIG/phpblock.conf
 
 		#Delete default.conf nginx site
 		mkdir -p $tmp/bk/nginx_default_site
- 		if [ -e $NGINX_SITES/default ] 
-		then cp -a $NGINX_SITES/default $tmp/bk/nginx_default_site
+ 		if [ -e $NGINX_LOC/conf.d/default.conf ] 
+		then cp -a $NGINX_LOC/conf.d/default.conf $tmp/bk/nginx_default_site
 		fi			
-		rm -r -f $NGINX_SITES/default
-		rm -r -f $NGINX_SITES_ENABLED/default
+		rm -r -f $NGINX_LOC/conf.d/default.conf
+		#rm -r -f $NGINX_SITES_ENABLED/conf.d/default.conf
 			
 		# reload Nginx to pull in new config
 		nginx -s reload
@@ -315,7 +337,7 @@ vhostconfig_mod()
 #Add site to hosts for local access
 addsite_to_hosts_mod()
         {
-		sudo echo "127.0.0.1 $DOMAIN" >> /etc/hosts
+		echo "127.0.0.1 $DOMAIN" >> /etc/hosts
 	}
 
 #Org Install info
@@ -382,7 +404,7 @@ oui_updater_mod()
                 	echo -e "\e[1;36mScript updated, reloading now...\e[0m"
 			sleep 3s
 			chmod +x $BASH_SOURCE
-			exec ./ou_installer.sh
+			exec ./oc_installer.sh
 	}
 #Utilities sub-menu
 uti_menus() 
