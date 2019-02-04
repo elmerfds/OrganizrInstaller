@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr CentOS Installer
 #author: elmerfdz
-version=v1.2.0-0-super_exp
+version=v1.2.0-1-super_exp
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML' 'PHP XMLrpc')
@@ -343,8 +343,7 @@ LEcertbot_mod()
 				printf '\e[1;36m- \e[0m' 
 				read -r CF_API
 				echo
-				apt-get install certbot python3-pip -y
-				pip3 install certbot-dns-cloudflare
+				yum -y install python2-certbot-dns-cloudflare
 
 			mkdir -p $cred_folder #create secret folder to store Certbot CF plugin creds
 			cp -a $CURRENT_DIR/config/le-dnsplugins/cf/. $cred_folder #copy CF credentials file
