@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr CentOS Installer
 #author: elmerfdz
-version=v1.3.0-1-super_exp
+version=v1.3.0-2-super_exp
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML' 'PHP XMLrpc')
@@ -174,9 +174,9 @@ CFvhostcreate_mod()
 		systemctl start nginx
 		if [ "$org_v" == "1" ] && [ "$vhost_template" == "CF" ] || [ "$vhost_template" == "cf" ]
 		then
-		cp $CURRENT_DIR/templates/cf/orgv1_cf.template $CONFIG
-		mkdir -p $NGINX_CONFIG/$DOMAIN
-		cp -a $CURRENT_DIR/config/cf/. $NGINX_CONFIG/$DOMAIN
+		cp "$CURRENT_DIR"/templates/cf/orgv1_cf.template $CONFIG
+		mkdir -p "$NGINX_CONFIG"/"$DOMAIN"
+		cp -a "$CURRENT_DIR"/config/cf/. "$NGINX_CONFIG"/"$DOMAIN"
 		mv $NGINX_CONFIG/$DOMAIN/domain.com.conf $NGINX_CONFIG/$DOMAIN/$DOMAIN.conf
 		mv $NGINX_CONFIG/$DOMAIN/domain.com_ssl.conf $NGINX_CONFIG/$DOMAIN/${DOMAIN}_ssl.conf
 		CONFIG_DOMAIN=$NGINX_CONFIG/$DOMAIN/$DOMAIN.conf
@@ -185,7 +185,7 @@ CFvhostcreate_mod()
 
 		elif [ "$org_v" == "2" ] && [ "$vhost_template" == "CF" ] || [ "$vhost_template" == "cf" ]
 		then
-		cp $CURRENT_DIR/templates/cf/orgv2_cf.template $CONFIG
+		cp "$CURRENT_DIR"/templates/cf/orgv2_cf.template "$CONFIG"
 		mkdir -p $NGINX_CONFIG/$DOMAIN
 		cp -a $CURRENT_DIR/config/cf/. $NGINX_CONFIG/$DOMAIN
 		mv $NGINX_CONFIG/$DOMAIN/domain.com.conf $NGINX_CONFIG/$DOMAIN/$DOMAIN.conf
@@ -240,9 +240,9 @@ LEvhostcreate_mod()
 			fi	
 		
 			mkdir -p "$NGINX_APPS" 								#Apps folder
-			mkdir -p "$NGINX_CONFIG/$DOMAIN"
-			cp -a $CURRENT_DIR/config/apps/. $NGINX_APPS  		#Apps conf files
-			cp -a $CURRENT_DIR/config/le/. $NGINX_CONFIG/$DOMAIN 	#LE conf file
+			mkdir -p "$NGINX_CONFIG"/"$DOMAIN"
+			cp -a "$CURRENT_DIR"/config/apps/. "$NGINX_APPS"  		#Apps conf files
+			cp -a "$CURRENT_DIR"/config/le/. "$NGINX_CONFIG"/"$DOMAIN" 	#LE conf file
 
 			if [ "$org_v" == "1" ] && [ "$vhost_template" == "LE" ] || [ "$vhost_template" == "le" ]
 			then
