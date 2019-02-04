@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr CentOS Installer
 #author: elmerfdz
-version=v1.3.0-2-super_exp
+version=v1.3.0-3-super_exp
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML' 'PHP XMLrpc')
@@ -13,6 +13,7 @@ NGINX_LOC='/etc/nginx'
 NGINX_SITES='/etc/nginx/sites-available'
 NGINX_SITES_ENABLED='/etc/nginx/sites-enabled'
 NGINX_CONFIG='/etc/nginx/config'
+NGINX_APPS='/etc/nginx/conf.d/apps'
 WEB_DIR='/var/www'
 SED=`which sed`
 CURRENT_DIR=`dirname $0`
