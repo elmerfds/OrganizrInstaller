@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr CentOS Installer
 #author: elmerfdz
-version=v1.2.0-1-super_exp
+version=v1.3.0-0-super_exp
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML' 'PHP XMLrpc')
@@ -172,25 +172,27 @@ vhostcreate_mod()
 CFvhostcreate_mod()        
        {
 		systemctl start nginx
-		if [ "$org_v" == "1" ] && [ "$vhost_template" == "CF" ]
+		if [ "$org_v" == "1" ] && [ "$vhost_template" == "CF" ] || [ "$vhost_template" == "cf" ]
 		then
-		cp $CURRENT_DIR/templates/orgv1_cf.template $CONFIG
-		cp -a $CURRENT_DIR/config/cf/. $NGINX_LOC/config
-		mv $NGINX_LOC/config/domain.com.conf $NGINX_LOC/config/$DOMAIN.conf
-		mv $NGINX_LOC/config/domain.com_ssl.conf $NGINX_LOC/config/${DOMAIN}_ssl.conf
-		CONFIG_DOMAIN=$NGINX_CONFIG/$DOMAIN.conf
-		mkdir -p $NGINX_CONFIG/ssl/$DOMAIN
-		chmod -R 755 $NGINX_CONFIG/ssl/$DOMAIN
+		cp $CURRENT_DIR/templates/cf/orgv1_cf.template $CONFIG
+		mkdir -p $NGINX_CONFIG/$DOMAIN
+		cp -a $CURRENT_DIR/config/cf/. $NGINX_CONFIG/$DOMAIN
+		mv $NGINX_CONFIG/$DOMAIN/domain.com.conf $NGINX_CONFIG/$DOMAIN/$DOMAIN.conf
+		mv $NGINX_CONFIG/$DOMAIN/domain.com_ssl.conf $NGINX_CONFIG/$DOMAIN/${DOMAIN}_ssl.conf
+		CONFIG_DOMAIN=$NGINX_CONFIG/$DOMAIN/$DOMAIN.conf
+		mkdir -p $NGINX_CONFIG/$DOMAIN/ssl
+		chmod -R 755 $NGINX_CONFIG/$DOMAIN/ssl
 
-		elif [ "$org_v" == "2" ] && [ "$vhost_template" == "CF" ]
+		elif [ "$org_v" == "2" ] && [ "$vhost_template" == "CF" ] || [ "$vhost_template" == "cf" ]
 		then
-		cp $CURRENT_DIR/templates/orgv2_cf.template $CONFIG
-		cp -a $CURRENT_DIR/config/cf/. $NGINX_LOC/config
-		mv $NGINX_LOC/config/domain.com.conf $NGINX_LOC/config/$DOMAIN.conf
-		mv $NGINX_LOC/config/domain.com_ssl.conf $NGINX_LOC/config/${DOMAIN}_ssl.conf
-		CONFIG_DOMAIN=$NGINX_CONFIG/$DOMAIN.conf
-		mkdir -p $NGINX_CONFIG/ssl/$DOMAIN
-		chmod -R 755 $NGINX_CONFIG/ssl/$DOMAIN
+		cp $CURRENT_DIR/templates/cf/orgv2_cf.template $CONFIG
+		mkdir -p $NGINX_CONFIG/$DOMAIN
+		cp -a $CURRENT_DIR/config/cf/. $NGINX_CONFIG/$DOMAIN
+		mv $NGINX_CONFIG/$DOMAIN/domain.com.conf $NGINX_CONFIG/$DOMAIN/$DOMAIN.conf
+		mv $NGINX_CONFIG/$DOMAIN/domain.com_ssl.conf $NGINX_CONFIG/$DOMAIN/${DOMAIN}_ssl.conf
+		CONFIG_DOMAIN=$NGINX_CONFIG/$DOMAIN/$DOMAIN.conf
+		mkdir -p $NGINX_CONFIG/$DOMAIN/ssl
+		chmod -R 755 $NGINX_CONFIG/$DOMAIN/ssl
 		fi
 
 	}
@@ -328,7 +330,7 @@ LEcertbot_mod()
 				##Install certbot packages
 				yum -y install yum-utils
 				yum-config-manager --enable rhui-REGION-rhel-server-extras rhui-REGION-rhel-server-optional
-				yum install python2-certbot-nginx
+				yum -y install python2-certbot-nginx
 			fi
 
 			if [ "$dns_plugin" == "Y" ] || [ "$dns_plugin" == "y" ]
@@ -497,9 +499,19 @@ vhostconfig_mod()
 		SITE_DIR=`echo $instvar`
 		$SED -i "s/DOMAIN/$DOMAIN/g" $CONFIG
 		$SED -i "s|ROOT|$SITE_DIR|g" $CONFIG
-		$SED -i "s/DOMAIN/$DOMAIN/g" $CONFIG_DOMAIN
+		$SED -i "s/SERV_NAME/$serv_name/g" $CONFIG
+		if [ "$vhost_template" == "CF" ] || [ "$vhost_template" == "cf" ]
+		then 
+			$SED -i "s/DOMAIN/$DOMAIN/g" $CONFIG_DOMAIN
+			$SED -i "s/SUBD_DOMA/$subd_doma/g" $CONFIG
+		fi
+		if [ "$vhost_template" == "LE" ] || [ "$vhost_template" == "le" ]
+		then 
+			$SED -i "s/DOMAIN/$DOMAIN/g" $NGINX_CONFIG/$DOMAIN/http_server.conf
+			$SED -i "s/SUBD_DOMA/$subd_doma/g" $NGINX_CONFIG/$DOMAIN/ssl.conf
+		fi		
 		#phpv=$(ls -t /etc/php | head -1)
-		$SED -i "s/VER/$phpv/g" $NGINX_CONFIG/phpblock.conf
+		#$SED -i "s/VER/$phpv/g" $NGINX_CONFIG/phpblock.conf
 
 		#Delete default.conf nginx site
 		mkdir -p $tmp/bk/nginx_default_site
