@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr CentOS Installer
 #author: elmerfdz
-version=v1.3.0-4-super_exp
+version=v1.3.0-4-1
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML' 'PHP XMLrpc')
@@ -155,7 +155,7 @@ vhostcreate_mod()
 		echo
 		printf '\e[1;36m- \e[0m'
 		read -r vhost_template
-		vhost_template=${vhost_template:-CF}
+		vhost_template=${vhost_template:-LE}
 		
 		CFvhostcreate_mod
 		LEvhostcreate_mod
