@@ -151,7 +151,7 @@ vhostcreate_mod()
 		echo -e "\e[1;36m> Nginx vhost template type?:\e[0m"
 		echo
 		echo -e "\e[1;36m[CF] \e[0mCloudFlare"
-		echo -e "\e[1;36m[LE] \e[0mLet's Encrypt/Standard [coming soon]"
+		echo -e "\e[1;36m[LE] \e[0mLet's Encrypt/Standard"
 		echo
 		printf '\e[1;36m- \e[0m'
 		read -r vhost_template
@@ -232,7 +232,7 @@ LEvhostcreate_mod()
 					echo
 					echo -e "\e[1;36m> Is your domain on Cloudflare? [y/n] .\e[0m"
 					echo  "- Going ahead with the above will automate the DNS / dns-01 challenges for you."
-					echo  "- To do that, python3-pip & certbot-dns-cloudflare pip3 package wll be installed"
+					echo  "- To do that, python2-pip & certbot-dns-cloudflare pip2 package wll be installed"
 					printf '\e[1;36m- [y/n]: \e[0m'
 					read -r dns_plugin
 					dns_plugin=${dns_plugin:-n}
