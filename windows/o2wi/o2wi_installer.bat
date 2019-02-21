@@ -309,6 +309,18 @@ SET /p "=PHP   status : " <nul
 NSSM status PHP
 ECHO.
 
+ECHO.
+ECHO #########################################
+ECHO CREATE WINDOWS FIREWALL RULE
+ECHO #########################################
+ECHO.
+ECHO ADDING RULE FOR PORT 80
+netsh advfirewall firewall add rule name="Organizr - HTTP" dir=in action=allow protocol=TCP localport=80
+IF "%ssl_site%"=="y" (
+ECHO ADDING RULE FOR PORT 443
+netsh advfirewall firewall add rule name="Organizr - HTTPS" dir=in action=allow protocol=TCP localport=443
+)
+
 IF "%ssl_site%"=="y" ( 
 ECHO.
 ECHO #########################################
