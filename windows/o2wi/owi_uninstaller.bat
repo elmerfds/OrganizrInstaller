@@ -57,6 +57,12 @@ RMDIR /s /q c:\nginx >nul 2>&1
 ECHO.Done!
 ECHO.
 
+ECHO 6. Removing Firewall Rules
+netsh advfirewall firewall delete rule name="Organizr - HTTP"
+netsh advfirewall firewall delete rule name="Organizr - HTTPS"
+ECHO.Done!
+ECHO.
+
 rem DEL /s /q c:\Windows\System32\nssm.exe >nul 2>&1
 
 pause
