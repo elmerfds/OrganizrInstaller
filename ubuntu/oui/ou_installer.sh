@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v7.5.1-4
+version=v7.5.1-6
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML' 'PHP XMLrpc')
@@ -276,10 +276,10 @@ LEcertbot_mod()
 				then
 					if [ "$debian_codename_detect" == "stretch" ];
 					then
-						deb http://ftp.debian.org/debian stretch-backports main
+						echo "deb http://deb.debian.org/debian stretch-backports main" > /etc/apt/sources.list.d/stretch-backport.list
 						apt-get update					 
 						apt-get install python3-pip -y
-						apt-get install python-certbot-nginx -t stretch-backports -y
+						apt-get install certbot python-certbot-nginx -t stretch-backports -y
 					elif [ "$debian_codename_detect" == "jessie" ];	
 					then
 						deb http://ftp.debian.org/debian jessie-backports main
@@ -312,6 +312,8 @@ LEcertbot_mod()
 				if [ "$debian_detect" == "Debian" ] || [ "$debian_detect" == "Raspbian" ];
 				then
 					echo "pip3 already installed"
+					pip3 uninstall pyOpenSSL cryptography
+					pip3 install pyOpenSSL cryptography -U
 					sudo pip3 install certbot-dns-cloudflare
 					echo
 				else
