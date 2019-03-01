@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr CentOS Installer
 #author: elmerfdz
-version=v1.3.0-4-1
+version=v1.3.0-4-2
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML' 'PHP XMLrpc')
@@ -403,11 +403,12 @@ orgdl_mod()
         {
 		echo
 		echo -e "\e[1;36m> which version of Organizr do you want to install?.\e[0m" 
-		echo -e "\e[1;36m[1] \e[0mOrganizr v1"
+		echo -e "\e[1;36m[1] \e[0mOrganizr v1 [Out of Support]"
 		echo -e "\e[1;36m[2] \e[0mOrganizr v2" 
 		echo 
 		printf '\e[1;36m> \e[0m'
 		read -r org_v
+		org_v=${org_v:-2}		
 		echo
 		echo -e "\e[1;36m> which branch do you want to install?\e[0m .eg. 1a or 2a"
 		echo
