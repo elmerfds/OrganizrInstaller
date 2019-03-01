@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v7.5.1-3
+version=v7.5.1-4
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML' 'PHP XMLrpc')
@@ -24,10 +24,27 @@ LE_WEB='/var/www/letsencrypt/.well-known/acme-challenge'
 debian_detect=$(cut -d: -f2 < <(lsb_release -i)| xargs)
 debian_codename_detect=$(cut -d: -f2 < <(lsb_release -c)| xargs)
 
+
+#Bloody F##### Debian
+debain_special_needs()
+	{
+		if [ "$debian_detect" == "Debian" ] || [ "$debian_detect" == "Raspbian" ];
+		then
+			apt install apt-transport-https lsb-release ca-certificates
+			wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
+			echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list
+			apt update
+		fi		
+}
+
 #Organizr Requirement Module
 orgreq_mod() 
 	{ 
         echo
+		if [ "$debian_detect" == "Debian" ] || [ "$debian_detect" == "Raspbian" ];
+		then
+			debain_special_needs
+		fi
         echo -e "\e[1;36m> Updating apt repositories...\e[0m"
 		echo
 		apt-get update	    
