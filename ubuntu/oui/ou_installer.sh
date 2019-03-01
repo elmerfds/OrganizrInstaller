@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v7.5.1-5
+version=v7.5.1-6
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML' 'PHP XMLrpc')
@@ -312,6 +312,8 @@ LEcertbot_mod()
 				if [ "$debian_detect" == "Debian" ] || [ "$debian_detect" == "Raspbian" ];
 				then
 					echo "pip3 already installed"
+					pip3 uninstall pyOpenSSL cryptography
+					pip3 install pyOpenSSL cryptography -U
 					sudo pip3 install certbot-dns-cloudflare
 					echo
 				else
