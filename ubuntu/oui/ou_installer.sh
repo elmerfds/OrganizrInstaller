@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v7.5.1-2
+version=v7.5.1-3
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML' 'PHP XMLrpc')
@@ -80,7 +80,7 @@ vhostcreate_mod()
 		echo -e "\e[1;36m> Nginx vhost template type?:\e[0m"
 		echo
 		echo -e "\e[1;36m[CF] \e[0mCloudFlare"
-		echo -e "\e[1;36m[LE] \e[0mLet's Encrypt/Standard"
+		echo -e "\e[1;36m[LE] \e[0mLet's Encrypt/Standard [default & recommended]"
 		echo
 		printf '\e[1;36m- \e[0m'
 		read -r vhost_template
@@ -395,11 +395,12 @@ orgdl_mod()
         {
 		echo
 		echo -e "\e[1;36m> which version of Organizr do you want to install?.\e[0m" 
-		echo -e "\e[1;36m[1] \e[0mOrganizr v1"
+		echo -e "\e[1;36m[1] \e[0mOrganizr v1 [Out of Support]"
 		echo -e "\e[1;36m[2] \e[0mOrganizr v2" 
 		echo 
 		printf '\e[1;36m> \e[0m'
 		read -r org_v
+		org_v=${org_v:-2}
 		echo
 		echo -e "\e[1;36m> which branch do you want to install?\e[0m .eg. 1a or 2a"
 		echo
