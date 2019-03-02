@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v7.5.1-6
+version=v7.5.1-7
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML' 'PHP XMLrpc')
@@ -42,6 +42,8 @@ orgreq_mod()
         echo
 		if [ "$debian_detect" == "Debian" ] || [ "$debian_detect" == "Raspbian" ];
 		then
+			echo -e "\e[1;36m> Deploying Debian special needs care package \e[0m"
+			echo
 			debain_special_needs
 		fi
         echo -e "\e[1;36m> Updating apt repositories...\e[0m"
@@ -651,7 +653,7 @@ uti_menus()
 		echo
 		echo -e " 	  \e[1;36m|OUI: $version : Utilities|  \e[0m"
 		echo
-		echo "| 1.| Debian 8.x PHP7 fix	  " 
+		echo "| 1.| Debian 8.x PHP7 fix	[deprecated]  " 
 		echo "| 2.| Let's Encrypt: Test Single Domain Cert Renewal	  " 
 		echo "| 3.| Let's Encrypt: Single Domain Cert Renewal 	  " 
 		echo "| 4.| Let's Encrypt: Wilcard Cert Renewal	  " 

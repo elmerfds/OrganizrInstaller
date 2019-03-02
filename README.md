@@ -20,7 +20,7 @@ Automated install script for Organizr (github.com/causefx/Organizr). Only Ubuntu
 
 ### Tested on Debian?
 - Yes, 9.2.1
-- Works on 8.x but run the options '6. Utilities' > '1. Debian 8.x PHP7 fix' before attempting any Organizr install options.
+- Debian 8 not supported
 
 ## OWI (Organizr Windows Installer)
 
@@ -39,7 +39,7 @@ Note: Move the installer files to desktop and run it from there.
 
 ### Requirements
 - Latest version of PowerShell, if you're on Windows 7/Win Server 2008 [download](https://social.technet.microsoft.com/wiki/contents/articles/21016.how-to-install-windows-powershell-4-0.aspx)
-- Windows 10 recommended but it should work on Windows 7 if you have the latest version of PowerShell
+- Windows 10 recommended over Windows 7 but it should work on Windows 7 if you have the latest version of PowerShell
 - The user account running the installer should have admin privileges and a password set.
 
 ### Tested on?
