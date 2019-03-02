@@ -163,8 +163,8 @@ LEvhostcreate_mod()
 				echo 
 				echo -e "\e[1;36m> LE Cert type?:\e[0m"
 				echo
-				echo -e "\e[1;36m[S] \e[0mSingle Domain Cert"
-				echo -e "\e[1;36m[W] \e[0mWildcard"
+				echo -e "\e[1;36m[S] \e[0mSingle Domain Cert [Uses HTTP validation, needs Port 80 opened]"
+				echo -e "\e[1;36m[W] \e[0mWildcard [Uses DNS validation]"
 				echo
 				printf '\e[1;36m- \e[0m'
 				read -r LEcert_type
