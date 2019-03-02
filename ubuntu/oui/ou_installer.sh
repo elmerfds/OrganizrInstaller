@@ -312,7 +312,7 @@ LEcertbot_mod()
 				if [ "$debian_detect" == "Debian" ] || [ "$debian_detect" == "Raspbian" ];
 				then
 					echo "pip3 already installed"
-					pip3 uninstall pyOpenSSL cryptography
+					pip3 uninstall pyOpenSSL cryptography -y
 					pip3 install pyOpenSSL cryptography -U
 					sudo pip3 install certbot-dns-cloudflare
 					echo
@@ -356,7 +356,7 @@ LEcertbot_mod()
 				if [ "$dns_plugin" == "Y" ] || [ "$dns_plugin" == "y" ]
 				then
 					certbot certonly --dns-cloudflare --dns-cloudflare-credentials $cred_folder/cloudflare.ini --server https://acme-v02.api.letsencrypt.org/directory --email $email_var --agree-tos --no-eff-email -d *.$DOMAIN -d $DOMAIN
-					#Adding wildcar cert auto renewal using CF DNS plugin, untested, let me know if anyone does.
+					#Adding wildcard cert auto renewal using CF DNS plugin, untested, let me know if anyone does.
 					{ crontab -l 2>/dev/null; echo "20 3 * * * certbot renew --noninteractive --dns-cloudflare --renew-hook "'"/etc/init.d/nginx reload"'""; } | crontab -
 				
 				elif [ "$dns_plugin" == "N" ] || [ "$dns_plugin" == "n" ]
