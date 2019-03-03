@@ -59,7 +59,8 @@ server {
 	location ~ /auth-(.*) { rewrite ^/auth-(.*) /api/?v1/auth&group=$1; }
 
 	#error page
-	error_page 400 401 403 404 405 408 500 502 503 504  /?error=$status;
+    error_page 401 $scheme://$server_name/?error=$status&return=$request_uri;
+	error_page 400 402 403 404 405 408 500 502 503 504 $scheme://$server_name/?error=$status;
 
 	location / {try_files $uri $uri/ =404;}
 	include config/DOMAIN/phpblock.conf;  #PHP Block
