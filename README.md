@@ -38,7 +38,7 @@ Automated install script for Organizr (github.com/causefx/Organizr). Only Ubuntu
 Note: Move the installer files to desktop and run it from there.
 
 ### Requirements
-- Latest version of PowerShell, if you're on Windows 7/Win Server 2008 [download](https://social.technet.microsoft.com/wiki/contents/articles/21016.how-to-install-windows-powershell-4-0.aspx)
+- Latest version of PowerShell, if you're on Windows 7/Win Server 2008 [download](https://www.microsoft.com/en-us/download/details.aspx?id=54616)
 - Windows 10 recommended over Windows 7 but it should work on Windows 7 if you have the latest version of PowerShell
 - The user account running the installer should have admin privileges and a password set.
 
