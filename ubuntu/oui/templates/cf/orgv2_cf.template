@@ -10,7 +10,7 @@
 #upstream organizr-upstream			{ server 127.0.0.1;       }
 #upstream plex-upstream 			{ server 127.0.0.1:32400; }
 #upstream plexpy-upstream 			{ server 127.0.0.1:8181;  }
-#upstream ombi-upstream 			{ server 127.0.0.1:5000;  } 
+#upstream ombi-upstream 			{ server 127.0.0.1:5000;  }
 #upstream sabnzbd-upstream 			{ server 127.0.0.1:8080;  }
 #upstream nzbget-upstream			{ server 127.0.0.1:6789;  }
 #upstream radarr-upstream 			{ server 127.0.0.1:7878;  }
@@ -37,15 +37,15 @@
 ## CF SSL ORIGIN CERTS
 ##Rename & Place your keys in the below location/REMOVE '#' from the next 2 lines to enable SSL
 #ssl_certificate       /etc/nginx/config/DOMAIN/ssl/DOMAIN.pem;		#For CF SSL Orgin certs
-#ssl_certificate_key   /etc/nginx/config/DOMAIN/ssl/DOMAIN.com.key;  #For CF SSL Orgin certs 
+#ssl_certificate_key   /etc/nginx/config/DOMAIN/ssl/DOMAIN.com.key;  #For CF SSL Orgin certs
 
 ## LET'S ENCRYPT SSL CERTS
 ##Rename '#' from the next 3 lines to enable SSL
 ##If you have generated LE certs, uncoment the next 3 lines to use LE certs with CF as your DNS
 #ssl_certificate /etc/letsencrypt/live/SUBD_DOMA/fullchain.pem;		#For LE SSL certs
-#ssl_certificate_key /etc/letsencrypt/live/SUBD_DOMA/privkey.pem;   #For LE SSL certs 
+#ssl_certificate_key /etc/letsencrypt/live/SUBD_DOMA/privkey.pem;   #For LE SSL certs
 #ssl_trusted_certificate /etc/letsencrypt/live/SUBD_DOMA/chain.pem; #For LE SSL certs
- 
+
 ##MAIN SERVER
 server {
 	include config/DOMAIN/DOMAIN_ssl.conf;
@@ -59,7 +59,7 @@ server {
 	location ~ /auth-(.*) { rewrite ^/auth-(.*) /api/?v1/auth&group=$1; }
 
 	#error page
-	error_page 400 401 403 404 405 408 500 502 503 504  /?error=$status;
+	error_page 400 401 402 403 404 405 408 500 502 503 504 $scheme://$server_name/?error=$status;
 
 	location / {try_files $uri $uri/ =404;}
 	include config/DOMAIN/phpblock.conf;  #PHP Block
@@ -176,7 +176,7 @@ server {
 #	include config/DOMAIN/DOMAIN_ssl.conf;
 #	include config/DOMAIN/v2-auth-org.conf;
 #	error_page 400 401 403 404 405 408 500 502 503 504 https://DOMAIN/?error=$status;
-#	location / {      
+#	location / {
 #		auth_request /auth-0;   #admin only
 #		proxy_pass http://sabnzbd-upstream;
 #		include config/DOMAIN/proxy.conf;
@@ -190,7 +190,7 @@ server {
 #	include config/DOMAIN/DOMAIN_ssl.conf;
 #	include config/DOMAIN/v2-auth-org.conf;
 #	error_page 400 401 403 404 405 408 500 502 503 504 https://DOMAIN/?error=$status;
-#	location / {      
+#	location / {
 #		auth_request /auth-0;   #admin only
 #		proxy_pass http://nzbget-upstream;
 #		include config/DOMAIN/proxy.conf;
@@ -204,7 +204,7 @@ server {
 #	include config/DOMAIN/DOMAIN.conf;
 #	include config/DOMAIN/v2-auth-org.conf;
 #	error_page 400 401 403 404 405 408 500 502 503 504 https://DOMAIN/?error=$status;
-#	location / {      
+#	location / {
 #		auth_request /auth-0;   #admin only
 #		proxy_pass http://deluge-upstream;
 #		include config/DOMAIN/proxy.conf;
@@ -489,4 +489,3 @@ server {
 #
 #	}
 #}
-
