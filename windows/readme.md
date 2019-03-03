@@ -17,7 +17,7 @@ o2wi = Organizr v2 installer
 
 ### How do I run it?
 1. Clone/Download the repo and extract the zip file.
-2. Navigate to \OrganizrInstaller\windows\o2wi. 
+2. Navigate to \OrganizrInstaller\windows\owi. 
 3. Right-click on 'owi_installer.bat' and click on 'Run as administrator'
 4. Installer will ask you for the nginx install location, type in the full path as per the e.g. c:\nginx
 5. The installer will ask you to provide the password of the current user during installation, the nginx service requires that you run it under a user account instead of the 'Local System' account, if you don't then you won't be able to save and reload your nginx config.
