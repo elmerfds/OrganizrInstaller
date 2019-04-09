@@ -23,7 +23,7 @@ cred_folder='/etc/letsencrypt/.secrets/certbot'
 LE_WEB='/var/www/letsencrypt/.well-known/acme-challenge'
 debian_detect=$(cut -d: -f2 < <(lsb_release -i)| xargs)
 debian_codename_detect=$(cut -d: -f2 < <(lsb_release -c)| xargs)
-dns_plugin='n'
+dns_plugin=''
 
 
 #Bloody F##### Debian
@@ -324,12 +324,12 @@ LEcertbot_mod()
 					pip3 install certbot-dns-cloudflare
 				fi	
 
-			mkdir -p $cred_folder #create secret folder to store Certbot CF plugin creds
-			cp -a $CURRENT_DIR/config/le-dnsplugins/cf/. $cred_folder #copy CF credentials file
-			#Update CF plugin file
-			$SED -i "s/CF_EMAIL/$CF_EMAIL/g" $cred_folder/cloudflare.ini
-			$SED -i "s/CF_API/$CF_API/g" $cred_folder/cloudflare.ini
-			chmod -R 600 $cred_folder #debug
+				mkdir -p $cred_folder #create secret folder to store Certbot CF plugin creds
+				cp -a $CURRENT_DIR/config/le-dnsplugins/cf/. $cred_folder #copy CF credentials file
+				#Update CF plugin file
+				$SED -i "s/CF_EMAIL/$CF_EMAIL/g" $cred_folder/cloudflare.ini
+				$SED -i "s/CF_API/$CF_API/g" $cred_folder/cloudflare.ini
+				chmod -R 600 $cred_folder #debug
 
 			elif [ "$dns_plugin" == "N" ] || [ "$dns_plugin" == "n" ]
 			then
