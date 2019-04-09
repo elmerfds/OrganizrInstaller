@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v7.5.1-8
+version=v7.5.1-9
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML' 'PHP XMLrpc')
@@ -704,7 +704,6 @@ uti_options(){
 			echo "- Your choice 4: Let's Encrypt: Wilcard Cert Renewal"
 			#LE Wildcard cert renewal
 			LEcertbot-wildcard-renew_mod
-			unset DOMAIN
 			echo			
                 	echo -e "\e[1;36m> \e[0mPress any key to return to menu..."
 			read
@@ -714,7 +713,6 @@ uti_options(){
 			echo "- Your choice 5: Let's Encrypt: Wilcard Cert Renewal [Cloudflare DNS Plugin]"
 			#LE Wildcard cert renewal
 			LEcertbot-wc-cf-dns-renew_mod
-			unset DOMAIN
 			echo			
                 	echo -e "\e[1;36m> \e[0mPress any key to return to menu..."
 			read
@@ -764,6 +762,8 @@ read_options(){
 			unset DOMAIN
             echo -e "\e[1;36m> \e[0mPress any key to return to menu..."
 			read
+			chmod +x $BASH_SOURCE
+			exec ./ou_installer.sh			
 		;;
 
 	 	"2")
@@ -775,6 +775,8 @@ read_options(){
 			unset DOMAIN
             echo -e "\e[1;36m> \e[0mPress any key to return to menu..."
 			read
+			chmod +x $BASH_SOURCE
+			exec ./ou_installer.sh				
 		;; 
 
 	 	"3")
@@ -782,6 +784,8 @@ read_options(){
 			orgreq_mod
             echo -e "\e[1;36m> \e[0mPress any key to return to menu..."
 			read
+			chmod +x $BASH_SOURCE
+			exec ./ou_installer.sh				
 		;;
         
 	 	"4")
@@ -797,6 +801,8 @@ read_options(){
 			unset DOMAIN
             echo -e "\e[1;36m> \e[0mPress any key to return to menu..."
 			read
+			chmod +x $BASH_SOURCE
+			exec ./ou_installer.sh				
 		;;
 
 	 	"5")
@@ -813,7 +819,9 @@ read_options(){
 		;;
 
 		"7")
-			uninstall_oui_mod	
+			uninstall_oui_mod
+			chmod +x $BASH_SOURCE
+			exec ./ou_installer.sh					
 		;;
 
 		"8")
