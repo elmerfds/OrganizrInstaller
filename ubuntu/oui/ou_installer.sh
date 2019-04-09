@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v7.5.1-7
+version=v7.5.1-8
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML' 'PHP XMLrpc')
@@ -23,6 +23,7 @@ cred_folder='/etc/letsencrypt/.secrets/certbot'
 LE_WEB='/var/www/letsencrypt/.well-known/acme-challenge'
 debian_detect=$(cut -d: -f2 < <(lsb_release -i)| xargs)
 debian_codename_detect=$(cut -d: -f2 < <(lsb_release -c)| xargs)
+dns_plugin='n'
 
 
 #Bloody F##### Debian
