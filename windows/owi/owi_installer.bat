@@ -282,16 +282,9 @@ ECHO ####################################
 ECHO Updating Nginx and PHP config
 ECHO ####################################
 ECHO.
-IF "%ssl_site%"=="y" ( 
-COPY %~dp0config\nginx-ssl.conf %nginx_loc%\conf\nginx.conf
-COPY %~dp0config\ssl.conf %nginx_loc%\conf\ssl.conf
-powershell -command "(Get-Content c:\nginx\conf\nginx.conf).replace('[domain_name]', '%domain_name%') | Set-Content c:\nginx\conf\nginx.conf"
-)
 
-IF "%ssl_site%"=="n" ( 
 COPY %~dp0config\nginx-nonssl.conf %nginx_loc%\conf\nginx.conf
 COPY %~dp0config\ssl.conf %nginx_loc%\conf\ssl.conf
-)
 
 mkdir %nginx_loc%\www\organizr\db
 CD /d %~dp0
@@ -329,7 +322,8 @@ ECHO #########################################
 ECHO.
 CD /d %nginx_loc%
 %nginx_loc%\winacme\letsencrypt.exe --plugin manual --manualhost %domain_name% --webroot "C:\nginx\www\organizr\html" --emailaddress "%email%" --accepttos
-powershell -command "(Get-Content c:\nginx\conf\nginx.conf).replace('#DISABLED ', '') | Set-Content c:\nginx\conf\nginx.conf"
+COPY %~dp0config\nginx-ssl.conf %nginx_loc%\conf\nginx.conf
+powershell -command "(Get-Content c:\nginx\conf\nginx.conf).replace('[domain_name]', '%domain_name%') | Set-Content c:\nginx\conf\nginx.conf"
 ECHO.
 CD /d %nginx_loc%
 nginx -s reload
