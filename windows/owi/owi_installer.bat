@@ -283,7 +283,7 @@ ECHO Updating Nginx and PHP config
 ECHO ####################################
 ECHO.
 
-COPY %~dp0config\nginx-nonssl.conf %nginx_loc%\conf\nginx.conf
+COPY %~dp0config\nginx.conf %nginx_loc%\conf\nginx.conf
 COPY %~dp0config\ssl.conf %nginx_loc%\conf\ssl.conf
 
 mkdir %nginx_loc%\www\organizr\db
