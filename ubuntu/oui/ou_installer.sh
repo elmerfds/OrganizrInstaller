@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v7.5.1-2
+version=v7.5.1-9
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML' 'PHP XMLrpc')
@@ -23,11 +23,30 @@ cred_folder='/etc/letsencrypt/.secrets/certbot'
 LE_WEB='/var/www/letsencrypt/.well-known/acme-challenge'
 debian_detect=$(cut -d: -f2 < <(lsb_release -i)| xargs)
 debian_codename_detect=$(cut -d: -f2 < <(lsb_release -c)| xargs)
+dns_plugin=''
+
+
+#Bloody F##### Debian
+debain_special_needs()
+	{
+		if [ "$debian_detect" == "Debian" ] || [ "$debian_detect" == "Raspbian" ];
+		then
+			apt install apt-transport-https lsb-release ca-certificates -y
+			wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
+			echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list
+		fi		
+}
 
 #Organizr Requirement Module
 orgreq_mod() 
 	{ 
         echo
+		if [ "$debian_detect" == "Debian" ] || [ "$debian_detect" == "Raspbian" ];
+		then
+			echo -e "\e[1;36m> Deploying Debian special needs care package \e[0m"
+			echo
+			debain_special_needs
+		fi
         echo -e "\e[1;36m> Updating apt repositories...\e[0m"
 		echo
 		apt-get update	    
@@ -80,7 +99,7 @@ vhostcreate_mod()
 		echo -e "\e[1;36m> Nginx vhost template type?:\e[0m"
 		echo
 		echo -e "\e[1;36m[CF] \e[0mCloudFlare"
-		echo -e "\e[1;36m[LE] \e[0mLet's Encrypt/Standard"
+		echo -e "\e[1;36m[LE] \e[0mLet's Encrypt/Standard [default & recommended]"
 		echo
 		printf '\e[1;36m- \e[0m'
 		read -r vhost_template
@@ -147,8 +166,8 @@ LEvhostcreate_mod()
 				echo 
 				echo -e "\e[1;36m> LE Cert type?:\e[0m"
 				echo
-				echo -e "\e[1;36m[S] \e[0mSingle Domain Cert"
-				echo -e "\e[1;36m[W] \e[0mWildcard"
+				echo -e "\e[1;36m[S] \e[0mSingle Domain Cert [Uses HTTP validation, needs Port 80 opened]"
+				echo -e "\e[1;36m[W] \e[0mWildcard [Uses DNS validation]"
 				echo
 				printf '\e[1;36m- \e[0m'
 				read -r LEcert_type
@@ -260,10 +279,10 @@ LEcertbot_mod()
 				then
 					if [ "$debian_codename_detect" == "stretch" ];
 					then
-						deb http://ftp.debian.org/debian stretch-backports main
+						echo "deb http://deb.debian.org/debian stretch-backports main" > /etc/apt/sources.list.d/stretch-backport.list
 						apt-get update					 
 						apt-get install python3-pip -y
-						apt-get install python-certbot-nginx -t stretch-backports -y
+						apt-get install certbot python-certbot-nginx -t stretch-backports -y
 					elif [ "$debian_codename_detect" == "jessie" ];	
 					then
 						deb http://ftp.debian.org/debian jessie-backports main
@@ -296,6 +315,8 @@ LEcertbot_mod()
 				if [ "$debian_detect" == "Debian" ] || [ "$debian_detect" == "Raspbian" ];
 				then
 					echo "pip3 already installed"
+					pip3 uninstall pyOpenSSL cryptography -y
+					pip3 install pyOpenSSL cryptography -U
 					sudo pip3 install certbot-dns-cloudflare
 					echo
 				else
@@ -303,12 +324,12 @@ LEcertbot_mod()
 					pip3 install certbot-dns-cloudflare
 				fi	
 
-			mkdir -p $cred_folder #create secret folder to store Certbot CF plugin creds
-			cp -a $CURRENT_DIR/config/le-dnsplugins/cf/. $cred_folder #copy CF credentials file
-			#Update CF plugin file
-			$SED -i "s/CF_EMAIL/$CF_EMAIL/g" $cred_folder/cloudflare.ini
-			$SED -i "s/CF_API/$CF_API/g" $cred_folder/cloudflare.ini
-			chmod -R 600 $cred_folder #debug
+				mkdir -p $cred_folder #create secret folder to store Certbot CF plugin creds
+				cp -a $CURRENT_DIR/config/le-dnsplugins/cf/. $cred_folder #copy CF credentials file
+				#Update CF plugin file
+				$SED -i "s/CF_EMAIL/$CF_EMAIL/g" $cred_folder/cloudflare.ini
+				$SED -i "s/CF_API/$CF_API/g" $cred_folder/cloudflare.ini
+				chmod -R 600 $cred_folder #debug
 
 			elif [ "$dns_plugin" == "N" ] || [ "$dns_plugin" == "n" ]
 			then
@@ -338,7 +359,7 @@ LEcertbot_mod()
 				if [ "$dns_plugin" == "Y" ] || [ "$dns_plugin" == "y" ]
 				then
 					certbot certonly --dns-cloudflare --dns-cloudflare-credentials $cred_folder/cloudflare.ini --server https://acme-v02.api.letsencrypt.org/directory --email $email_var --agree-tos --no-eff-email -d *.$DOMAIN -d $DOMAIN
-					#Adding wildcar cert auto renewal using CF DNS plugin, untested, let me know if anyone does.
+					#Adding wildcard cert auto renewal using CF DNS plugin, untested, let me know if anyone does.
 					{ crontab -l 2>/dev/null; echo "20 3 * * * certbot renew --noninteractive --dns-cloudflare --renew-hook "'"/etc/init.d/nginx reload"'""; } | crontab -
 				
 				elif [ "$dns_plugin" == "N" ] || [ "$dns_plugin" == "n" ]
@@ -395,11 +416,12 @@ orgdl_mod()
         {
 		echo
 		echo -e "\e[1;36m> which version of Organizr do you want to install?.\e[0m" 
-		echo -e "\e[1;36m[1] \e[0mOrganizr v1"
+		echo -e "\e[1;36m[1] \e[0mOrganizr v1 [Out of Support]"
 		echo -e "\e[1;36m[2] \e[0mOrganizr v2" 
 		echo 
 		printf '\e[1;36m> \e[0m'
 		read -r org_v
+		org_v=${org_v:-2}
 		echo
 		echo -e "\e[1;36m> which branch do you want to install?\e[0m .eg. 1a or 2a"
 		echo
@@ -632,7 +654,7 @@ uti_menus()
 		echo
 		echo -e " 	  \e[1;36m|OUI: $version : Utilities|  \e[0m"
 		echo
-		echo "| 1.| Debian 8.x PHP7 fix	  " 
+		echo "| 1.| Debian 8.x PHP7 fix	[deprecated]  " 
 		echo "| 2.| Let's Encrypt: Test Single Domain Cert Renewal	  " 
 		echo "| 3.| Let's Encrypt: Single Domain Cert Renewal 	  " 
 		echo "| 4.| Let's Encrypt: Wilcard Cert Renewal	  " 
@@ -682,7 +704,6 @@ uti_options(){
 			echo "- Your choice 4: Let's Encrypt: Wilcard Cert Renewal"
 			#LE Wildcard cert renewal
 			LEcertbot-wildcard-renew_mod
-			unset DOMAIN
 			echo			
                 	echo -e "\e[1;36m> \e[0mPress any key to return to menu..."
 			read
@@ -692,7 +713,6 @@ uti_options(){
 			echo "- Your choice 5: Let's Encrypt: Wilcard Cert Renewal [Cloudflare DNS Plugin]"
 			#LE Wildcard cert renewal
 			LEcertbot-wc-cf-dns-renew_mod
-			unset DOMAIN
 			echo			
                 	echo -e "\e[1;36m> \e[0mPress any key to return to menu..."
 			read
@@ -742,6 +762,8 @@ read_options(){
 			unset DOMAIN
             echo -e "\e[1;36m> \e[0mPress any key to return to menu..."
 			read
+			chmod +x $BASH_SOURCE
+			exec ./ou_installer.sh			
 		;;
 
 	 	"2")
@@ -753,6 +775,8 @@ read_options(){
 			unset DOMAIN
             echo -e "\e[1;36m> \e[0mPress any key to return to menu..."
 			read
+			chmod +x $BASH_SOURCE
+			exec ./ou_installer.sh				
 		;; 
 
 	 	"3")
@@ -760,6 +784,8 @@ read_options(){
 			orgreq_mod
             echo -e "\e[1;36m> \e[0mPress any key to return to menu..."
 			read
+			chmod +x $BASH_SOURCE
+			exec ./ou_installer.sh				
 		;;
         
 	 	"4")
@@ -775,6 +801,8 @@ read_options(){
 			unset DOMAIN
             echo -e "\e[1;36m> \e[0mPress any key to return to menu..."
 			read
+			chmod +x $BASH_SOURCE
+			exec ./ou_installer.sh				
 		;;
 
 	 	"5")
@@ -791,7 +819,9 @@ read_options(){
 		;;
 
 		"7")
-			uninstall_oui_mod	
+			uninstall_oui_mod
+			chmod +x $BASH_SOURCE
+			exec ./ou_installer.sh					
 		;;
 
 		"8")

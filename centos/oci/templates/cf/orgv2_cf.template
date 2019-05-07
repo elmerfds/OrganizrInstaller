@@ -1,5 +1,5 @@
 ##Orgv2 Cloud Flare tempalte
-##vhost_template_v: v1.1.2
+##vhost_template_v: v1.1.1
 ##author: elmerfdz
 
 
@@ -77,10 +77,10 @@ server {
 
 	#PIMPMYLOG BLOCK WITH ORG AUTH
 #	location ^~ /PimpMyLog/ {
-#		auth_request /auth-0;   #admin only
-#		include config/DOMAIN/phpblock.conf;
-#		error_page 401 $scheme://$server_name/?error=$status&return=$request_uri;
-#		error_page 400 402 403 404 405 408 500 502 503 504 $scheme://$server_name/?error=$status;
+#	auth_request /auth-0;   #admin only
+#	include config/DOMAIN/phpblock.conf;
+#	error_page 400 403 404 405 408 500 502 503 504  https://DOMAIN/?error=$status;  #error page
+#	error_page 401 https://DOMAIN/?error=$status&return=$scheme://$http_host$request_uri;
 #	}
 
 

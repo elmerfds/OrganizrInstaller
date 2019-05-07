@@ -16,5 +16,5 @@
 - Yes, 16.04
 
 ### Tested on Debian?
-- Yes, 9.2.1
-- Works on 8.x but run the options '6. Utilities' > '1. Debian 8.x PHP7 fix' before attempting any Organizr install options.
+- Yes, 9.5+
+- Debian 8 not supported
