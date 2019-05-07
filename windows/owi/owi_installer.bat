@@ -1,6 +1,6 @@
 @ECHO off
 SET owi_v=v1.6.1
-title Oraganizr v2 Windows Installer %owi_v% w/ WIN-ACME support (LE CERTS GEN) 
+title Organizr v2 Windows Installer %owi_v% w/ WIN-ACME support (LE CERTS GEN) 
 COLOR 03
 ECHO      ___           ___                  
 ECHO     /  /\         /  /\           ___   
