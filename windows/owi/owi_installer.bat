@@ -321,7 +321,7 @@ ECHO WIN-ACME: Genertating LE SSL Certificates
 ECHO #########################################
 ECHO.
 CD /d %nginx_loc%
-%nginx_loc%\winacme\letsencrypt.exe --plugin manual --manualhost %domain_name% --webroot "C:\nginx\www\organizr\html" --emailaddress "%email%" --accepttos
+%nginx_loc%\winacme\wacs.exe --target manual --host %domain_name% --validation filesystem --webroot "C:\nginx\www\organizr\html" --emailaddress "%email%" --accepttos
 COPY %~dp0config\nginx-ssl.conf %nginx_loc%\conf\nginx.conf
 powershell -command "(Get-Content c:\nginx\conf\nginx.conf).replace('[domain_name]', '%domain_name%') | Set-Content c:\nginx\conf\nginx.conf"
 ECHO.
