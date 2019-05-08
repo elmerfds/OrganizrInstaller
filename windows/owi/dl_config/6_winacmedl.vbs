@@ -1,6 +1,6 @@
 dim xHttp: Set xHttp = createobject("MSXML2.ServerXMLHTTP")
 dim bStrm: Set bStrm = createobject("Adodb.Stream")
-xHttp.Open "GET", "https://github.com/PKISharp/win-acme/releases/download/v1.9.12.1/win-acme.v1.9.12.1.zip", False
+xHttp.Open "GET", "https://github.com/PKISharp/win-acme/releases/download/v2.0.6.284/win-acme.v2.0.6.284.zip", False
 xHttp.Send
 
 with bStrm
