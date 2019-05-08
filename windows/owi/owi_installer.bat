@@ -1,5 +1,5 @@
 @ECHO off
-SET owi_v=v1.6.1
+SET owi_v=v2.0.0
 title Organizr v2 Windows Installer %owi_v% w/ WIN-ACME support (LE CERTS GEN) 
 COLOR 03
 ECHO      ___           ___                  
@@ -286,6 +286,7 @@ ECHO.
 COPY %~dp0config\nginx.conf %nginx_loc%\conf\nginx.conf
 COPY %~dp0config\ssl.conf %nginx_loc%\conf\ssl.conf
 
+mkdir %nginx_loc%\ssl
 mkdir %nginx_loc%\www\organizr\db
 CD /d %~dp0
 COPY %~dp0config\php.ini %nginx_loc%\php\php.ini
@@ -321,7 +322,7 @@ ECHO WIN-ACME: Genertating LE SSL Certificates
 ECHO #########################################
 ECHO.
 CD /d %nginx_loc%
-%nginx_loc%\winacme\wacs.exe --target manual --host %domain_name% --validation filesystem --webroot "C:\nginx\www\organizr\html" --emailaddress "%email%" --accepttos
+%nginx_loc%\winacme\wacs.exe --target manual --host %domain_name% --validation filesystem --webroot "%nginx_loc%\www\organizr\html" --emailaddress "%email%" --accepttos --store pemfiles --pemfilespath "%nginx_loc%\ssl"
 COPY %~dp0config\nginx-ssl.conf %nginx_loc%\conf\nginx.conf
 powershell -command "(Get-Content c:\nginx\conf\nginx.conf).replace('[domain_name]', '%domain_name%') | Set-Content c:\nginx\conf\nginx.conf"
 ECHO.
