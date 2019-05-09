@@ -285,6 +285,8 @@ ECHO.
 
 COPY %~dp0config\nginx.conf %nginx_loc%\conf\nginx.conf
 COPY %~dp0config\ssl.conf %nginx_loc%\conf\ssl.conf
+COPY %~dp0config\rp-subdomain.conf %nginx_loc%\conf\rp-subdomain.conf
+COPY %~dp0config\rp-subfolder.conf %nginx_loc%\conf\rp-subfolder.conf
 
 mkdir %nginx_loc%\ssl
 mkdir %nginx_loc%\www\organizr\db
