@@ -1,5 +1,5 @@
 @ECHO off
-SET owi_v=v2.0.0
+SET owi_v=v2.0.2
 title Organizr v2 Windows Installer %owi_v% w/ WIN-ACME support (LE CERTS GEN) 
 COLOR 03
 ECHO      ___           ___                  
@@ -89,6 +89,20 @@ ECHO.
 
 ECHO 5. Deleting Nginx folder
 RMDIR /s /q c:\nginx >nul 2>&1
+ECHO.Done!
+ECHO.
+
+ECHO 6. Removing Firewall Rules
+netsh advfirewall firewall delete rule name="Organizr - HTTP"
+netsh advfirewall firewall delete rule name="Organizr - HTTPS"
+ECHO.Done!
+ECHO.
+
+ECHO 7. Removing PHP system variables
+SETX /m PHP_FCGI_CHILDREN ""
+SETX /m PHP_FCGI_MAX_REQUESTS ""
+reg delete "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" /F /V PHP_FCGI_CHILDREN
+reg delete "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" /F /V PHP_FCGI_MAX_REQUESTS
 ECHO.Done!
 ECHO.
 
@@ -199,6 +213,9 @@ ECHO ####################################
 ECHO Moving Nginx to destination
 ECHO ####################################
 ECHO.
+IF EXIST %nginx_loc%\conf\nginx.conf (
+  REN %nginx_loc%\conf\nginx.conf nginx.conf.bak
+)
 MOVE %~dp0nginx-* nginx >nul 2>&1
 MOVE %~dp0nginx\html %~dp0nginx\www >nul 2>&1
 ROBOCOPY %~dp0nginx %nginx_loc% /E /MOVE /NFL /NDL /NJH /nc /ns /np
@@ -285,6 +302,12 @@ ECHO.
 
 COPY %~dp0config\nginx.conf %nginx_loc%\conf\nginx.conf
 COPY %~dp0config\ssl.conf %nginx_loc%\conf\ssl.conf
+IF NOT EXIST %nginx_loc%\conf\rp-subdomain.conf (
+  COPY %~dp0config\rp-subdomain.conf %nginx_loc%\conf\rp-subdomain.conf
+)
+IF NOT EXIST %nginx_loc%\conf\rp-subfolder.conf (
+  COPY %~dp0config\rp-subfolder.conf %nginx_loc%\conf\rp-subfolder.conf
+)
 
 mkdir %nginx_loc%\ssl
 mkdir %nginx_loc%\www\organizr\db
