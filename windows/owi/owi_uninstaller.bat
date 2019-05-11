@@ -63,6 +63,14 @@ netsh advfirewall firewall delete rule name="Organizr - HTTPS"
 ECHO.Done!
 ECHO.
 
+ECHO 7. Removing PHP system variables
+SETX /m PHP_FCGI_CHILDREN ""
+SETX /m PHP_FCGI_MAX_REQUESTS ""
+reg delete "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" /F /V PHP_FCGI_CHILDREN
+reg delete "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" /F /V PHP_FCGI_MAX_REQUESTS
+ECHO.Done!
+ECHO.
+
 rem DEL /s /q c:\Windows\System32\nssm.exe >nul 2>&1
 
 pause
