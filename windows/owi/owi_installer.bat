@@ -1,5 +1,5 @@
 @ECHO off
-SET owi_v=v2.0.4
+SET owi_v=v2.0.5
 title Organizr v2 Windows Installer %owi_v% w/ WIN-ACME support (LE CERTS GEN) 
 COLOR 03
 ECHO      ___           ___                  
@@ -257,8 +257,8 @@ set "psCommand=powershell -Command "$pword = read-host 'Enter Password' -AsSecur
         [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)""
 for /f "usebackq delims=" %%p in (`%psCommand%`) do set pass=%%p
 ECHO.  
-NSSM install NGINX %nginx_loc%\nginx.exe
-NSSM set NGINX ObjectName %userdomain%\%username% %pass%
+NSSM install NGINX "%nginx_loc%\nginx.exe "
+NSSM set NGINX ObjectName "%userdomain%\%username%" %pass%
 NSSM start NGINX
 NSSM restart NGINX
 
@@ -271,9 +271,9 @@ ECHO ####################################
 ECHO Creating PHP service
 ECHO ####################################
 ECHO.
-NSSM install PHP %nginx_loc%\php\php-cgi.exe
+NSSM install PHP "%nginx_loc%\php\php-cgi.exe "
 NSSM set PHP AppParameters -b 127.0.0.1:9000
-NSSM set PHP ObjectName %userdomain%\%username% %pass%
+NSSM set PHP ObjectName "%userdomain%\%username%" %pass%
 ECHO.
 ECHO Setting PHP system variables
 SETX /m PHP_FCGI_CHILDREN 3
