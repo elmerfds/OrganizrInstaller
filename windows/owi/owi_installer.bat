@@ -154,6 +154,31 @@ ECHO # Enter an email address for Let's Encrypt renewal and fail notices
 SET /p "email=" 
 ECHO.
 
+:extradom
+ECHO.
+ECHO # Do you have any additional domains/subdomains you want a certificate for? [y/n]
+SET /p "extra_dom="
+ECHO %extra_dom% | findstr /r /c:"%c:~0,1%" 1>NUL 2>NUL && Goto :extradom%extra_dom% || GOTO :BadChoiceextras
+ECHO.
+
+IF /I "%extra_dom%" EQU "y" goto :extradomy 
+IF /I "%extra_dom%" EQU "Y" goto :extradomy
+IF /I "%extra_dom%" EQU "n" goto :ssln
+IF /I "%extra_dom%" EQU "N" goto :ssln
+
+:Badchoiceextras
+Echo %extra_dom%: incorrect input 
+ECHO.
+Goto :extradom
+
+:extradomy
+ECHO.
+ECHO # Enter any additional domains you want comma separated with no spaces
+ECHO # Example: www.domain.com,domain1.com
+SET /p "extras="
+SET "extras=,%extras%"
+
+:extradomn
 :ssln
 ECHO #############################
 ECHO Downloading Requirements
@@ -346,7 +371,7 @@ ECHO WIN-ACME: Genertating LE SSL Certificates
 ECHO #########################################
 ECHO.
 CD /d "%nginx_loc%"
-"%nginx_loc%\winacme\wacs.exe" --target manual --host %domain_name% --validation filesystem --webroot ""%nginx_loc%\www\organizr\html"" --emailaddress "%email%" --accepttos --store pemfiles --pemfilespath ""%nginx_loc%\ssl""
+"%nginx_loc%\winacme\wacs.exe" --target manual --host %domain_name%%extras% --validation filesystem --webroot ""%nginx_loc%\www\organizr\html"" --emailaddress "%email%" --accepttos --store pemfiles --pemfilespath ""%nginx_loc%\ssl""
 COPY "%~dp0config\nginx-ssl.conf" "%nginx_loc%\conf\nginx.conf"
 powershell -command "(Get-Content "c:\nginx\conf\nginx.conf").replace('[domain_name]', '%domain_name%') | Set-Content c:\nginx\conf\nginx.conf"
 ECHO.
