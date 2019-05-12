@@ -1,5 +1,5 @@
 @ECHO off
-SET owi_v=v2.0.5
+SET owi_v=v2.0.7
 title Organizr v2 Windows Installer %owi_v% w/ WIN-ACME support (LE CERTS GEN) 
 COLOR 03
 ECHO      ___           ___                  
@@ -58,7 +58,7 @@ DEL /s /q vc_redist.x64.exe >nul 2>&1
 DEL /s /q *.zip >nul 2>&1
 RMDIR /s /q php >nul 2>&1
 RMDIR /s /q nginx >nul 2>&1
-MOVE "%~dp0nginx-* " nginx >nul 2>&1
+MOVE "%~dp0nginx-*" nginx >nul 2>&1
 RMDIR /s /q nginx >nul 2>&1
 RMDIR /s /q Organizr-master >nul 2>&1
 RMDIR /s /q nssm-2.24-101-g897c7ad >nul 2>&1
@@ -216,24 +216,25 @@ ECHO.
 IF EXIST %nginx_loc%\conf\nginx.conf (
   REN %nginx_loc%\conf\nginx.conf nginx.conf.bak
 )
-MOVE "%~dp0nginx-* " nginx >nul 2>&1
-MOVE "%~dp0nginx\html " "%~dp0nginx\www " >nul 2>&1
-ROBOCOPY "%~dp0nginx " "%nginx_loc% " /E /MOVE /NFL /NDL /NJH /nc /ns /np
+MOVE "%~dp0nginx-*" nginx >nul 2>&1
+MOVE "%~dp0nginx\html" "%~dp0nginx\www" >nul 2>&1
+ROBOCOPY "%~dp0nginx " "%nginx_loc%" /E /MOVE /NFL /NDL /NJH /nc /ns /np
 
 ECHO.
 ECHO ####################################
 ECHO Moving PHP to destination
 ECHO ####################################
 ECHO.
-ROBOCOPY "%~dp0php " "%nginx_loc%\php " /E /MOVE /NFL /NDL /NJH /nc /ns /np
+ROBOCOPY "%~dp0php " "%nginx_loc%\php" /E /MOVE /NFL /NDL /NJH /nc /ns /np
 
 ECHO.
 ECHO ####################################
 ECHO Moving NSSM to destination
 ECHO ####################################
 ECHO.
-MOVE "%~dp0nssm-* " nssm >nul 2>&1
-ROBOCOPY "%~dp0nssm\win64\ " "C:\Windows\System32 " /E /MOVE /NFL /NDL /NJH /nc /ns /np /R:0 /W:1
+MOVE "%~dp0nssm-*" nssm >nul 2>&1
+ROBOCOPY "%~dp0nssm\win64" "C:\Windows\System32" /E /MOVE /NFL /NDL /NJH /nc /ns /np /R:0 /W:1
+
 
 IF "%ssl_site%"=="y" ( 
 ECHO.
@@ -241,7 +242,7 @@ ECHO ####################################
 ECHO Moving WIN-ACME to destination
 ECHO ####################################
 ECHO.
-ROBOCOPY "%~dp0winacme " "%nginx_loc%\winacme " /E /MOVE /NFL /NDL /NJH /nc /ns /np
+ROBOCOPY "%~dp0winacme" "%nginx_loc%\winacme" /E /MOVE /NFL /NDL /NJH /nc /ns /np
 )
 
 ECHO.
@@ -257,7 +258,7 @@ set "psCommand=powershell -Command "$pword = read-host 'Enter Password' -AsSecur
         [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)""
 for /f "usebackq delims=" %%p in (`%psCommand%`) do set pass=%%p
 ECHO.  
-NSSM install NGINX "%nginx_loc%\nginx.exe "
+NSSM install NGINX "%nginx_loc%\nginx.exe"
 NSSM set NGINX ObjectName "%userdomain%\%username%" %pass%
 NSSM start NGINX
 NSSM restart NGINX
@@ -271,7 +272,7 @@ ECHO ####################################
 ECHO Creating PHP service
 ECHO ####################################
 ECHO.
-NSSM install PHP "%nginx_loc%\php\php-cgi.exe "
+NSSM install PHP "%nginx_loc%\php\php-cgi.exe"
 NSSM set PHP AppParameters -b 127.0.0.1:9000
 NSSM set PHP ObjectName "%userdomain%\%username%" %pass%
 ECHO.
@@ -289,9 +290,9 @@ ECHO ####################################
 ECHO.
 cscript dl_config\5_orgdl.vbs //Nologo
 powershell.exe -nologo -noprofile -command "& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::ExtractToDirectory('Organizr-2-master.zip', '.'); }"
-MOVE "%~dp0Organizr-2-master " organizr >nul 2>&1
-DEL /s /q "%~dp0Organizr-2-master.zip "
-ROBOCOPY organizr "%nginx_loc%\www\organizr\html " /E /MOVE /NFL /NDL /NJH /nc /ns /np
+MOVE "%~dp0Organizr-2-master" organizr >nul 2>&1
+DEL /s /q "%~dp0Organizr-2-master.zip"
+ROBOCOPY organizr "%nginx_loc%\www\organizr\html" /E /MOVE /NFL /NDL /NJH /nc /ns /np
 REM RMDIR /s /q organizr
 
 ECHO.
@@ -300,22 +301,22 @@ ECHO Updating Nginx and PHP config
 ECHO ####################################
 ECHO.
 
-COPY "%~dp0config\nginx.conf " "%nginx_loc%\conf\nginx.conf "
-COPY "%~dp0config\ssl.conf " "%nginx_loc%\conf\ssl.conf "
-IF NOT EXIST "%nginx_loc%\conf\rp-subdomain.conf " (
-  COPY "%~dp0config\rp-subdomain.conf " "%nginx_loc%\conf\rp-subdomain.conf "
+COPY "%~dp0config\nginx.conf" "%nginx_loc%\conf\nginx.conf"
+COPY "%~dp0config\ssl.conf" "%nginx_loc%\conf\ssl.conf"
+IF NOT EXIST "%nginx_loc%\conf\rp-subdomain.conf" (
+  COPY "%~dp0config\rp-subdomain.conf" "%nginx_loc%\conf\rp-subdomain.conf"
 )
-IF NOT EXIST "%nginx_loc%\conf\rp-subfolder.conf " (
-  COPY "%~dp0config\rp-subfolder.conf " "%nginx_loc%\conf\rp-subfolder.conf "
+IF NOT EXIST "%nginx_loc%\conf\rp-subfolder.conf" (
+  COPY "%~dp0config\rp-subfolder.conf" "%nginx_loc%\conf\rp-subfolder.conf"
 )
 
-mkdir "%nginx_loc%\ssl "
-mkdir "%nginx_loc%\www\organizr\db "
-CD /d "%~dp0 "
-COPY "%~dp0config\php.ini " "%nginx_loc%\php\php.ini "
-CD /d "%nginx_loc% "
+mkdir "%nginx_loc%\ssl"
+mkdir "%nginx_loc%\www\organizr\db"
+CD /d "%~dp0"
+COPY "%~dp0config\php.ini" "%nginx_loc%\php\php.ini"
+CD /d "%nginx_loc%"
 nginx -s reload
-CD /d "%~dp0 "
+CD /d "%~dp0"
 NSSM restart PHP
 NSSM restart NGINX
 ECHO.
@@ -344,14 +345,14 @@ ECHO #########################################
 ECHO WIN-ACME: Genertating LE SSL Certificates
 ECHO #########################################
 ECHO.
-CD /d "%nginx_loc% "
-"%nginx_loc%\winacme\wacs.exe " --target manual --host %domain_name% --validation filesystem --webroot ""%nginx_loc%\www\organizr\html "" --emailaddress "%email%" --accepttos --store pemfiles --pemfilespath ""%nginx_loc%\ssl ""
-COPY "%~dp0config\nginx-ssl.conf " "%nginx_loc%\conf\nginx.conf "
-powershell -command "(Get-Content "c:\nginx\conf\nginx.conf ").replace('[domain_name]', '%domain_name%') | Set-Content c:\nginx\conf\nginx.conf "
+CD /d "%nginx_loc%"
+"%nginx_loc%\winacme\wacs.exe" --target manual --host %domain_name% --validation filesystem --webroot ""%nginx_loc%\www\organizr\html"" --emailaddress "%email%" --accepttos --store pemfiles --pemfilespath ""%nginx_loc%\ssl""
+COPY "%~dp0config\nginx-ssl.conf" "%nginx_loc%\conf\nginx.conf"
+powershell -command "(Get-Content "c:\nginx\conf\nginx.conf").replace('[domain_name]', '%domain_name%') | Set-Content c:\nginx\conf\nginx.conf"
 ECHO.
-CD /d "%nginx_loc% "
+CD /d "%nginx_loc%"
 nginx -s reload
-CD /d "%~dp0 "
+CD /d "%~dp0"
 NSSM restart PHP
 NSSM restart NGINX
 ECHO.
@@ -382,17 +383,17 @@ ECHO ############################
 ECHO Cleaning up downloaded Files
 ECHO ############################
 ECHO.
-DEL /s /q "%~dp0nginx.zip " >nul 2>&1
+DEL /s /q "%~dp0nginx.zip" >nul 2>&1
 ECHO nginx.zip      DELETED
-DEL /s /q "%~dp0php.zip " >nul 2>&1
+DEL /s /q "%~dp0php.zip" >nul 2>&1
 ECHO php.zip        DELETED
-DEL /s /q "%~dp0nssm.zip " >nul 2>&1
+DEL /s /q "%~dp0nssm.zip" >nul 2>&1
 ECHO nssm.zip       DELETED
-DEL /s /q "%~dp0vc_redist.x64.exe " >nul 2>&1
+DEL /s /q "%~dp0vc_redist.x64.exe" >nul 2>&1
 ECHO vc_redist.exe  DELETED
 RMDIR /s /q nssm >nul 2>&1
 ECHO nssm directory DELETED
-DEL /s /q "%~dp0winacme.zip " >nul 2>&1
+DEL /s /q "%~dp0winacme.zip" >nul 2>&1
 ECHO winacme.zip        DELETED
 ECHO.
 ECHO Done!
