@@ -30,7 +30,7 @@ SET nginx_v=1.15.8
 SET php_v=7.3.0
 SET nssm_v=2.24-101
 SET vcr_v=2017
-SET win-acme_v=1.9.12.1
+SET win-acme_v=2.0.6.284
 CD /d %~dp0
 
 :purpose
@@ -373,7 +373,7 @@ ECHO.
 CD /d "%nginx_loc%"
 "%nginx_loc%\winacme\wacs.exe" --target manual --host %domain_name%%extras% --validation filesystem --webroot ""%nginx_loc%\www\organizr\html"" --emailaddress "%email%" --accepttos --store pemfiles --pemfilespath ""%nginx_loc%\ssl""
 COPY "%~dp0config\nginx-ssl.conf" "%nginx_loc%\conf\nginx.conf"
-powershell -command "(Get-Content "c:\nginx\conf\nginx.conf").replace('[domain_name]', '%domain_name%') | Set-Content c:\nginx\conf\nginx.conf"
+powershell -command "(Get-Content "%nginx_loc%\conf\nginx.conf").replace('[domain_name]', '%domain_name%') | Set-Content %nginx_loc%\conf\nginx.conf"
 ECHO.
 CD /d "%nginx_loc%"
 nginx -s reload
