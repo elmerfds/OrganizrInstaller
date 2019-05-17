@@ -152,7 +152,6 @@ SET /p "domain_name="
 ECHO.
 ECHO # Enter an email address for Let's Encrypt renewal and fail notices
 SET /p "email=" 
-ECHO.
 
 :extradom
 ECHO.
@@ -174,12 +173,29 @@ Goto :extradom
 :extradomy
 ECHO.
 ECHO # Enter any additional domains you want comma separated with no spaces
-ECHO # Example: www.domain.com,domain1.com
+ECHO - Example: www.domain.com,domain1.com
 SET /p "extras="
 SET "extras=,%extras%"
 
+:verifymethod
+ECHO.
+ECHO # What validation method would you like to use?
+ECHO - Press enter to use default method: HTTP
+ECHO   1. HTTP
+ECHO   2. Cloudflare DNS
+SET /p "choice="
+ECHO.
+IF "%choice%" == "" SET "validation=http"
+IF "%choice%" == "1" SET "validation=http"
+IF "%choice%" == "2" SET "validation=cloudflare"
+IF NOT "%validation%" == "" goto :ssln
+
+:BadChoiceValidation
+Echo %validation%: incorrect input 
+
 :extradomn
 :ssln
+ECHO.
 ECHO #############################
 ECHO Downloading Requirements
 ECHO ############################
@@ -203,6 +219,9 @@ ECHO.    Done!
 IF "%ssl_site%"=="y" ( 
 ECHO 5. Downloading WIN-ACME %win-acme_v%
 cscript dl_config\6_winacmedl.vbs //Nologo
+ECHO.    Done!
+ECHO 6. Downloading DNS Scripts for WIN-ACME
+cscript dl_config\7_cloudflare.vbs //Nologo
 ECHO.    Done!
 )
 
@@ -268,6 +287,7 @@ ECHO Moving WIN-ACME to destination
 ECHO ####################################
 ECHO.
 ROBOCOPY "%~dp0winacme" "%nginx_loc%\winacme" /E /MOVE /NFL /NDL /NJH /nc /ns /np
+COPY "%~dp0cloudflare.ps1" "%nginx_loc%\winacme\Scripts\cloudflare.ps1"
 )
 
 ECHO.
@@ -371,7 +391,17 @@ ECHO WIN-ACME: Genertating LE SSL Certificates
 ECHO #########################################
 ECHO.
 CD /d "%nginx_loc%"
-"%nginx_loc%\winacme\wacs.exe" --target manual --host %domain_name%%extras% --validation filesystem --webroot ""%nginx_loc%\www\organizr\html"" --emailaddress "%email%" --accepttos --store pemfiles --pemfilespath ""%nginx_loc%\ssl""
+IF "%validation"=="http" (
+  "%nginx_loc%\winacme\wacs.exe" --target manual --host %domain_name%%extras% --validation filesystem --webroot ""%nginx_loc%\www\organizr\html"" --emailaddress "%email%" --accepttos --store pemfiles --pemfilespath ""%nginx_loc%\ssl""
+)
+IF "%validation%"=="cloudflare" (
+  ECHO # Cloudflare email:
+  SET /p "cfemail="
+  ECHO # Cloudflare API key:
+  SET /p "cfapi="
+  "%nginx_loc%\winacme\wacs.exe" --target manual --host %domain_name%%extras% --validationmode dns-01 --validation dnsscript --dnsscript "%nginx_loc%\winacme\Scripts\cloudflare.ps1" --dnscreatescriptarguments "Add-DnsTxtCloudflare '{RecordName}' '{Token}' '%cfemail%' '%cfapi%'" --dnsdeletescriptarguments "Remove-DnsTxtCloudflare '{RecordName}' '{Token}' '%cfemail%' '%cfapi%'" --emailaddress "%email%" --accepttos --store pemfiles --pemfilespath ""%nginx_loc%\ssl""
+)
+PAUSE
 COPY "%~dp0config\nginx-ssl.conf" "%nginx_loc%\conf\nginx.conf"
 powershell -command "(Get-Content "%nginx_loc%\conf\nginx.conf").replace('[domain_name]', '%domain_name%') | Set-Content %nginx_loc%\conf\nginx.conf"
 ECHO.
