@@ -1,3 +1,6 @@
+@ECHO off
+setlocal enabledelayedexpansion
+COLOR 03
 ECHO.
 ECHO #################################
 ECHO        CERTIFICATE UPDATER       
