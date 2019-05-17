@@ -1,5 +1,6 @@
 @ECHO off
-SET owi_v=v2.0.7
+setlocal enabledelayedexpansion
+SET owi_v=v2.0.8
 title Organizr v2 Windows Installer %owi_v% w/ WIN-ACME support (LE CERTS GEN) 
 COLOR 03
 ECHO      ___           ___                  
@@ -220,9 +221,6 @@ IF "%ssl_site%"=="y" (
 ECHO 5. Downloading WIN-ACME %win-acme_v%
 cscript dl_config\6_winacmedl.vbs //Nologo
 ECHO.    Done!
-ECHO 6. Downloading DNS Scripts for WIN-ACME
-cscript dl_config\7_cloudflare.vbs //Nologo
-ECHO.    Done!
 )
 
 ECHO.
@@ -287,7 +285,7 @@ ECHO Moving WIN-ACME to destination
 ECHO ####################################
 ECHO.
 ROBOCOPY "%~dp0winacme" "%nginx_loc%\winacme" /E /MOVE /NFL /NDL /NJH /nc /ns /np
-COPY "%~dp0cloudflare.ps1" "%nginx_loc%\winacme\Scripts\cloudflare.ps1"
+ROBOCOPY "%~dp0dns_scripts" "%nginx_loc%\winacme\dns_scripts" /E /NFL /NDL /NJH /nc /ns /np
 )
 
 ECHO.
@@ -399,7 +397,7 @@ IF "%validation%"=="cloudflare" (
   SET /p "cfemail="
   ECHO # Cloudflare API key:
   SET /p "cfapi="
-  "%nginx_loc%\winacme\wacs.exe" --target manual --host %domain_name%%extras% --validationmode dns-01 --validation dnsscript --dnsscript "%nginx_loc%\winacme\Scripts\cloudflare.ps1" --dnscreatescriptarguments "Add-DnsTxtCloudflare '{RecordName}' '{Token}' '%cfemail%' '%cfapi%'" --dnsdeletescriptarguments "Remove-DnsTxtCloudflare '{RecordName}' '{Token}' '%cfemail%' '%cfapi%'" --emailaddress "%email%" --accepttos --store pemfiles --pemfilespath ""%nginx_loc%\ssl""
+  "%nginx_loc%\winacme\wacs.exe" --target manual --host %domain_name%%extras% --validationmode dns-01 --validation dnsscript --dnsscript "%nginx_loc%\winacme\dns_scripts\cloudflare.ps1" --dnscreatescriptarguments "create '{RecordName}' '{Token}' '!cfemail!' '!cfapi!'" --dnsdeletescriptarguments "remove '{RecordName}' '{Token}' '!cfemail!' '!cfapi!'" --emailaddress "%email%" --accepttos --store pemfiles --pemfilespath ""%nginx_loc%\ssl""
 )
 PAUSE
 COPY "%~dp0config\nginx-ssl.conf" "%nginx_loc%\conf\nginx.conf"
