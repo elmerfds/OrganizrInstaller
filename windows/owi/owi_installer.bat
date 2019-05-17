@@ -163,8 +163,8 @@ ECHO.
 
 IF /I "%extra_dom%" EQU "y" goto :extradomy 
 IF /I "%extra_dom%" EQU "Y" goto :extradomy
-IF /I "%extra_dom%" EQU "n" goto :ssln
-IF /I "%extra_dom%" EQU "N" goto :ssln
+IF /I "%extra_dom%" EQU "n" goto :verifymethod
+IF /I "%extra_dom%" EQU "N" goto :verifymethod
 
 :Badchoiceextras
 Echo %extra_dom%: incorrect input 
@@ -193,6 +193,8 @@ IF NOT "%validation%" == "" goto :ssln
 
 :BadChoiceValidation
 Echo %validation%: incorrect input 
+ECHO.
+Goto :verifymethod
 
 :extradomn
 :ssln
