@@ -42,11 +42,15 @@ ECHO # What validation method would you like to use?
 ECHO - Press enter to use default method: HTTP
 ECHO   1. HTTP
 ECHO   2. Cloudflare DNS
+ECHO   3. NameCheap DNS
+ECHO   4. GoDaddy DNS
 SET /p "choice="
 ECHO.
 IF "%choice%" == "" SET "validation=http"
 IF "%choice%" == "1" SET "validation=http"
 IF "%choice%" == "2" SET "validation=cloudflare"
+IF "%choice%" == "3" SET "validation=namecheap"
+IF "%choice%" == "4" SET "validation=godaddy"
 IF NOT "%validation%" == "" goto :winacme
 
 :BadChoiceValidation
@@ -70,6 +74,20 @@ IF "%validation%"=="cloudflare" (
   ECHO # Cloudflare API key:
   SET /p "cfapi="
   "%nginx_loc%\winacme\wacs.exe" --target manual --host %domain_name%%extras% --validationmode dns-01 --validation dnsscript --dnsscript "%nginx_loc%\winacme\dns_scripts\cloudflare.ps1" --dnscreatescriptarguments "create '{RecordName}' '{Token}' '!cfemail!' '!cfapi!'" --dnsdeletescriptarguments "remove '{RecordName}' '{Token}' '!cfemail!' '!cfapi!'" --emailaddress "%email%" --accepttos --store pemfiles --pemfilespath ""%nginx_loc%\ssl""
+)
+IF "%validation%"=="namecheap" (
+  ECHO # NameCheap username:
+  SET /p "ncusername="
+  ECHO # NameCheap API key:
+  SET /p "ncapi="
+  "%nginx_loc%\winacme\wacs.exe" --target manual --host %domain_name%%extras% --validationmode dns-01 --validation dnsscript --dnsscript "%nginx_loc%\winacme\dns_scripts\namecheap.ps1" --dnscreatescriptarguments "create '{RecordName}' '{Token}' '!ncusernamel!' '!ncapi!'" --dnsdeletescriptarguments "remove '{RecordName}' '{Token}' '!ncusernamel!' '!ncapi!'" --emailaddress "%email%" --accepttos --store pemfiles --pemfilespath ""%nginx_loc%\ssl""
+)
+IF "%validation%"=="cloudflare" (
+  ECHO # GoDaddy key:
+  SET /p "gdkey="
+  ECHO # GoDaddy secret:
+  SET /p "gdsecret="
+  "%nginx_loc%\winacme\wacs.exe" --target manual --host %domain_name%%extras% --validationmode dns-01 --validation dnsscript --dnsscript "%nginx_loc%\winacme\dns_scripts\cloudflare.ps1" --dnscreatescriptarguments "create '{RecordName}' '{Token}' '!gdkey!' '!gdsecret!'" --dnsdeletescriptarguments "remove '{RecordName}' '{Token}' '!gdkey!' '!gdsecret!'" --emailaddress "%email%" --accepttos --store pemfiles --pemfilespath ""%nginx_loc%\ssl""
 )
 CD /d "%nginx_loc%"
 nginx -s reload
