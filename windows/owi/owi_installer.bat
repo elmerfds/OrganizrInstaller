@@ -292,6 +292,7 @@ ECHO ####################################
 ECHO.
 ROBOCOPY "%~dp0winacme" "%nginx_loc%\winacme" /E /MOVE /NFL /NDL /NJH /nc /ns /np
 ROBOCOPY "%~dp0dns_scripts" "%nginx_loc%\winacme\dns_scripts" /E /NFL /NDL /NJH /nc /ns /np
+COPY "%~dp0owi_sslupdater.bat" "%nginx_loc%\winacme\owi_sslupdater.bat"
 )
 
 ECHO.
@@ -412,12 +413,12 @@ IF "%validation%"=="namecheap" (
   SET /p "ncapi="
   "%nginx_loc%\winacme\wacs.exe" --target manual --host %domain_name%%extras% --validationmode dns-01 --validation dnsscript --dnsscript "%nginx_loc%\winacme\dns_scripts\namecheap.ps1" --dnscreatescriptarguments "create '{RecordName}' '{Token}' '!ncusernamel!' '!ncapi!'" --dnsdeletescriptarguments "remove '{RecordName}' '{Token}' '!ncusernamel!' '!ncapi!'" --emailaddress "%email%" --accepttos --store pemfiles --pemfilespath ""%nginx_loc%\ssl""
 )
-IF "%validation%"=="cloudflare" (
+IF "%validation%"=="godaddy" (
   ECHO # GoDaddy key:
   SET /p "gdkey="
   ECHO # GoDaddy secret:
   SET /p "gdsecret="
-  "%nginx_loc%\winacme\wacs.exe" --target manual --host %domain_name%%extras% --validationmode dns-01 --validation dnsscript --dnsscript "%nginx_loc%\winacme\dns_scripts\cloudflare.ps1" --dnscreatescriptarguments "create '{RecordName}' '{Token}' '!gdkey!' '!gdsecret!'" --dnsdeletescriptarguments "remove '{RecordName}' '{Token}' '!gdkey!' '!gdsecret!'" --emailaddress "%email%" --accepttos --store pemfiles --pemfilespath ""%nginx_loc%\ssl""
+  "%nginx_loc%\winacme\wacs.exe" --target manual --host %domain_name%%extras% --validationmode dns-01 --validation dnsscript --dnsscript "%nginx_loc%\winacme\dns_scripts\godaddy.ps1" --dnscreatescriptarguments "create '{RecordName}' '{Token}' '!gdkey!' '!gdsecret!'" --dnsdeletescriptarguments "remove '{RecordName}' '{Token}' '!gdkey!' '!gdsecret!'" --emailaddress "%email%" --accepttos --store pemfiles --pemfilespath ""%nginx_loc%\ssl""
 )
 PAUSE
 COPY "%~dp0config\nginx-ssl.conf" "%nginx_loc%\conf\nginx.conf"

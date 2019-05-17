@@ -1,6 +1,13 @@
 @ECHO off
 setlocal enabledelayedexpansion
 COLOR 03
+IF NOT EXIST "%~dp0wacs.exe" (
+  ECHO #################################
+  ECHO  PLEASE RUN FROM WIN-ACME FOLDER
+  ECHO #################################
+  PAUSE
+  EXIT /b
+)
 ECHO.
 ECHO #################################
 ECHO        CERTIFICATE UPDATER       
@@ -64,32 +71,32 @@ ECHO #########################################
 ECHO WIN-ACME: Genertating LE SSL Certificates
 ECHO #########################################
 ECHO.
-CD /d "%nginx_loc%"
+CD /d "%~dp0.."
 IF "%validation"=="http" (
-  "%nginx_loc%\winacme\wacs.exe" --target manual --host %domain_name%%extras% --validation filesystem --webroot ""%nginx_loc%\www\organizr\html"" --emailaddress "%email%" --accepttos --store pemfiles --pemfilespath ""%nginx_loc%\ssl""
+  "%~dp0wacs.exe" --target manual --host %domain_name%%extras% --validation filesystem --webroot ""%~dp0..\www\organizr\html"" --emailaddress "%email%" --accepttos --store pemfiles --pemfilespath ""%~dp0..\ssl""
 )
 IF "%validation%"=="cloudflare" (
   ECHO # Cloudflare email:
   SET /p "cfemail="
   ECHO # Cloudflare API key:
   SET /p "cfapi="
-  "%nginx_loc%\winacme\wacs.exe" --target manual --host %domain_name%%extras% --validationmode dns-01 --validation dnsscript --dnsscript "%nginx_loc%\winacme\dns_scripts\cloudflare.ps1" --dnscreatescriptarguments "create '{RecordName}' '{Token}' '!cfemail!' '!cfapi!'" --dnsdeletescriptarguments "remove '{RecordName}' '{Token}' '!cfemail!' '!cfapi!'" --emailaddress "%email%" --accepttos --store pemfiles --pemfilespath ""%nginx_loc%\ssl""
+  "%~dp0wacs.exe" --target manual --host %domain_name%%extras% --validationmode dns-01 --validation dnsscript --dnsscript "%~dp0dns_scripts\cloudflare.ps1" --dnscreatescriptarguments "create '{RecordName}' '{Token}' '!cfemail!' '!cfapi!'" --dnsdeletescriptarguments "remove '{RecordName}' '{Token}' '!cfemail!' '!cfapi!'" --emailaddress "%email%" --accepttos --store pemfiles --pemfilespath ""%~dp0..\ssl""
 )
 IF "%validation%"=="namecheap" (
   ECHO # NameCheap username:
   SET /p "ncusername="
   ECHO # NameCheap API key:
   SET /p "ncapi="
-  "%nginx_loc%\winacme\wacs.exe" --target manual --host %domain_name%%extras% --validationmode dns-01 --validation dnsscript --dnsscript "%nginx_loc%\winacme\dns_scripts\namecheap.ps1" --dnscreatescriptarguments "create '{RecordName}' '{Token}' '!ncusernamel!' '!ncapi!'" --dnsdeletescriptarguments "remove '{RecordName}' '{Token}' '!ncusernamel!' '!ncapi!'" --emailaddress "%email%" --accepttos --store pemfiles --pemfilespath ""%nginx_loc%\ssl""
+  "%~dp0wacs.exe" --target manual --host %domain_name%%extras% --validationmode dns-01 --validation dnsscript --dnsscript "%~dp0dns_scripts\namecheap.ps1" --dnscreatescriptarguments "create '{RecordName}' '{Token}' '!ncusernamel!' '!ncapi!'" --dnsdeletescriptarguments "remove '{RecordName}' '{Token}' '!ncusernamel!' '!ncapi!'" --emailaddress "%email%" --accepttos --store pemfiles --pemfilespath ""%~dp0..\ssl""
 )
-IF "%validation%"=="cloudflare" (
+IF "%validation%"=="godaddy" (
   ECHO # GoDaddy key:
   SET /p "gdkey="
   ECHO # GoDaddy secret:
   SET /p "gdsecret="
-  "%nginx_loc%\winacme\wacs.exe" --target manual --host %domain_name%%extras% --validationmode dns-01 --validation dnsscript --dnsscript "%nginx_loc%\winacme\dns_scripts\cloudflare.ps1" --dnscreatescriptarguments "create '{RecordName}' '{Token}' '!gdkey!' '!gdsecret!'" --dnsdeletescriptarguments "remove '{RecordName}' '{Token}' '!gdkey!' '!gdsecret!'" --emailaddress "%email%" --accepttos --store pemfiles --pemfilespath ""%nginx_loc%\ssl""
+  "%~dp0wacs.exe" --target manual --host %domain_name%%extras% --validationmode dns-01 --validation dnsscript --dnsscript "%~dp0dns_scripts\godaddy.ps1" --dnscreatescriptarguments "create '{RecordName}' '{Token}' '!gdkey!' '!gdsecret!'" --dnsdeletescriptarguments "remove '{RecordName}' '{Token}' '!gdkey!' '!gdsecret!'" --emailaddress "%email%" --accepttos --store pemfiles --pemfilespath ""%~dp0..\ssl""
 )
-CD /d "%nginx_loc%"
+CD /d "%~dp0.."
 nginx -s reload
 CD /d "%~dp0"
 NSSM restart PHP
@@ -102,3 +109,4 @@ SET /p "=PHP   status : " <nul
 NSSM status PHP
 ECHO.
 ECHO ########## Installation Completed ##########
+PAUSE
