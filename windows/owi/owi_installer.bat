@@ -1,6 +1,6 @@
 @ECHO off
 setlocal enabledelayedexpansion
-SET owi_v=v2.0.8
+SET owi_v=v2.5.0
 title Organizr v2 Windows Installer %owi_v% w/ WIN-ACME support (LE CERTS GEN) 
 COLOR 03
 ECHO      ___           ___                  
@@ -18,10 +18,9 @@ ECHO.
 ECHO Organizr v2 installer  w/ WIN-ACME support (LE CERTS GEN) 
 ECHO.
 ECHO ## Note for SSL site setup: 
-ECHO - Certificate Type: Single certifcate only! Wildcard certificates aren't supported by WIN-ACME at the moment.
-ECHO - Validation: Supports HTTP Validation (http-01) only! so requires port forwarding of ports 80 and 443
+ECHO - Certificate Type: Support single or wildcard
 ECHO - Other: you can check certificate status and renewals by running this command via cmd, 
-ECHO   for e.g: c:\nginx\winacme\letsencrypt.exe
+ECHO   for e.g: c:\nginx\winacme\wacs.exe.exe
 ECHO - For more info on WIN-ACME, check out their wiki: https://github.com/PKISharp/win-acme/wiki
 ECHO.   
 pause
