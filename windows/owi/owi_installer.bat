@@ -1,5 +1,6 @@
 @ECHO off
-SET owi_v=v2.0.7
+setlocal enabledelayedexpansion
+SET owi_v=v2.0.8
 title Organizr v2 Windows Installer %owi_v% w/ WIN-ACME support (LE CERTS GEN) 
 COLOR 03
 ECHO      ___           ___                  
@@ -30,7 +31,7 @@ SET nginx_v=1.15.8
 SET php_v=7.3.0
 SET nssm_v=2.24-101
 SET vcr_v=2017
-SET win-acme_v=1.9.12.1
+SET win-acme_v=2.0.6.284
 CD /d %~dp0
 
 :purpose
@@ -152,9 +153,56 @@ SET /p "domain_name="
 ECHO.
 ECHO # Enter an email address for Let's Encrypt renewal and fail notices
 SET /p "email=" 
+
+:extradom
+ECHO.
+ECHO # Do you have any additional domains/subdomains you want a certificate for? [y/n]
+SET /p "extra_dom="
+ECHO %extra_dom% | findstr /r /c:"%c:~0,1%" 1>NUL 2>NUL && Goto :extradom%extra_dom% || GOTO :BadChoiceextras
 ECHO.
 
+IF /I "%extra_dom%" EQU "y" goto :extradomy 
+IF /I "%extra_dom%" EQU "Y" goto :extradomy
+IF /I "%extra_dom%" EQU "n" goto :verifymethod
+IF /I "%extra_dom%" EQU "N" goto :verifymethod
+
+:Badchoiceextras
+Echo %extra_dom%: incorrect input 
+ECHO.
+Goto :extradom
+
+:extradomy
+ECHO.
+ECHO # Enter any additional domains you want comma separated with no spaces
+ECHO - Example: www.domain.com,domain1.com
+SET /p "extras="
+SET "extras=,%extras%"
+
+:verifymethod
+ECHO.
+ECHO # What validation method would you like to use?
+ECHO - Press enter to use default method: HTTP
+ECHO   1. HTTP
+ECHO   2. Cloudflare DNS
+ECHO   3. NameCheap DNS
+ECHO   4. GoDaddy DNS
+SET /p "choice="
+ECHO.
+IF "%choice%" == "" SET "validation=http"
+IF "%choice%" == "1" SET "validation=http"
+IF "%choice%" == "2" SET "validation=cloudflare"
+IF "%choice%" == "3" SET "validation=namecheap"
+IF "%choice%" == "4" SET "validation=godaddy"
+IF NOT "%validation%" == "" goto :ssln
+
+:BadChoiceValidation
+Echo %validation%: incorrect input 
+ECHO.
+Goto :verifymethod
+
+:extradomn
 :ssln
+ECHO.
 ECHO #############################
 ECHO Downloading Requirements
 ECHO ############################
@@ -243,6 +291,8 @@ ECHO Moving WIN-ACME to destination
 ECHO ####################################
 ECHO.
 ROBOCOPY "%~dp0winacme" "%nginx_loc%\winacme" /E /MOVE /NFL /NDL /NJH /nc /ns /np
+ROBOCOPY "%~dp0dns_scripts" "%nginx_loc%\winacme\dns_scripts" /E /NFL /NDL /NJH /nc /ns /np
+COPY "%~dp0owi_sslupdater.bat" "%nginx_loc%\winacme\owi_sslupdater.bat"
 )
 
 ECHO.
@@ -346,9 +396,33 @@ ECHO WIN-ACME: Genertating LE SSL Certificates
 ECHO #########################################
 ECHO.
 CD /d "%nginx_loc%"
-"%nginx_loc%\winacme\wacs.exe" --target manual --host %domain_name% --validation filesystem --webroot ""%nginx_loc%\www\organizr\html"" --emailaddress "%email%" --accepttos --store pemfiles --pemfilespath ""%nginx_loc%\ssl""
+IF "%validation"=="http" (
+  "%nginx_loc%\winacme\wacs.exe" --target manual --host %domain_name%%extras% --validation filesystem --webroot ""%nginx_loc%\www\organizr\html"" --emailaddress "%email%" --accepttos --store pemfiles --pemfilespath ""%nginx_loc%\ssl""
+)
+IF "%validation%"=="cloudflare" (
+  ECHO # Cloudflare email:
+  SET /p "cfemail="
+  ECHO # Cloudflare API key:
+  SET /p "cfapi="
+  "%nginx_loc%\winacme\wacs.exe" --target manual --host %domain_name%%extras% --validationmode dns-01 --validation dnsscript --dnsscript "%nginx_loc%\winacme\dns_scripts\cloudflare.ps1" --dnscreatescriptarguments "create '{RecordName}' '{Token}' '!cfemail!' '!cfapi!'" --dnsdeletescriptarguments "remove '{RecordName}' '{Token}' '!cfemail!' '!cfapi!'" --emailaddress "%email%" --accepttos --store pemfiles --pemfilespath ""%nginx_loc%\ssl""
+)
+IF "%validation%"=="namecheap" (
+  ECHO # NameCheap username:
+  SET /p "ncusername="
+  ECHO # NameCheap API key:
+  SET /p "ncapi="
+  "%nginx_loc%\winacme\wacs.exe" --target manual --host %domain_name%%extras% --validationmode dns-01 --validation dnsscript --dnsscript "%nginx_loc%\winacme\dns_scripts\namecheap.ps1" --dnscreatescriptarguments "create '{RecordName}' '{Token}' '!ncusernamel!' '!ncapi!'" --dnsdeletescriptarguments "remove '{RecordName}' '{Token}' '!ncusernamel!' '!ncapi!'" --emailaddress "%email%" --accepttos --store pemfiles --pemfilespath ""%nginx_loc%\ssl""
+)
+IF "%validation%"=="godaddy" (
+  ECHO # GoDaddy key:
+  SET /p "gdkey="
+  ECHO # GoDaddy secret:
+  SET /p "gdsecret="
+  "%nginx_loc%\winacme\wacs.exe" --target manual --host %domain_name%%extras% --validationmode dns-01 --validation dnsscript --dnsscript "%nginx_loc%\winacme\dns_scripts\godaddy.ps1" --dnscreatescriptarguments "create '{RecordName}' '{Token}' '!gdkey!' '!gdsecret!'" --dnsdeletescriptarguments "remove '{RecordName}' '{Token}' '!gdkey!' '!gdsecret!'" --emailaddress "%email%" --accepttos --store pemfiles --pemfilespath ""%nginx_loc%\ssl""
+)
+PAUSE
 COPY "%~dp0config\nginx-ssl.conf" "%nginx_loc%\conf\nginx.conf"
-powershell -command "(Get-Content "c:\nginx\conf\nginx.conf").replace('[domain_name]', '%domain_name%') | Set-Content c:\nginx\conf\nginx.conf"
+powershell -command "(Get-Content "%nginx_loc%\conf\nginx.conf").replace('[domain_name]', '%domain_name%') | Set-Content %nginx_loc%\conf\nginx.conf"
 ECHO.
 CD /d "%nginx_loc%"
 nginx -s reload
