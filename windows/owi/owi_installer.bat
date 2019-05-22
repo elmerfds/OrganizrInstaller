@@ -1,6 +1,6 @@
 @ECHO off
 setlocal enabledelayedexpansion
-SET owi_v=v2.5.0
+SET owi_v=v2.5.1
 title Organizr v2 Windows Installer %owi_v% w/ WIN-ACME support (LE CERTS GEN) 
 COLOR 03
 ECHO      ___           ___                  
@@ -452,6 +452,10 @@ pause
 START http://localhost
 ECHO.
 )
+ECHO Opening Organizr First Setup Guide:
+START https://docs.organizr.app/books/installation/page/first-time-setup
+ECHO.
+
 ECHO ############################
 ECHO Cleaning up downloaded Files
 ECHO ############################
@@ -467,7 +471,7 @@ ECHO vc_redist.exe  DELETED
 RMDIR /s /q nssm >nul 2>&1
 ECHO nssm directory DELETED
 DEL /s /q "%~dp0winacme.zip" >nul 2>&1
-ECHO winacme.zip        DELETED
+ECHO winacme.zip    DELETED
 ECHO.
 ECHO Done!
 ECHO.
