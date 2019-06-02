@@ -395,7 +395,7 @@ ECHO WIN-ACME: Genertating LE SSL Certificates
 ECHO #########################################
 ECHO.
 CD /d "%nginx_loc%"
-IF "%validation"=="http" (
+IF "%validation%"=="http" (
   "%nginx_loc%\winacme\wacs.exe" --target manual --host %domain_name%%extras% --validation filesystem --webroot ""%nginx_loc%\www\organizr\html"" --emailaddress "%email%" --accepttos --store pemfiles --pemfilespath ""%nginx_loc%\ssl""
 )
 IF "%validation%"=="cloudflare" (
