@@ -420,8 +420,14 @@ IF "%validation%"=="godaddy" (
   "%nginx_loc%\winacme\wacs.exe" --target manual --host %domain_name%%extras% --validationmode dns-01 --validation dnsscript --dnsscript "%nginx_loc%\winacme\dns_scripts\godaddy.ps1" --dnscreatescriptarguments "create '{RecordName}' '{Token}' '!gdkey!' '!gdsecret!'" --dnsdeletescriptarguments "remove '{RecordName}' '{Token}' '!gdkey!' '!gdsecret!'" --emailaddress "%email%" --accepttos --store pemfiles --pemfilespath ""%nginx_loc%\ssl""
 )
 PAUSE
-COPY "%~dp0config\nginx-ssl.conf" "%nginx_loc%\conf\nginx.conf"
-powershell -command "(Get-Content "%nginx_loc%\conf\nginx.conf").replace('[domain_name]', '%domain_name%') | Set-Content %nginx_loc%\conf\nginx.conf"
+IF NOT EXIST %nginx_loc%\ssl\%domain_name%-chain.pem (
+  ECHO CERT GENERATION FAILED. LEAVING NON-SSL CONFIG.
+  REM Switch to ssl_site to n so the url it gives at the end of the script is correct
+  SET ssl_site=n
+) ELSE (
+  COPY "%~dp0config\nginx-ssl.conf" "%nginx_loc%\conf\nginx.conf"
+  powershell -command "(Get-Content "%nginx_loc%\conf\nginx.conf").replace('[domain_name]', '%domain_name%') | Set-Content %nginx_loc%\conf\nginx.conf"
+)
 ECHO.
 CD /d "%nginx_loc%"
 nginx -s reload
