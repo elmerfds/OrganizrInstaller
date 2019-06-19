@@ -72,7 +72,7 @@ ECHO WIN-ACME: Genertating LE SSL Certificates
 ECHO #########################################
 ECHO.
 CD /d "%~dp0"
-IF "%validation"=="http" (
+IF "%validation%"=="http" (
   "%~dp0wacs.exe" --target manual --host %domain_name%%extras% --validation filesystem --webroot ""..\www\organizr\html"" --emailaddress "%email%" --accepttos --store pemfiles --pemfilespath ""..\ssl""
 )
 IF "%validation%"=="cloudflare" (
