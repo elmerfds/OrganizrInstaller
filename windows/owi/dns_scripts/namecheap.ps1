@@ -63,6 +63,7 @@ function Add-DnsTxtNamecheap {
         try {
             Write-Verbose "Adding a TXT record for $RecordName with value $TxtValue"
             Invoke-NCAPI $addBody -Method Post | Out-Null
+            Start-Sleep -s 5
         } catch { throw }
 
     }
