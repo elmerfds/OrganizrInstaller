@@ -62,6 +62,7 @@ function Add-DnsTxtGoDaddy {
             Invoke-RestMethod "$apiRoot/$zone/records/TXT/$recShort" `
                 -Method Put -Headers $headers -Body $bodyJson `
                 -ContentType 'application/json' -UseBasicParsing -EA Stop | Out-Null
+            Start-Sleep -s 5
         } catch { throw }
 
     } else {

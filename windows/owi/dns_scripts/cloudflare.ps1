@@ -40,7 +40,8 @@ function Add-DnsTxtCloudflare {
         Write-Verbose "Adding $RecordName with value $TxtValue"
         Invoke-RestMethod "$apiRoot/$zoneID/dns_records" -Method Post -Body $bodyJson `
             -ContentType 'application/json' -Headers $authHeader -UseBasicParsing | Out-Null
-
+        Start-Sleep -s 5
+        
     } else {
         Write-Debug "Record $RecordName with value $TxtValue already exists. Nothing to do."
     }
