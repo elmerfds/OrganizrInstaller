@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr CentOS Installer
 #author: elmerfdz
-version=v1.3.0-4-2
+version=v1.3.1
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML' 'PHP XMLrpc')
@@ -408,7 +408,7 @@ orgdl_mod()
 		echo 
 		printf '\e[1;36m> \e[0m'
 		read -r org_v
-		org_v=${org_v:-2}		
+		org_v=${org_v:-2}
 		echo
 		echo -e "\e[1;36m> which branch do you want to install?\e[0m .eg. 1a or 2a"
 		echo
@@ -444,48 +444,35 @@ orgdl_mod()
 		if [ $dlvar = "1a" ]
 		then 
 		dlbranch=Master
-		zipbranch=master.zip
-		zipextfname=Organizr-master
+
 			
 		elif [ $dlvar = "1b" ]
 		then 
 		dlbranch=Develop
-		zipbranch=develop.zip
-		zipextfname=Organizr-develop
+
 
 		elif [ $dlvar = "1c" ]
 		then 
 		dlbranch=Pre-Dev
-		zipbranch=cero-dev.zip
-		zipextfname=Organizr-cero-dev
+
 
 		elif [ $dlvar = "2a" ]
 		then
 		dlbranch=v2-master
-		zipbranch=v2-master.zip
-		zipextfname=Organizr-2-master
+
 
 		elif [ $dlvar = "2b" ]
 		then
 		dlbranch=v2-develop
-		zipbranch=v2-develop.zip
-		zipextfname=Organizr-2-develop
+
 		fi
 
-		echo -e "\e[1;36m> Downloading the latest Organizr "$dlbranch" ...\e[0m"
-		rm -r -f /tmp/Organizr/$zipbranch
-		rm -r -f /tmp/Organizr/$zipbranch.*		
-		rm -r -f /tmp/Organizr/$zipextfname
-		wget https://github.com/causefx/Organizr/archive/$zipbranch -P /tmp/Organizr/ 
-		unzip -q /tmp/Organizr/$zipbranch -d /tmp/Organizr
-		echo -e "\e[1;36m> Organizr "$dlbranch" downloaded and unzipped \e[0m"
-		echo
-		echo -e "\e[1;36m> Installing Organizr...\e[0m"
+		echo -e "\e[1;36m> Downloading & Installing Organizr "$dlbranch" ...\e[0m"
 
 		if [ ! -d "$instvar" ]; then
 		mkdir -p $instvar
 		fi
-		cp -a /tmp/Organizr/$zipextfname/. $instvar/html
+        git clone -b $dlbranch https://github.com/causefx/Organizr.git $instvar/html/
                 
 		if [ ! -d "$instvar/db" ]; then
 		mkdir $instvar/db
