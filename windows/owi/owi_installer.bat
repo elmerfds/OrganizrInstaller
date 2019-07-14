@@ -1,6 +1,6 @@
 @ECHO off
 setlocal enabledelayedexpansion
-SET owi_v=v2.5.1
+SET owi_v=v2.5.2
 title Organizr v2 Windows Installer %owi_v% w/ WIN-ACME support (LE CERTS GEN) 
 COLOR 03
 ECHO      ___           ___                  
@@ -22,6 +22,15 @@ ECHO - Certificate Type: Support single or wildcard
 ECHO - Other: you can check certificate status and renewals by running this command via cmd, 
 ECHO   for e.g: c:\nginx\winacme\wacs.exe.exe
 ECHO - For more info on WIN-ACME, check out their wiki: https://github.com/PKISharp/win-acme/wiki
+ECHO.
+ECHO ## Port availability check:
+echo.
+netstat -o -n -a -b | find "LISTENING" | find ":80 " >nul 2>&1
+if %ERRORLEVEL% equ 0 (@echo Port 80 unavailable 	- Required for NGINX HTTP) ELSE (@echo Port 80 available 	- Required for NGINX HTTP)
+netstat -o -n -a | find "LISTENING" | find ":443 " >nul 2>&1
+if %ERRORLEVEL% equ 0 (@echo "port 443 unavailable 	- Required for NGINX HTTPS") ELSE (@echo Port 443 available 	- Required for NGINX HTTPS)
+netstat -o -n -a | find "LISTENING" | find ":9000 " >nul 2>&1
+if %ERRORLEVEL% equ 0 (@echo Port 9000 unavailable 	- Required for PHP) ELSE (@echo Port 9000 available 		- Required for PHP)
 ECHO.   
 pause
 ECHO.
