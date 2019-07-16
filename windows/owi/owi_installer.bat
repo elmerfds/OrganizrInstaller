@@ -1,6 +1,6 @@
 @ECHO off
 setlocal enabledelayedexpansion
-SET owi_v=v2.5.2
+SET owi_v=v2.5.3
 title Organizr v2 Windows Installer %owi_v% w/ WIN-ACME support (LE CERTS GEN) 
 COLOR 03
 ECHO      ___           ___                  
@@ -17,6 +17,16 @@ ECHO     \__\/         \__\/             ~~ %owi_v%
 ECHO.      
 ECHO Organizr v2 installer  w/ WIN-ACME support (LE CERTS GEN) 
 ECHO.
+goto check_Permissions
+:check_Permissions
+    net session >nul 2>&1
+    if NOT %errorLevel% == 0 (
+        echo Failure: Current permissions inadequate, please run-as administrator.
+	echo.
+	echo Press any key to terminate.
+	pause >nul
+	exit 0
+    ) 
 ECHO ## Note for SSL site setup: 
 ECHO - Certificate Type: Support single or wildcard
 ECHO - Other: you can check certificate status and renewals by running this command via cmd, 
@@ -390,10 +400,13 @@ ECHO #########################################
 ECHO CREATE WINDOWS FIREWALL RULE
 ECHO #########################################
 ECHO.
-ECHO ADDING RULE FOR PORT 80
+ECHO  - Removing existing Organizr port rules
+netsh advfirewall firewall delete rule name="Organizr - HTTP" >nul 2>&1 && netsh advfirewall firewall delete rule name= "Organizr - HTTPS"  >nul 2>&1
+ECHO.
+ECHO - Adding rule for port 80
 netsh advfirewall firewall add rule name="Organizr - HTTP" dir=in action=allow protocol=TCP localport=80
 IF "%ssl_site%"=="y" (
-ECHO ADDING RULE FOR PORT 443
+ECHO - Adding rule for port 443
 netsh advfirewall firewall add rule name="Organizr - HTTPS" dir=in action=allow protocol=TCP localport=443
 )
 
