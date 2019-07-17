@@ -363,6 +363,7 @@ mkdir "%nginx_loc%\ssl"
 mkdir "%nginx_loc%\www\organizr\db"
 CD /d "%~dp0"
 COPY "%~dp0config\php.ini" "%nginx_loc%\php\php.ini"
+powershell -command "(Get-Content "%nginx_loc%\php\php.ini").replace(';error_log = php_errors.log', 'error_log = %nginx_loc%\logs\php_errors.log') | Set-Content %nginx_loc%\php\php.ini"
 CD /d "%nginx_loc%"
 nginx -s reload
 CD /d "%~dp0"
