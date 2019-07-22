@@ -1,6 +1,6 @@
 @ECHO off
 setlocal enabledelayedexpansion
-SET owi_v=v2.5.3
+SET owi_v=v2.5.4
 title Organizr v2 Windows Installer %owi_v% w/ WIN-ACME support (LE CERTS GEN)
 COLOR 03
 ECHO      ___           ___
@@ -423,8 +423,10 @@ IF "%validation%"=="http" (
 IF "%validation%"=="cloudflare" (
   ECHO # Cloudflare email:
   SET /p "cfemail="
+  ECHO.
   ECHO # Cloudflare API key:
   SET /p "cfapi="
+  ECHO.
   "%nginx_loc%\winacme\wacs.exe" --target manual --host %domain_name%%extras% --validationmode dns-01 --validation dnsscript --dnsscript "%nginx_loc%\winacme\dns_scripts\cloudflare.ps1" --dnscreatescriptarguments "create '{RecordName}' '{Token}' '!cfemail!' '!cfapi!'" --dnsdeletescriptarguments "remove '{RecordName}' '{Token}' '!cfemail!' '!cfapi!'" --emailaddress "%email%" --accepttos --store pemfiles --pemfilespath ""%nginx_loc%\ssl""
 )
 IF "%validation%"=="namecheap" (
@@ -441,6 +443,7 @@ IF "%validation%"=="godaddy" (
   SET /p "gdsecret="
   "%nginx_loc%\winacme\wacs.exe" --target manual --host %domain_name%%extras% --validationmode dns-01 --validation dnsscript --dnsscript "%nginx_loc%\winacme\dns_scripts\godaddy.ps1" --dnscreatescriptarguments "create '{RecordName}' '{Token}' '!gdkey!' '!gdsecret!'" --dnsdeletescriptarguments "remove '{RecordName}' '{Token}' '!gdkey!' '!gdsecret!'" --emailaddress "%email%" --accepttos --store pemfiles --pemfilespath ""%nginx_loc%\ssl""
 )
+ECHO.
 PAUSE
 IF NOT EXIST %nginx_loc%\ssl\%domain_name%-chain.pem (
   ECHO CERT GENERATION FAILED. LEAVING NON-SSL CONFIG.
