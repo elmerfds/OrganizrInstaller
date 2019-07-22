@@ -1,6 +1,6 @@
 dim xHttp: Set xHttp = createobject("Microsoft.XMLHTTP")
 dim bStrm: Set bStrm = createobject("Adodb.Stream")
-xHttp.Open "GET", "https://windows.php.net/downloads/releases/archives/php-7.3.0-nts-Win32-VC15-x64.zip", False
+xHttp.Open "GET", "https://windows.php.net/downloads/releases/archives/php-7.3.7-nts-Win32-VC15-x64.zip", False
 xHttp.Send
 
 with bStrm
@@ -9,4 +9,3 @@ with bStrm
     .write xHttp.responseBody
     .savetofile "php.zip", 2 '//overwrite
 end with
-

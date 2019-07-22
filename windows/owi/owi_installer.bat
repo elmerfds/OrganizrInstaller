@@ -1,21 +1,21 @@
 @ECHO off
 setlocal enabledelayedexpansion
-SET owi_v=v2.5.3
-title Organizr v2 Windows Installer %owi_v% w/ WIN-ACME support (LE CERTS GEN) 
+SET owi_v=v2.5.4
+title Organizr v2 Windows Installer %owi_v% w/ WIN-ACME support (LE CERTS GEN)
 COLOR 03
-ECHO      ___           ___                  
-ECHO     /  /\         /  /\           ___   
-ECHO    /  /::\       /  /:/_         /__/\  
-ECHO   /  /:/\:\     /  /:/ /\        \__\:\ 
+ECHO      ___           ___
+ECHO     /  /\         /  /\           ___
+ECHO    /  /::\       /  /:/_         /__/\
+ECHO   /  /:/\:\     /  /:/ /\        \__\:\
 ECHO  /  /:/  \:\   /  /:/ /:/_       /  /::\
 ECHO /__/:/ \__\:\ /__/:/ /:/ /\   __/  /:/\/
 ECHO \  \:\ /  /:/ \  \:\/:/ /:/  /__/\/:/
-ECHO  \  \:\  /:/   \  \::/ /:/   \  \::/    
-ECHO   \  \:\/:/     \  \:\/:/     \  \:\    
-ECHO    \  \::/       \  \::/       \__\/    
+ECHO  \  \:\  /:/   \  \::/ /:/   \  \::/
+ECHO   \  \:\/:/     \  \:\/:/     \  \:\
+ECHO    \  \::/       \  \::/       \__\/
 ECHO     \__\/         \__\/             ~~ %owi_v%
-ECHO.      
-ECHO Organizr v2 installer  w/ WIN-ACME support (LE CERTS GEN) 
+ECHO.
+ECHO Organizr v2 installer  w/ WIN-ACME support (LE CERTS GEN)
 ECHO.
 goto check_Permissions
 :check_Permissions
@@ -26,10 +26,10 @@ goto check_Permissions
 	echo Press any key to terminate.
 	pause >nul
 	exit 0
-    ) 
-ECHO ## Note for SSL site setup: 
+    )
+ECHO ## Note for SSL site setup:
 ECHO - Certificate Type: Support single or wildcard
-ECHO - Other: you can check certificate status and renewals by running this command via cmd, 
+ECHO - Other: you can check certificate status and renewals by running this command via cmd,
 ECHO   for e.g: c:\nginx\winacme\wacs.exe.exe
 ECHO - For more info on WIN-ACME, check out their wiki: https://github.com/PKISharp/win-acme/wiki
 ECHO.
@@ -41,15 +41,15 @@ netstat -o -n -a | find "LISTENING" | find ":443 " >nul 2>&1
 if %ERRORLEVEL% equ 0 (@echo "port 443 unavailable 	- Required for NGINX HTTPS") ELSE (@echo Port 443 available 	- Required for NGINX HTTPS)
 netstat -o -n -a | find "LISTENING" | find ":9000 " >nul 2>&1
 if %ERRORLEVEL% equ 0 (@echo Port 9000 unavailable 	- Required for PHP) ELSE (@echo Port 9000 available 		- Required for PHP)
-ECHO.   
+ECHO.
 pause
 ECHO.
 
-SET nginx_v=1.15.8
-SET php_v=7.3.0
+SET nginx_v=1.16.0
+SET php_v=7.3.7
 SET nssm_v=2.24-101
 SET vcr_v=2017
-SET win-acme_v=2.0.6.284
+SET win-acme_v=2.0.8
 CD /d %~dp0
 
 :purpose
@@ -59,13 +59,13 @@ SET /p "choice="
 ECHO %ssl_site% | findstr /r /c:"%c:~0,1%" >NUL 2>&1 && Goto purpose_"%choice%" || Goto :purpose_badchoice
 ECHO.
 
-IF /I "%choice%" EQU "i" goto :purpose_i 
+IF /I "%choice%" EQU "i" goto :purpose_i
 IF /I "%choice%" EQU "I" goto :purpose_i
 IF /I "%choice%" EQU "u" goto :purpose_u
 IF /I "%choice%" EQU "U" goto :purpose_u
 
 :purpose_badchoice
-Echo %choice%: incorrect input 
+Echo %choice%: incorrect input
 ECHO.
 Goto :purpose
 
@@ -135,7 +135,7 @@ ECHO ###################################
 ECHO INSTALL LOCATION
 ECHO ###################################
 ECHO.
-ECHO # Where do you want to install Nginx? 
+ECHO # Where do you want to install Nginx?
 ECHO - Press enter to use default and recommended directory: c:\nginx
 SET /p "nginx_loc="
 IF "%nginx_loc%" == "" (
@@ -149,28 +149,28 @@ ECHO #################################
 ECHO.
 
 :Cont
-ECHO # Do you want to create a SSL enabled site? This option will generate LE SSL certs [y/n] 
+ECHO # Do you want to create a SSL enabled site? This option will generate LE SSL certs [y/n]
 SET /p "ssl_site="
 ECHO %ssl_site% | findstr /r /c:"%c:~0,1%" 1>NUL 2>NUL && Goto :ssl%ssl_site% || GOTO :BadChoice
 ECHO.
 
-IF /I "%ssl_site%" EQU "y" goto :ssly 
-IF /I "%ssl_site%" EQU "Y" goto :ssly 
+IF /I "%ssl_site%" EQU "y" goto :ssly
+IF /I "%ssl_site%" EQU "Y" goto :ssly
 IF /I "%ssl_site%" EQU "n" goto :ssln
 IF /I "%ssl_site%" EQU "N" goto :ssln
 
 :Badchoice
-Echo %ssl_site%: incorrect input 
+Echo %ssl_site%: incorrect input
 ECHO.
 Goto :Cont
 
-:ssly 
+:ssly
 ECHO.
 ECHO # Enter your domain name
-SET /p "domain_name=" 
+SET /p "domain_name="
 ECHO.
 ECHO # Enter an email address for Let's Encrypt renewal and fail notices
-SET /p "email=" 
+SET /p "email="
 
 :extradom
 ECHO.
@@ -179,13 +179,13 @@ SET /p "extra_dom="
 ECHO %extra_dom% | findstr /r /c:"%c:~0,1%" 1>NUL 2>NUL && Goto :extradom%extra_dom% || GOTO :BadChoiceextras
 ECHO.
 
-IF /I "%extra_dom%" EQU "y" goto :extradomy 
+IF /I "%extra_dom%" EQU "y" goto :extradomy
 IF /I "%extra_dom%" EQU "Y" goto :extradomy
 IF /I "%extra_dom%" EQU "n" goto :verifymethod
 IF /I "%extra_dom%" EQU "N" goto :verifymethod
 
 :Badchoiceextras
-Echo %extra_dom%: incorrect input 
+Echo %extra_dom%: incorrect input
 ECHO.
 Goto :extradom
 
@@ -214,7 +214,7 @@ IF "%choice%" == "4" SET "validation=godaddy"
 IF NOT "%validation%" == "" goto :ssln
 
 :BadChoiceValidation
-Echo %validation%: incorrect input 
+Echo %validation%: incorrect input
 ECHO.
 Goto :verifymethod
 
@@ -241,7 +241,7 @@ ECHO 4. Downloading Visual C++ Redistributable for Visual Studio %vcr_v%
 cscript dl_config\4_vcr.vbs //Nologo
 ECHO.    Done!
 
-IF "%ssl_site%"=="y" ( 
+IF "%ssl_site%"=="y" (
 ECHO 5. Downloading WIN-ACME %win-acme_v%
 cscript dl_config\6_winacmedl.vbs //Nologo
 ECHO.    Done!
@@ -255,21 +255,21 @@ ECHO #############################
 ECHO Unzipping Files
 ECHO #############################
 ECHO.
-ECHO 1. Unziping Nginx
+ECHO 1. Unzipping Nginx
 powershell.exe -nologo -noprofile -command "& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::ExtractToDirectory('nginx.zip', '.'); }"
 ECHO.    Done!
 
-ECHO 2. Unziping PHP
+ECHO 2. Unzipping PHP
 powershell -Command "(Add-Type -AssemblyName System.IO.Compression.Filesystem)"
 powershell.exe -nologo -noprofile -command "& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::ExtractToDirectory('php.zip', 'php'); }"
 ECHO.    Done!
 
-ECHO 3. Unziping NSM
+ECHO 3. Unzipping NSM
 powershell.exe -nologo -noprofile -command "& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::ExtractToDirectory('nssm.zip', '.'); }"
 ECHO.    Done!
 
-IF "%ssl_site%"=="y" ( 
-ECHO 4. Unziping Win-acme
+IF "%ssl_site%"=="y" (
+ECHO 4. Unzipping Win-acme
 powershell.exe -nologo -noprofile -command "& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::ExtractToDirectory('winacme.zip', 'winacme'); }"
 ECHO.    Done!
 )
@@ -302,7 +302,7 @@ MOVE "%~dp0nssm-*" nssm >nul 2>&1
 ROBOCOPY "%~dp0nssm\win64" "C:\Windows\System32" /E /MOVE /NFL /NDL /NJH /nc /ns /np /R:0 /W:1
 
 
-IF "%ssl_site%"=="y" ( 
+IF "%ssl_site%"=="y" (
 ECHO.
 ECHO ####################################
 ECHO Moving WIN-ACME to destination
@@ -325,7 +325,7 @@ set "psCommand=powershell -Command "$pword = read-host 'Enter Password' -AsSecur
     $BSTR=[System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($pword); ^
         [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)""
 for /f "usebackq delims=" %%p in (`%psCommand%`) do set pass=%%p
-ECHO.  
+ECHO.
 NSSM install NGINX "%nginx_loc%\nginx.exe"
 NSSM set NGINX ObjectName "%userdomain%\%username%" %pass%
 NSSM start NGINX
@@ -353,7 +353,7 @@ NSSM restart PHP
 
 ECHO.
 ECHO ####################################
-ECHO Downloading Organizr v2 
+ECHO Downloading Organizr v2
 ECHO ####################################
 ECHO.
 cscript dl_config\5_orgdl.vbs //Nologo
@@ -410,7 +410,7 @@ ECHO - Adding rule for port 443
 netsh advfirewall firewall add rule name="Organizr - HTTPS" dir=in action=allow protocol=TCP localport=443
 )
 
-IF "%ssl_site%"=="y" ( 
+IF "%ssl_site%"=="y" (
 ECHO.
 ECHO #########################################
 ECHO WIN-ACME: Genertating LE SSL Certificates
@@ -423,8 +423,10 @@ IF "%validation%"=="http" (
 IF "%validation%"=="cloudflare" (
   ECHO # Cloudflare email:
   SET /p "cfemail="
+  ECHO.
   ECHO # Cloudflare API key:
   SET /p "cfapi="
+  ECHO.
   "%nginx_loc%\winacme\wacs.exe" --target manual --host %domain_name%%extras% --validationmode dns-01 --validation dnsscript --dnsscript "%nginx_loc%\winacme\dns_scripts\cloudflare.ps1" --dnscreatescriptarguments "create '{RecordName}' '{Token}' '!cfemail!' '!cfapi!'" --dnsdeletescriptarguments "remove '{RecordName}' '{Token}' '!cfemail!' '!cfapi!'" --emailaddress "%email%" --accepttos --store pemfiles --pemfilespath ""%nginx_loc%\ssl""
 )
 IF "%validation%"=="namecheap" (
@@ -441,6 +443,7 @@ IF "%validation%"=="godaddy" (
   SET /p "gdsecret="
   "%nginx_loc%\winacme\wacs.exe" --target manual --host %domain_name%%extras% --validationmode dns-01 --validation dnsscript --dnsscript "%nginx_loc%\winacme\dns_scripts\godaddy.ps1" --dnscreatescriptarguments "create '{RecordName}' '{Token}' '!gdkey!' '!gdsecret!'" --dnsdeletescriptarguments "remove '{RecordName}' '{Token}' '!gdkey!' '!gdsecret!'" --emailaddress "%email%" --accepttos --store pemfiles --pemfilespath ""%nginx_loc%\ssl""
 )
+ECHO.
 PAUSE
 IF NOT EXIST %nginx_loc%\ssl\%domain_name%-chain.pem (
   ECHO CERT GENERATION FAILED. LEAVING NON-SSL CONFIG.
@@ -466,14 +469,14 @@ ECHO.
 )
 
 ECHO ########## Installation Completed ##########
-IF "%ssl_site%"=="y" ( 
+IF "%ssl_site%"=="y" (
 ECHO.
 SET /p "=To open Organizr v2 [https://%domain_name%] " <nul
 pause
 START https://%domain_name%
 ECHO.
 )
-IF "%ssl_site%"=="n" ( 
+IF "%ssl_site%"=="n" (
 ECHO.
 SET /p "=To open Organizr v2 [http://localhost] " <nul
 pause
