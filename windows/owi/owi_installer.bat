@@ -23,7 +23,7 @@ goto check_Permissions
     if NOT %errorLevel% == 0 (
         echo Failure: Current permissions inadequate, please run-as administrator.
 	echo.
-	echo Press any key to terminate.
+	echo Press any key to quit.
 	pause >nul
 	exit 0
     )
@@ -38,7 +38,7 @@ echo.
 netstat -o -n -a -b | find "LISTENING" | find ":80 " >nul 2>&1
 if %ERRORLEVEL% equ 0 (@echo Port 80 unavailable 	- Required for NGINX HTTP) ELSE (@echo Port 80 available 	- Required for NGINX HTTP)
 netstat -o -n -a | find "LISTENING" | find ":443 " >nul 2>&1
-if %ERRORLEVEL% equ 0 (@echo "port 443 unavailable 	- Required for NGINX HTTPS") ELSE (@echo Port 443 available 	- Required for NGINX HTTPS)
+if %ERRORLEVEL% equ 0 (@echo Port 443 unavailable 	- Required for NGINX HTTPS) ELSE (@echo Port 443 available 	- Required for NGINX HTTPS)
 netstat -o -n -a | find "LISTENING" | find ":9000 " >nul 2>&1
 if %ERRORLEVEL% equ 0 (@echo Port 9000 unavailable 	- Required for PHP) ELSE (@echo Port 9000 available 		- Required for PHP)
 ECHO.
