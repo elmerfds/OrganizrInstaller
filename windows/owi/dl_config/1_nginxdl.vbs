@@ -1,6 +1,6 @@
 dim xHttp: Set xHttp = createobject("MSXML2.ServerXMLHTTP")
 dim bStrm: Set bStrm = createobject("Adodb.Stream")
-xHttp.Open "GET", "https://nginx.org/download/nginx-1.16.0.zip", False
+xHttp.Open "GET", "https://nginx.org/download/nginx-1.16.1.zip", False
 xHttp.Send
 
 with bStrm
