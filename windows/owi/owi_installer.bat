@@ -45,11 +45,11 @@ ECHO.
 pause
 ECHO.
 
-SET nginx_v=1.16.0
-SET php_v=7.3.7
+SET nginx_v=1.16.1
+SET php_v=7.3.9
 SET nssm_v=2.24-101
 SET vcr_v=2017
-SET win-acme_v=2.0.8
+SET win-acme_v=2.0.10
 CD /d %~dp0
 
 :purpose
