@@ -320,11 +320,25 @@ ECHO ####################################
 ECHO.
 ECHO In order to save and reload Nginx configuration, you need to run the NGINX service as the administrator
 ECHO.
+:enter_cred
+ECHO.
 ECHO Username: %username%
 set "psCommand=powershell -Command "$pword = read-host 'Enter Password' -AsSecureString ; ^
     $BSTR=[System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($pword); ^
         [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)""
 for /f "usebackq delims=" %%p in (`%psCommand%`) do set pass=%%p
+
+set "psCommand=powershell -Command "$pword = read-host 'Confirm Password' -AsSecureString ; ^
+    $BSTR=[System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($pword); ^
+        [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)""
+for /f "usebackq delims=" %%p in (`%psCommand%`) do set passcheck=%%p
+
+ECHO.
+IF "%pass%" NEQ "%passcheck%" (
+	ECHO.
+	ECHO Password doesn't match
+	GOTO :enter_cred
+)
 ECHO.
 NSSM install NGINX "%nginx_loc%\nginx.exe"
 NSSM set NGINX ObjectName "%userdomain%\%username%" %pass%
