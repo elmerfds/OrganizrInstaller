@@ -60,9 +60,7 @@ ECHO %ssl_site% | findstr /r /c:"%c:~0,1%" >NUL 2>&1 && Goto purpose_"%choice%" 
 ECHO.
 
 IF /I "%choice%" EQU "i" goto :purpose_i
-IF /I "%choice%" EQU "I" goto :purpose_i
 IF /I "%choice%" EQU "u" goto :purpose_u
-IF /I "%choice%" EQU "U" goto :purpose_u
 
 :purpose_badchoice
 Echo %choice%: incorrect input
@@ -155,9 +153,7 @@ ECHO %ssl_site% | findstr /r /c:"%c:~0,1%" 1>NUL 2>NUL && Goto :ssl%ssl_site% ||
 ECHO.
 
 IF /I "%ssl_site%" EQU "y" goto :ssly
-IF /I "%ssl_site%" EQU "Y" goto :ssly
 IF /I "%ssl_site%" EQU "n" goto :ssln
-IF /I "%ssl_site%" EQU "N" goto :ssln
 
 :Badchoice
 Echo %ssl_site%: incorrect input
@@ -180,9 +176,7 @@ ECHO %extra_dom% | findstr /r /c:"%c:~0,1%" 1>NUL 2>NUL && Goto :extradom%extra_
 ECHO.
 
 IF /I "%extra_dom%" EQU "y" goto :extradomy
-IF /I "%extra_dom%" EQU "Y" goto :extradomy
 IF /I "%extra_dom%" EQU "n" goto :verifymethod
-IF /I "%extra_dom%" EQU "N" goto :verifymethod
 
 :Badchoiceextras
 Echo %extra_dom%: incorrect input
