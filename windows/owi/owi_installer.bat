@@ -129,9 +129,9 @@ cls
 goto :purpose
 
 :purpose_i
-ECHO ###################################
+ECHO -----------------------------------
 ECHO INSTALL LOCATION
-ECHO ###################################
+ECHO -----------------------------------
 ECHO.
 ECHO # Where do you want to install Nginx?
 ECHO - Press enter to use default and recommended directory: c:\nginx
@@ -141,9 +141,9 @@ IF "%nginx_loc%" == "" (
 )
 
 ECHO.
-ECHO #################################
+ECHO -----------------------------------
 ECHO SITE TEMPLATE TYPE: HTTP or HTTPS
-ECHO #################################
+ECHO -----------------------------------
 ECHO.
 
 :Cont
@@ -215,9 +215,9 @@ Goto :verifymethod
 :extradomn
 :ssln
 ECHO.
-ECHO #############################
+ECHO -----------------------------------
 ECHO Downloading Requirements
-ECHO ############################
+ECHO -----------------------------------
 ECHO.
 ECHO 1. Downloading Nginx %nginx_v%
 cscript dl_config\1_nginxdl.vbs //Nologo
@@ -245,9 +245,9 @@ ECHO.
 ECHO Download Completed...
 
 ECHO.
-ECHO #############################
+ECHO -----------------------------------
 ECHO Unzipping Files
-ECHO #############################
+ECHO -----------------------------------
 ECHO.
 ECHO 1. Unzipping Nginx
 powershell.exe -nologo -noprofile -command "& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::ExtractToDirectory('nginx.zip', '.'); }"
@@ -269,9 +269,9 @@ ECHO.    Done!
 )
 
 ECHO.
-ECHO ####################################
+ECHO -----------------------------------
 ECHO Moving Nginx to destination
-ECHO ####################################
+ECHO -----------------------------------
 ECHO.
 IF EXIST %nginx_loc%\conf\nginx.conf (
   REN %nginx_loc%\conf\nginx.conf nginx.conf.bak
@@ -281,16 +281,16 @@ MOVE "%~dp0nginx\html" "%~dp0nginx\www" >nul 2>&1
 ROBOCOPY "%~dp0nginx " "%nginx_loc%" /E /MOVE /NFL /NDL /NJH /nc /ns /np
 
 ECHO.
-ECHO ####################################
+ECHO -----------------------------------
 ECHO Moving PHP to destination
-ECHO ####################################
+ECHO -----------------------------------
 ECHO.
 ROBOCOPY "%~dp0php " "%nginx_loc%\php" /E /MOVE /NFL /NDL /NJH /nc /ns /np
 
 ECHO.
-ECHO ####################################
+ECHO -----------------------------------
 ECHO Moving NSSM to destination
-ECHO ####################################
+ECHO -----------------------------------
 ECHO.
 MOVE "%~dp0nssm-*" nssm >nul 2>&1
 ROBOCOPY "%~dp0nssm\win64" "C:\Windows\System32" /E /MOVE /NFL /NDL /NJH /nc /ns /np /R:0 /W:1
@@ -298,9 +298,9 @@ ROBOCOPY "%~dp0nssm\win64" "C:\Windows\System32" /E /MOVE /NFL /NDL /NJH /nc /ns
 
 IF "%ssl_site%"=="y" (
 ECHO.
-ECHO ####################################
+ECHO -----------------------------------
 ECHO Moving WIN-ACME to destination
-ECHO ####################################
+ECHO -----------------------------------
 ECHO.
 ROBOCOPY "%~dp0winacme" "%nginx_loc%\winacme" /E /MOVE /NFL /NDL /NJH /nc /ns /np
 ROBOCOPY "%~dp0dns_scripts" "%nginx_loc%\winacme\dns_scripts" /E /NFL /NDL /NJH /nc /ns /np
@@ -308,9 +308,9 @@ COPY "%~dp0owi_sslupdater.bat" "%nginx_loc%\winacme\owi_sslupdater.bat"
 )
 
 ECHO.
-ECHO ####################################
+ECHO -----------------------------------
 ECHO Creating Nginx service
-ECHO ####################################
+ECHO -----------------------------------
 ECHO.
 ECHO In order to save and reload Nginx configuration, you need to run the NGINX service as the administrator
 ECHO.
@@ -344,9 +344,9 @@ ECHO.
 ECHO Installing Visual C++ Redistributable for Visual Studio 2017 [PHP 7+ req]
 vc_redist.x64.exe /q /norestart
 ECHO.
-ECHO ####################################
+ECHO -----------------------------------
 ECHO Creating PHP service
-ECHO ####################################
+ECHO -----------------------------------
 ECHO.
 NSSM install PHP "%nginx_loc%\php\php-cgi.exe"
 NSSM set PHP AppParameters -b 127.0.0.1:9000
@@ -360,9 +360,9 @@ NSSM start PHP
 NSSM restart PHP
 
 ECHO.
-ECHO ####################################
+ECHO -----------------------------------
 ECHO Downloading Organizr v2
-ECHO ####################################
+ECHO -----------------------------------
 ECHO.
 cscript dl_config\5_orgdl.vbs //Nologo
 powershell.exe -nologo -noprofile -command "& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::ExtractToDirectory('Organizr-2-master.zip', '.'); }"
@@ -372,9 +372,9 @@ ROBOCOPY organizr "%nginx_loc%\www\organizr\html" /E /MOVE /NFL /NDL /NJH /nc /n
 REM RMDIR /s /q organizr
 
 ECHO.
-ECHO ####################################
+ECHO -----------------------------------
 ECHO Updating Nginx and PHP config
-ECHO ####################################
+ECHO -----------------------------------
 ECHO.
 
 COPY "%~dp0config\nginx.conf" "%nginx_loc%\conf\nginx.conf"
@@ -405,9 +405,9 @@ NSSM status PHP
 ECHO.
 
 ECHO.
-ECHO #########################################
+ECHO -----------------------------------
 ECHO CREATE WINDOWS FIREWALL RULE
-ECHO #########################################
+ECHO -----------------------------------
 ECHO.
 ECHO  - Removing existing Organizr port rules
 netsh advfirewall firewall delete rule name="Organizr - HTTP" >nul 2>&1 && netsh advfirewall firewall delete rule name= "Organizr - HTTPS"  >nul 2>&1
@@ -421,9 +421,9 @@ netsh advfirewall firewall add rule name="Organizr - HTTPS" dir=in action=allow 
 
 IF "%ssl_site%"=="y" (
 ECHO.
-ECHO #########################################
+ECHO -----------------------------------------
 ECHO WIN-ACME: Genertating LE SSL Certificates
-ECHO #########################################
+ECHO -----------------------------------------
 ECHO.
 CD /d "%nginx_loc%"
 IF "%validation%"=="http" (
@@ -477,7 +477,7 @@ NSSM status PHP
 ECHO.
 )
 
-ECHO ########## Installation Completed ##########
+ECHO ---------- Installation Completed ----------
 IF "%ssl_site%"=="y" (
 ECHO.
 SET /p "=To open Organizr v2 [https://%domain_name%] " <nul
@@ -496,9 +496,9 @@ ECHO Opening Organizr First Setup Guide:
 START https://docs.organizr.app/books/installation/page/first-time-setup
 ECHO.
 
-ECHO ############################
+ECHO -----------------------------------
 ECHO Cleaning up downloaded Files
-ECHO ############################
+ECHO -----------------------------------
 ECHO.
 DEL /s /q "%~dp0nginx.zip" >nul 2>&1
 ECHO nginx.zip      DELETED
