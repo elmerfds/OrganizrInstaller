@@ -1,6 +1,6 @@
 @ECHO off
 setlocal enabledelayedexpansion
-SET owi_v=v2.5.4
+SET owi_v=v2.5.5
 title Organizr v2 Windows Installer %owi_v% w/ WIN-ACME support (LE CERTS GEN)
 COLOR 03
 ECHO      ___           ___
