@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Organizr Ubuntu Installer
 #author: elmerfdz
-version=v7.5.2-2
+version=v7.5.2-3
 
 #Org Requirements
 orgreqname=('Unzip' 'NGINX' 'PHP' 'PHP-ZIP' 'PDO:SQLite' 'PHP cURL' 'PHP simpleXML' 'PHP XMLrpc')
@@ -34,7 +34,17 @@ debain_special_needs()
 			apt install apt-transport-https lsb-release ca-certificates -y
 			wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
 			echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list
-		fi		
+		fi
+}
+
+ubuntu_special_needs()
+	{
+		if [ "$debian_codename_detect" == "xenial" ];
+		then
+			apt-get install software-properties-common -y
+			add-apt-repository ppa:ondrej/php
+			apt-get update			
+		fi
 }
 
 #Organizr Requirement Module
@@ -46,6 +56,10 @@ orgreq_mod()
 			echo -e "\e[1;36m> Deploying Debian special needs care package \e[0m"
 			echo
 			debain_special_needs
+		elif [ "$debian_codename_detect" == "xenial" ]
+		then
+			echo
+			ubuntu_special_needs	
 		fi
         echo -e "\e[1;36m> Updating apt repositories...\e[0m"
 		echo
@@ -292,10 +306,6 @@ LEcertbot_mod()
 					fi	
 				else
 					##Install certbot packages
-					#apt-get install software-properties-common -y
-					#add-apt-repository ppa:certbot/certbot -y
-					#apt-get update
-					#apt-get install certbot -y
 					apt-get install software-properties-common
 					add-apt-repository universe
 					add-apt-repository ppa:certbot/certbot -y
