@@ -42,7 +42,7 @@ ubuntu_special_needs()
 		if [ "$debian_codename_detect" == "xenial" ];
 		then
 			apt-get install software-properties-common -y
-			add-apt-repository ppa:ondrej/php
+			add-apt-repository ppa:ondrej/php -y
 			apt-get update			
 		fi
 }
