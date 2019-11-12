@@ -325,7 +325,7 @@ LEcertbot_mod()
 					sudo pip3 install certbot-dns-cloudflare
 					echo
 				else
-					apt-get install certbot python3-pip -y
+					apt-get install python3-pip -y
 					pip3 install certbot-dns-cloudflare
 				fi	
 
