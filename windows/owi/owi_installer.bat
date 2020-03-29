@@ -1,6 +1,6 @@
 @ECHO off
 setlocal enabledelayedexpansion
-SET owi_v=v2.5.6
+SET owi_v=v2.5.7
 title Organizr v2 Windows Installer %owi_v% w/ WIN-ACME support (LE CERTS GEN)
 COLOR 03
 ECHO      ___           ___
@@ -56,6 +56,9 @@ CD /d %~dp0
 ECHO.
 ECHO # Do you want to Install or Uninstall? [i= install, u= uninstall]
 SET /p "choice="
+IF "%choice%" == "" (
+  set choice=i
+)
 ECHO %ssl_site% | findstr /r /c:"%c:~0,1%" >NUL 2>&1 && Goto purpose_"%choice%" || Goto :purpose_badchoice
 ECHO.
 
@@ -149,6 +152,9 @@ ECHO.
 :Cont
 ECHO # Do you want to create a SSL enabled site? This option will generate LE SSL certs [y/n]
 SET /p "ssl_site="
+IF "%ssl_site%" == "" (
+  set ssl_site=n
+)
 ECHO %ssl_site% | findstr /r /c:"%c:~0,1%" 1>NUL 2>NUL && Goto :ssl%ssl_site% || GOTO :BadChoice
 ECHO.
 
@@ -314,10 +320,26 @@ ECHO -----------------------------------
 ECHO.
 ECHO In order to save and reload Nginx configuration, you need to run the NGINX service as the administrator
 ECHO.
+ECHO User detected: "%username%", Use different username? [y/n]
+SET /p "chg_username="
+IF "%chg_username%" == "" (
+  SET "set_user=%username%"
+  GOTO :enter_cred
+)
+IF "%chg_username%" == "y" (
+  ECHO.
+  ECHO Enter username
+  SET /p "set_user="
+  GOTO :enter_cred
+) ELSE IF "%chg_username%" == "n" (
+  SET "set_user=%username%"
+  GOTO :enter_cred
+)
+
 :enter_cred
 ECHO.
-ECHO Username: %username%
-set "psCommand=powershell -Command "$pword = read-host 'Enter Password' -AsSecureString ; ^
+ECHO Username: %set_user%
+set "psCommand=powershell -Command "$pword = read-host 'Password' -AsSecureString ; ^
     $BSTR=[System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($pword); ^
         [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)""
 for /f "usebackq delims=" %%p in (`%psCommand%`) do set pass=%%p
@@ -335,7 +357,7 @@ IF "%pass%" NEQ "%passcheck%" (
 )
 ECHO.
 NSSM install NGINX "%nginx_loc%\nginx.exe"
-NSSM set NGINX ObjectName "%userdomain%\%username%" %pass%
+NSSM set NGINX ObjectName "%userdomain%\%set_user%" %pass%
 NSSM start NGINX
 NSSM restart NGINX
 
@@ -350,7 +372,7 @@ ECHO -----------------------------------
 ECHO.
 NSSM install PHP "%nginx_loc%\php\php-cgi.exe"
 NSSM set PHP AppParameters -b 127.0.0.1:9000
-NSSM set PHP ObjectName "%userdomain%\%username%" %pass%
+NSSM set PHP ObjectName "%userdomain%\%set_user%" %pass%
 ECHO.
 ECHO Setting PHP system variables
 SETX /m PHP_FCGI_CHILDREN 3
