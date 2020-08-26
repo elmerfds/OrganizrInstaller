@@ -1,6 +1,6 @@
 dim xHttp: Set xHttp = createobject("Microsoft.XMLHTTP")
 dim bStrm: Set bStrm = createobject("Adodb.Stream")
-xHttp.Open "GET", "https://windows.php.net/downloads/releases/archives/php-7.3.9-nts-Win32-VC15-x64.zip", False
+xHttp.Open "GET", "https://windows.php.net/downloads/releases/archives/php-7.4.8-nts-Win32-vc15-x64.zip", False
 xHttp.Send
 
 with bStrm
