@@ -1,5 +1,5 @@
 ##Orgv2 Let's encrypt vhost - Non SSL 
-##vhost_template_v: v1.0.2
+##vhost_template_v: v1.0.3
 ##author: elmerfdz
 
 #Note to User
@@ -13,6 +13,7 @@ server {
         server_name SERV_NAME;
         root ROOT/html;
         index index.php index.html index.htm index.nginx-debian.html;
+	location /api/v2 {try_files $uri /api/v2/index.php$is_args$args;}          
         location ~ /auth-(.*) { rewrite ^/auth-(.*) /api/?v1/auth&group=$1; } #Org Auth
         error_page 401 $scheme://$server_name/?error=$status&return=$request_uri;
 	error_page 400 402 403 404 405 408 500 502 503 504 $scheme://$server_name/?error=$status;
@@ -32,6 +33,7 @@ server {
 #	include /etc/nginx/config/DOMAIN/ssl.conf; #edit path to your certs
 #	root ROOT/html;
 #	index index.php index.html index.htm index.nginx-debian.html;
+#	location /api/v2 {try_files $uri /api/v2/index.php$is_args$args;}  
 #	location ~ /auth-(.*) { rewrite ^/auth-(.*) /api/?v1/auth&group=$1; } #Org Auth
 #       error_page 401 $scheme://$server_name/?error=$status&return=$request_uri;
 #	error_page 400 402 403 404 405 408 500 502 503 504 $scheme://$server_name/?error=$status;
