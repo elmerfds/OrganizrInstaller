@@ -1,6 +1,6 @@
 @ECHO off
 setlocal enabledelayedexpansion
-SET owi_v=v2.5.7
+SET owi_v=v2.5.8
 title Organizr v2 Windows Installer %owi_v% w/ WIN-ACME support (LE CERTS GEN)
 COLOR 03
 ECHO      ___           ___
@@ -49,7 +49,7 @@ SET nginx_v=1.16.1
 SET php_v=7.3.9
 SET nssm_v=2.24-101
 SET vcr_v=2017
-SET win-acme_v=2.1.2.641
+SET win-acme_v=2.1.12.943
 CD /d %~dp0
 
 :purpose
