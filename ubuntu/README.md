@@ -13,7 +13,7 @@
 ### FAQ
 
 ### Tested on Ubuntu?
-- Yes, 16.04
+- Yes, 16.04 / 18.04
 
 ### Tested on Debian?
 - Yes, 9.5+
