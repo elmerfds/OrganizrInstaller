@@ -9,18 +9,18 @@ orgreq=('unzip' 'nginx' 'php-fpm' 'php-zip' 'php-sqlite3' 'php-curl' 'php-xml' '
 
 
 #Nginx config variables
-NGINX_LOC='/etc/nginx'
-NGINX_SITES='/etc/nginx/sites-available'
-NGINX_SITES_ENABLED='/etc/nginx/sites-enabled'
-NGINX_CONFIG='/etc/nginx/config'
-NGINX_APPS='/etc/nginx/conf.d/apps'
-WEB_DIR='/var/www'
-SED=`which sed`
-CURRENT_DIR=`dirname $0`
-tmp='/tmp/Organizr'
+NGINX_LOC="/etc/nginx"
+NGINX_SITES="$NGINX_LOC/sites-available"
+NGINX_SITES_ENABLED="$NGINX_LOC/sites-enabled"
+NGINX_CONFIG="$NGINX_LOC/config"
+NGINX_APPS="$NGINX_LOC/conf.d/apps"
+WEB_DIR="/var/www"
+SED=$(which sed)
+CURRENT_DIR=$(dirname "$0")
+tmp="/tmp/Organizr"
 dlvar=0
-cred_folder='/etc/letsencrypt/.secrets/certbot'
-LE_WEB='/var/www/letsencrypt/.well-known/acme-challenge'
+cred_folder="/etc/letsencrypt/.secrets/certbot"
+LE_WEB="$WEB_DIR/letsencrypt/.well-known/acme-challenge"
 debian_detect=$(cut -d: -f2 < <(lsb_release -i)| xargs)
 debian_codename_detect=$(cut -d: -f2 < <(lsb_release -c)| xargs)
 dns_plugin=''
@@ -69,7 +69,7 @@ orgreq_mod()
 		do
 		    echo -e "\e[1;36m> Installing ${orgreqname[$i]}...\e[0m"
 		    echo
-		    apt-get -y install ${orgreq[$i]}
+		    apt-get -y install "${orgreq[$i]}"
 		    echo
 		done
 		echo
@@ -94,8 +94,8 @@ domainval_mod()
 			# check the domain is roughly valid!
 			PATTERN="^([[:alnum:]]([[:alnum:]\-]{0,61}[[:alnum:]])?\.)+[[:alpha:]]{2,10}$"
 			if [[ "$DOMAIN" =~ $PATTERN ]]; then
-			DOMAIN=`echo $DOMAIN | tr '[A-Z]' '[a-z]'`
-			echo -e "\e[1;36m> \e[0mCreating vhost file for:" $DOMAIN
+			DOMAIN=$(echo "$DOMAIN" | tr '[:upper:]' '[:lower:]')
+			echo -e "\e[1;36m> \e[0mCreating vhost file for:" "$DOMAIN"
 			break
 			else
 			echo "> invalid domain name"
@@ -124,39 +124,30 @@ vhostcreate_mod()
 
 
 		# set up web root
-		chmod 755 $CONFIG
+		chmod 755 "$CONFIG"
 
 		# create symlink to enable site
-		ln -s $CONFIG $NGINX_SITES_ENABLED/$DOMAIN.conf
+		ln -s "$CONFIG" $NGINX_SITES_ENABLED/"$DOMAIN".conf
 
 		echo -e "\e[1;36m> \e[0mSite Created for $DOMAIN"
 		echo
        }
 CFvhostcreate_mod()        
        {
-		if [ "$org_v" == "1" ] && [ "$vhost_template" == "CF" ] || [ "$vhost_template" == "cf" ]
+		if [ "$vhost_template" == "CF" ] || [ "$vhost_template" == "cf" ]
 		then
-		cp $CURRENT_DIR/templates/cf/orgv1_cf.template $CONFIG
-		mkdir -p $NGINX_CONFIG/$DOMAIN
-		cp -a $CURRENT_DIR/config/cf/. $NGINX_CONFIG/$DOMAIN
-		mv $NGINX_CONFIG/$DOMAIN/domain.com.conf $NGINX_CONFIG/$DOMAIN/$DOMAIN.conf
-		mv $NGINX_CONFIG/$DOMAIN/domain.com_ssl.conf $NGINX_CONFIG/$DOMAIN/${DOMAIN}_ssl.conf
-		CONFIG_DOMAIN=$NGINX_CONFIG/$DOMAIN/$DOMAIN.conf
-		mkdir -p $NGINX_CONFIG/$DOMAIN/ssl
-		chmod -R 755 $NGINX_CONFIG/$DOMAIN/ssl
-
-		elif [ "$org_v" == "2" ] && [ "$vhost_template" == "CF" ] || [ "$vhost_template" == "cf" ]
-		then
-		cp $CURRENT_DIR/templates/cf/orgv2_cf.template $CONFIG
-		mkdir -p $NGINX_CONFIG/$DOMAIN
-		cp -a $CURRENT_DIR/config/cf/. $NGINX_CONFIG/$DOMAIN
-		mv $NGINX_CONFIG/$DOMAIN/domain.com.conf $NGINX_CONFIG/$DOMAIN/$DOMAIN.conf
-		mv $NGINX_CONFIG/$DOMAIN/domain.com_ssl.conf $NGINX_CONFIG/$DOMAIN/${DOMAIN}_ssl.conf
-		CONFIG_DOMAIN=$NGINX_CONFIG/$DOMAIN/$DOMAIN.conf
-		mkdir -p $NGINX_CONFIG/$DOMAIN/ssl
-		chmod -R 755 $NGINX_CONFIG/$DOMAIN/ssl
+			if [ "$org_v" == "1" ] || [ "$org_v" == "2" ]
+			then
+				cp "$CURRENT_DIR"/templates/cf/orgv"${org_v}"_cf.template "$CONFIG"
+				mkdir -p $NGINX_CONFIG/"$DOMAIN"
+				cp -a "$CURRENT_DIR"/config/cf/. $NGINX_CONFIG/"$DOMAIN"
+				mv $NGINX_CONFIG/"$DOMAIN"/domain.com.conf $NGINX_CONFIG/"$DOMAIN"/"$DOMAIN".conf
+				mv $NGINX_CONFIG/"$DOMAIN"/domain.com_ssl.conf $NGINX_CONFIG/"$DOMAIN"/"${DOMAIN}"_ssl.conf
+				CONFIG_DOMAIN=$NGINX_CONFIG/$DOMAIN/$DOMAIN.conf
+				mkdir -p $NGINX_CONFIG/"$DOMAIN"/ssl
+				chmod -R 755 $NGINX_CONFIG/"$DOMAIN"/ssl
+			fi
 		fi
-
 	}
 
 LEvhostcreate_mod()        
@@ -176,7 +167,7 @@ LEvhostcreate_mod()
 				echo -e "\e[1;36m> If you haven't preparared your setup to carry out the above, then please terminate this script.\e[0m"
 				echo 
 				echo -e "\e[1;36m> Or press any key to continue...\e[0m"		 
-				read 
+				read -r
 				echo 
 				echo -e "\e[1;36m> LE Cert type?:\e[0m"
 				echo
@@ -202,16 +193,16 @@ LEvhostcreate_mod()
 			fi	
 		
 			mkdir -p $NGINX_APPS 								#Apps folder
-			mkdir -p $NGINX_CONFIG/$DOMAIN
-			cp -a $CURRENT_DIR/config/apps/. $NGINX_APPS  		#Apps conf files
-			cp -a $CURRENT_DIR/config/le/. $NGINX_CONFIG/$DOMAIN 	#LE conf file
+			mkdir -p $NGINX_CONFIG/"$DOMAIN"
+			cp -a "$CURRENT_DIR"/config/apps/. $NGINX_APPS  		#Apps conf files
+			cp -a "$CURRENT_DIR"/config/le/. $NGINX_CONFIG/"$DOMAIN" 	#LE conf file
 
 			if [ "$org_v" == "1" ] && [ "$vhost_template" == "LE" ] || [ "$vhost_template" == "le" ]
 			then
 				LEcertbot_mod
 				if [ "$LEcert_create" == "Y" ] || [ "$LEcert_create" == "y" ]
 				then
-					cp $CURRENT_DIR/templates/le/orgv1_le.template $CONFIG
+					cp "$CURRENT_DIR"/templates/le/orgv1_le.template "$CONFIG"
 					if [ "$LEcert_type" == "W" ] || [ "$LEcert_type" == "w" ]
 					then
 						subd='www'
@@ -225,11 +216,10 @@ LEvhostcreate_mod()
 						#Create LE Certbot renewal cron job
 					fi
 
-				elif [ "$LEcert_create" == "N" ] || [ "$LEcert_create" == "n" ]
-				then
-						cp $CURRENT_DIR/templates/le/orgv1_le_no_ssl.template $CONFIG
-						subd_doma="$DOMAIN"
-						serv_name="$DOMAIN"   
+				else
+					cp "$CURRENT_DIR"/templates/le/orgv1_le_no_ssl.template "$CONFIG"
+					subd_doma="$DOMAIN"
+					serv_name="$DOMAIN"
 				fi	
 					
 			elif [ "$org_v" == "2" ] && [ "$vhost_template" == "LE" ] || [ "$vhost_template" == "le" ]
@@ -237,7 +227,7 @@ LEvhostcreate_mod()
 				LEcertbot_mod
 				if [ "$LEcert_create" == "Y" ] || [ "$LEcert_create" == "y" ]
 				then
-					cp $CURRENT_DIR/templates/le/orgv2_le.template $CONFIG				
+					cp "$CURRENT_DIR"/templates/le/orgv2_le.template "$CONFIG"				
 					if [ "$LEcert_type" == "W" ] || [ "$LEcert_type" == "w" ]
 					then
 						subd='www'
@@ -250,11 +240,10 @@ LEvhostcreate_mod()
 						serv_name="$DOMAIN" 
 					fi
 
-				elif [ "$LEcert_create" == "N" ] || [ "$LEcert_create" == "n" ]
-				then
-						cp $CURRENT_DIR/templates/le/orgv2_le_no_ssl.template $CONFIG
-						subd_doma="$DOMAIN"
-						serv_name="$DOMAIN"   				
+				else
+					cp "$CURRENT_DIR"/templates/le/orgv2_le_no_ssl.template "$CONFIG"
+					subd_doma="$DOMAIN"
+					serv_name="$DOMAIN"
 				fi		
 			fi
 		fi	
@@ -268,11 +257,11 @@ LEcertbot_mod()
 			
 			#Configuring permissions on LE web folder
 			chmod -R 775 $LE_WEB
-			chown -R www-data:$SUDO_USER $LE_WEB
+			chown -R www-data:"$SUDO_USER" $LE_WEB
 
 			#Copy LE TEMP conf file so that LE can connect to server and continue to generate the certs
-			cp $CURRENT_DIR/templates/le/le_temp.template $CONFIG
-			$SED -i "s/DOMAIN/$DOMAIN/g" $CONFIG
+			cp "$CURRENT_DIR"/templates/le/le_temp.template "$CONFIG"
+			$SED -i "s/DOMAIN/$DOMAIN/g" "$CONFIG"
 			
 			#Delete default.conf nginx site
 			mkdir -p $tmp/bk/nginx_default_site
@@ -283,7 +272,7 @@ LEcertbot_mod()
 			rm -r -f $NGINX_SITES_ENABLED/default
 
 			# create symlink to enable site
-			ln -s $CONFIG $NGINX_SITES_ENABLED/$DOMAIN.conf
+			ln -s "$CONFIG" $NGINX_SITES_ENABLED/"$DOMAIN".conf
 
 			if [ "$LEcert_create" == "Y" ] || [ "$LEcert_create" == "y" ];
 			then 
@@ -339,14 +328,13 @@ LEcertbot_mod()
 				fi	
 
 				mkdir -p $cred_folder #create secret folder to store Certbot CF plugin creds
-				cp -a $CURRENT_DIR/config/le-dnsplugins/cf/. $cred_folder #copy CF credentials file
+				cp -a "$CURRENT_DIR"/config/le-dnsplugins/cf/. $cred_folder #copy CF credentials file
 				#Update CF plugin file
 				$SED -i "s/CF_EMAIL/$CF_EMAIL/g" $cred_folder/cloudflare.ini
 				$SED -i "s/CF_API/$CF_API/g" $cred_folder/cloudflare.ini
 				chmod -R 600 $cred_folder #debug
 
-			elif [ "$dns_plugin" == "N" ] || [ "$dns_plugin" == "n" ]
-			then
+			else
 				if [ "$debian_detect" == "Debian" ] || [ "$debian_detect" == "Raspbian" ];
 				then
 					sudo pip3 install certbot
@@ -372,25 +360,24 @@ LEcertbot_mod()
 			then
 				if [ "$dns_plugin" == "Y" ] || [ "$dns_plugin" == "y" ]
 				then
-					certbot certonly --dns-cloudflare --dns-cloudflare-credentials $cred_folder/cloudflare.ini --server https://acme-v02.api.letsencrypt.org/directory --email $email_var --agree-tos --no-eff-email -d *.$DOMAIN -d $DOMAIN
+					certbot certonly --dns-cloudflare --dns-cloudflare-credentials $cred_folder/cloudflare.ini --server https://acme-v02.api.letsencrypt.org/directory --email "$email_var" --agree-tos --no-eff-email -d ./*."$DOMAIN" -d "$DOMAIN"
 					#Adding wildcard cert auto renewal using CF DNS plugin, untested, let me know if anyone does.
 					{ crontab -l 2>/dev/null; echo "20 3 * * * certbot renew --noninteractive --dns-cloudflare --renew-hook "'"/etc/init.d/nginx reload"'""; } | crontab -
 				
-				elif [ "$dns_plugin" == "N" ] || [ "$dns_plugin" == "n" ]
-				then
-					certbot certonly --agree-tos --no-eff-email --email $email_var --server https://acme-v02.api.letsencrypt.org/directory --manual -d *.$DOMAIN -d $DOMAIN
+				else
+					certbot certonly --agree-tos --no-eff-email --email "$email_var" --server https://acme-v02.api.letsencrypt.org/directory --manual -d ./*."$DOMAIN" -d "$DOMAIN"
 				fi
 			
 			elif [ "$LEcert_type" == "S" ] || [ "$LEcert_type" == "s" ]
 			then
-				certbot certonly --webroot --agree-tos --no-eff-email --email $email_var -w /var/www/letsencrypt -d $DOMAIN -d $DOMAIN
+				certbot certonly --webroot --agree-tos --no-eff-email --email "$email_var" -w $WEB_DIR/letsencrypt -d "$DOMAIN" -d "$DOMAIN"
 				#Create LE Certbot renewal cron job
 				{ crontab -l 2>/dev/null; echo "20 3 * * * certbot renew --noninteractive --renew-hook "'"/etc/init.d/nginx reload"'""; } | crontab -
 			fi
 
 			## Once Cert has been generated, delete the created conf file.
-			rm -r -f $NGINX_SITES/$DOMAIN.conf
-			rm -r -f $NGINX_SITES_ENABLED/$DOMAIN.conf
+			rm -r -f $NGINX_SITES/"$DOMAIN".conf
+			rm -r -f $NGINX_SITES_ENABLED/"$DOMAIN".conf
 		}
 
 LEcertbot-dryrun_mod() 
@@ -404,7 +391,7 @@ LEcertbot-dryrun_mod()
 LEcertbot-wildcard-renew_mod()
 		{
 			domainval_mod	
-			certbot certonly --manual -d *.$DOMAIN -d $DOMAIN --preferred-challenges dns-01 --server https://acme-v02.api.letsencrypt.org/directory
+			certbot certonly --manual -d ./*."$DOMAIN" -d "$DOMAIN" --preferred-challenges dns-01 --server https://acme-v02.api.letsencrypt.org/directory
 		}
 
 LEcertbot-wc-cf-dns-renew_mod()
@@ -439,13 +426,13 @@ orgdl_mod()
 		echo
 		echo -e "\e[1;36m> which branch do you want to install?\e[0m .eg. 1a or 2a"
 		echo
-		if [ $org_v = "1" ]
+		if [ "$org_v" = "1" ]
 		then 
 		echo -e "\e[1;36m[1a] \e[0mMaster"
 		echo -e "\e[1;36m[1b] \e[0mDev"
 		echo -e "\e[1;36m[1c] \e[0mPre-Dev"
 		
-		elif [ $org_v = "2" ]
+		elif [ "$org_v" = "2" ]
 		then 
 		echo -e "\e[1;36m[2a] \e[0mMaster"
 		echo -e "\e[1;36m[2b] \e[0mDev"
@@ -461,73 +448,73 @@ orgdl_mod()
 		fi		
 		echo
 		echo -e "\e[1;36m> Where do you want to install Organizr? \e[0m"
-		echo -e "\e[1;36m> \e[0m [Press Return for Default = /var/www/$DOMAIN]"
+		echo -e "\e[1;36m> \e[0m [Press Return for Default = $WEB_DIR/$DOMAIN]"
 		echo
 		printf '\e[1;36m- \e[0m'
-		read instvar
-		instvar=${instvar:-/var/www/$DOMAIN}
+		read -r instvar
+		instvar=${instvar:-$WEB_DIR/$DOMAIN}
 		echo
 		#Org Download and Install
-		if [ $dlvar = "1a" ]
+		if [ "$dlvar" = "1a" ]
 		then 
 		dlbranch=Master
 
 			
-		elif [ $dlvar = "1b" ]
+		elif [ "$dlvar" = "1b" ]
 		then 
 		dlbranch=Develop
 
 
-		elif [ $dlvar = "1c" ]
+		elif [ "$dlvar" = "1c" ]
 		then 
 		dlbranch=Pre-Dev
 
 
-		elif [ $dlvar = "2a" ]
+		elif [ "$dlvar" = "2a" ]
 		then
 		dlbranch=v2-master
 
 
-		elif [ $dlvar = "2b" ]
+		elif [ "$dlvar" = "2b" ]
 		then
 		dlbranch=v2-develop
 
 		fi
 
-		echo -e "\e[1;36m> Downloading & Installing Organizr "$dlbranch" ...\e[0m"
+		echo -e "\e[1;36m> Downloading & Installing Organizr $dlbranch...\e[0m"
 
 		if [ ! -d "$instvar" ]; then
-		mkdir -p $instvar
+		mkdir -p "$instvar"
 		fi
-        git clone -b $dlbranch https://github.com/causefx/Organizr.git $instvar/html/
+        git clone -b $dlbranch https://github.com/causefx/Organizr.git "$instvar"/html/
                 
 		if [ ! -d "$instvar/db" ]; then
-		mkdir $instvar/db
+		mkdir "$instvar"/db
 		fi
 		#Configuring permissions on web folder
-		chmod -R 775 $instvar
-		chown -R www-data:$SUDO_USER $instvar
+		chmod -R 775 "$instvar"
+		chown -R www-data:"$SUDO_USER" "$instvar"
         }
 #Nginx vhost config
 vhostconfig_mod()
         {      
 		#Add in your domain name to your site nginx conf files
-		SITE_DIR=`echo $instvar`
-		$SED -i "s/DOMAIN/$DOMAIN/g" $CONFIG
-		$SED -i "s!ROOT!$SITE_DIR!g" $CONFIG
-		$SED -i "s/SERV_NAME/$serv_name/g" $CONFIG
+		SITE_DIR=$instvar
+		$SED -i "s/DOMAIN/$DOMAIN/g" "$CONFIG"
+		$SED -i "s!ROOT!$SITE_DIR!g" "$CONFIG"
+		$SED -i "s/SERV_NAME/$serv_name/g" "$CONFIG"
 		if [ "$vhost_template" == "CF" ] || [ "$vhost_template" == "cf" ]
 		then 
-			$SED -i "s/DOMAIN/$DOMAIN/g" $CONFIG_DOMAIN
-			$SED -i "s/SUBD_DOMA/$subd_doma/g" $CONFIG
+			$SED -i "s/DOMAIN/$DOMAIN/g" "$CONFIG_DOMAIN"
+			$SED -i "s/SUBD_DOMA/$subd_doma/g" "$CONFIG"
 		fi
 		if [ "$vhost_template" == "LE" ] || [ "$vhost_template" == "le" ]
 		then 
-			$SED -i "s/DOMAIN/$DOMAIN/g" $NGINX_CONFIG/$DOMAIN/http_server.conf
-			$SED -i "s/SUBD_DOMA/$subd_doma/g" $NGINX_CONFIG/$DOMAIN/ssl.conf
+			$SED -i "s/DOMAIN/$DOMAIN/g" $NGINX_CONFIG/"$DOMAIN"/http_server.conf
+			$SED -i "s/SUBD_DOMA/$subd_doma/g" $NGINX_CONFIG/"$DOMAIN"/ssl.conf
 		fi
-		phpv=$(ls -t /etc/php | head -1)
-		$SED -i "s/VER/$phpv/g" $NGINX_CONFIG/$DOMAIN/phpblock.conf
+		phpv=$(php -v)
+		$SED -i "s/VER/$phpv/g" $NGINX_CONFIG/"$DOMAIN"/phpblock.conf
 
 		#Delete default.conf nginx site
 		mkdir -p $tmp/bk/nginx_default_site
@@ -544,44 +531,77 @@ vhostconfig_mod()
 #Add site to hosts for local access
 addsite_to_hosts_mod()
        {
-		sudo echo "127.0.0.1 $DOMAIN"  >> /etc/hosts
+		echo "127.0.0.1 $DOMAIN" | sudo tee -a /etc/hosts
 	   }
 
 uninstall_oui_mod()
         {
-		echo
-		echo -e "\e[1;36m>NOTE! This will uninstall the following packages and remove all config files\e[0m"
-		echo -e "Nginx|PHP|PHP Plugins|Certbot|Certbot Cloudflare DNS Plugin|Web folder|Letsencrypt folder"
-		echo
-		printf '\e[1;36m- [y/n]: \e[0m'
-		read -r o_uninstaller
-		if [ "$o_uninstaller" == "Y" ] || [ "$o_uninstaller" == "y" ]
-		then
 			echo
-			echo -e "\e[1;36m> Uninstalling Nginx\e[0m"
-			apt-get purge nginx nginx-common -y
+			echo -e "\e[1;36m	PACKAGES	\e[0m"
+			echo -e "(Nginx, PHP, PHP Plugins, Certbot & Certbot Cloudflare DNS Plugin)"
 			echo
-			echo -e "\e[1;36m> Uninstalling PHP\e[0m"
-			sudo apt-get purge php*.*-common -y
-			echo
-			echo -e "\e[1;36m> Uninstalling Certbot & Certbot Cloudflare DNS plugin\e[0m"
-			if [ "$debian_detect" == "Debian" ] || [ "$debian_detect" == "Raspbian" ];
+			printf '\e[1;36m- Uninstall Nginx? [y/n]: \e[0m'
+			read -r o_uninstaller_nginx
+			if [ "$o_uninstaller_nginx" == "Y" ] || [ "$o_uninstaller_nginx" == "y" ]
 			then
-				sudo pip3 uninstall certbot --yes && sudo pip3 uninstall certbot-dns-cloudflare --yes
-			else
-				pip3 uninstall certbot --yes && pip3 uninstall certbot-dns-cloudflare --yes	
+				echo
+				echo -e "\e[1;36m> Uninstalling Nginx\e[0m"
+				apt-get purge nginx nginx-common -y
 			fi
 			echo
-			rm -rf /var/www
-			rm -rf /etc/letsencrypt 
+			printf '\e[1;36m- Uninstall PHP? [y/n]: \e[0m'
+			read -r o_uninstaller_php
+			if [ "$o_uninstaller_php" == "Y" ] || [ "$o_uninstaller_php" == "y" ]
+			then
+				echo
+				echo -e "\e[1;36m> Uninstalling PHP\e[0m"
+				sudo apt-get purge php*.*-common -y
+			fi
+			echo
+			printf '\e[1;36m- Uninstall Certbot Cloudflare DNS Plugin? [y/n]: \e[0m'
+			read -r o_uninstaller_certbot_cf
+			if [ "$o_uninstaller_certbot_cf" == "Y" ] || [ "$o_uninstaller_certbot_cf" == "y" ]
+			then
+				echo
+				echo -e "\e[1;36m> Uninstalling Certbot Cloudflare DNS plugin\e[0m"
+				if [ "$debian_detect" == "Debian" ] || [ "$debian_detect" == "Raspbian" ]
+				then
+					sudo pip3 uninstall certbot-dns-cloudflare --yes
+				else
+					pip3 uninstall certbot-dns-cloudflare --yes
+				fi
+			fi
+			echo
+			printf '\e[1;36m- Uninstall Certbot? [y/n]: \e[0m'
+			read -r o_uninstaller_certbot
+			if [ "$o_uninstaller_certbot" == "Y" ] || [ "$o_uninstaller_certbot" == "y" ]
+			then
+				echo
+				echo -e "\e[1;36m> Uninstalling Certbot\e[0m"
+				if [ "$debian_detect" == "Debian" ] || [ "$debian_detect" == "Raspbian" ]
+				then
+					sudo apt-get remove certbot
+					sudo snap remove certbot
+					sudo pip3 uninstall certbot --yes
+				else
+					apt-get remove certbot
+					snap remove certbot
+					pip3 uninstall certbot --yes
+				fi
+			fi
+			echo
+			echo
+			echo -e "\e[1;36m>NOTE! You can, if you wish, remove manually:\e[0m"
+			echo -e "\e[1;36m - Organizr web folder ($WEB_DIR by default)\e[0m"
+			echo -e "\e[1;36m - Unnecessary certbot certificates (/etc/letsencrypt/live/<your-domain> by default)\e[0m"
+			echo
+			echo -e "\e[1;36mPress any key to continue..\e[0m"
+			read -r
+			echo
 			echo
 			echo -e "\e[1;36m> Uninstall complete, Press any key to return to menu...\e[0m"
-			read
-		elif [ "$o_uninstaller" == "N" ] || [ "$o_uninstaller" == "n" ]
-		then
-			show_menus
-		fi	
-	    }	
+			read -r
+	    }
 
 #Org Install info
 orginstinfo_mod()
@@ -590,7 +610,7 @@ orginstinfo_mod()
 		echo
 		printf '######################################################'
 		echo
-		echo -e "     	 \e[1;32mOrganizr $q Install Complete  \e[0m"
+		echo -e "     	 \e[1;32mOrganizr $version Install Complete  \e[0m"
 		printf '######################################################'
 		echo
 		echo
@@ -627,15 +647,15 @@ oui_updater_mod()
 		read -r oui_branch_no
 		echo
 
-		if [ $oui_branch_no = "1" ]
+		if [ "$oui_branch_no" = "1" ]
 		then 
 		oui_branch_name=master
 			
-		elif [ $oui_branch_no = "2" ]
+		elif [ "$oui_branch_no" = "2" ]
 		then 
 		oui_branch_name=dev
 	
-		elif [ $oui_branch_no = "3" ]
+		elif [ "$oui_branch_no" = "3" ]
 		then 
 		oui_branch_name=experimental
 		fi
@@ -646,7 +666,7 @@ oui_updater_mod()
 		echo
         echo -e "\e[1;36mScript updated, reloading now...\e[0m"
 		sleep 3s
-		chmod +x $BASH_SOURCE
+		chmod +x "${BASH_SOURCE[0]}"
 		exec ./ou_installer.sh
 	}
 #Utilities sub-menu
@@ -681,7 +701,7 @@ uti_options(){
 			apt-get update
 			echo			
                 	echo -e "\e[1;36m> \e[0mPress any key to return to menu..."
-			read
+			read -r
 		;;
 
 			"2")
@@ -689,7 +709,7 @@ uti_options(){
 			LEcertbot-dryrun_mod
 			echo			
                 	echo -e "\e[1;36m> \e[0mPress any key to return to menu..."
-			read
+			read -r
 		;;
 
 			"3")
@@ -698,7 +718,7 @@ uti_options(){
 			certbot renew --noninteractive --renew-hook "/etc/init.d/nginx reload"
 			echo			
                 	echo -e "\e[1;36m> \e[0mPress any key to return to menu..."
-			read
+			read -r
 		;;	
 
 			"4")
@@ -707,7 +727,7 @@ uti_options(){
 			LEcertbot-wildcard-renew_mod
 			echo			
                 	echo -e "\e[1;36m> \e[0mPress any key to return to menu..."
-			read
+			read -r
 		;;
 
 			"5")
@@ -716,7 +736,7 @@ uti_options(){
 			LEcertbot-wc-cf-dns-renew_mod
 			echo			
                 	echo -e "\e[1;36m> \e[0mPress any key to return to menu..."
-			read
+			read -r
 		;;							
 
 			"6")
@@ -762,8 +782,8 @@ read_options(){
 			orginstinfo_mod
 			unset DOMAIN
             echo -e "\e[1;36m> \e[0mPress any key to return to menu..."
-			read
-			chmod +x $BASH_SOURCE
+			read -r
+			chmod +x "${BASH_SOURCE[0]}"
 			exec ./ou_installer.sh			
 		;;
 
@@ -775,8 +795,8 @@ read_options(){
 			echo
 			unset DOMAIN
             echo -e "\e[1;36m> \e[0mPress any key to return to menu..."
-			read
-			chmod +x $BASH_SOURCE
+			read -r
+			chmod +x "${BASH_SOURCE[0]}"
 			exec ./ou_installer.sh				
 		;; 
 
@@ -784,8 +804,8 @@ read_options(){
 			echo "- Your choice 3: Install Organzir Requirements"
 			orgreq_mod
             echo -e "\e[1;36m> \e[0mPress any key to return to menu..."
-			read
-			chmod +x $BASH_SOURCE
+			read -r
+			chmod +x "${BASH_SOURCE[0]}"
 			exec ./ou_installer.sh				
 		;;
         
@@ -793,7 +813,7 @@ read_options(){
 			echo "- Your choice 4: Organizr Complete Install (Org + Requirements) "
 	        orgreq_mod
 			echo -e "\e[1;36m> Press any key to continue with Organizr + Nginx site config\e[0m"
-			read
+			read -r
 			orgdl_mod
 	        vhostcreate_mod
 			vhostconfig_mod
@@ -801,8 +821,8 @@ read_options(){
 			orginstinfo_mod
 			unset DOMAIN
             echo -e "\e[1;36m> \e[0mPress any key to return to menu..."
-			read
-			chmod +x $BASH_SOURCE
+			read -r
+			chmod +x "${BASH_SOURCE[0]}"
 			exec ./ou_installer.sh				
 		;;
 
@@ -821,7 +841,7 @@ read_options(){
 
 		"7")
 			uninstall_oui_mod
-			chmod +x $BASH_SOURCE
+			chmod +x "${BASH_SOURCE[0]}"
 			exec ./ou_installer.sh					
 		;;
 
