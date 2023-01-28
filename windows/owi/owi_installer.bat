@@ -515,7 +515,7 @@ START http://localhost
 ECHO.
 )
 ECHO Opening Organizr First Setup Guide:
-START https://docs.organizr.app/books/installation/page/first-time-setup
+START https://docs.organizr.app/first-time-setup
 ECHO.
 
 ECHO -----------------------------------
