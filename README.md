@@ -1,3 +1,5 @@
+### Moved to: https://github.com/Organizr/Installer
+
 # OrganizrInstaller
 Automated install script for Organizr (github.com/causefx/Organizr). Only Ubuntu/Debian/CentOS and Windows supported right now! 
 
